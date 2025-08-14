@@ -5,13 +5,15 @@ import { useInterviewContext } from "@/hooks/useInterviewContext";
 import { Mic, Phone, Timer } from "lucide-react";
 import Image from "next/image";
 import Vapi from "@vapi-ai/web";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 import { toast } from "sonner";
+import axios from "axios";
 
 const StartInterviewPage = () => {
   const { interviewInfo, setInterviewInfo } = useInterviewContext();
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY!);
+  const [conversation, setConversation] = useState();
 
   useEffect(() => {
     interviewInfo && startInterview();
@@ -87,10 +89,30 @@ Key Guidelines:
   vapi.on("call-end", () => {
     console.log("Call has ended");
     toast("Interview Ended");
+    generateFeedback();
   });
+
   vapi.on("message", (message) => {
-    console.log(message);
+    console.log("message triggered");
+
+    console.log("message: ", message);
+    if (message.type === "conversation-update") {
+      console.log("Updated conversation:", message.conversation);
+      setConversation(message.conversation);
+    }
   });
+
+  const generateFeedback = async () => {
+    console.log("generate feedback triggered");
+
+    const result = await axios.post("/api/ai-feedback", {
+      conversation,
+    });
+    console.log(result);
+  };
+
+  // when i console log this result it shows the invalid json data 
+
   return (
     <>
       <div className="p-20 lg:px-48 xl:px-56">

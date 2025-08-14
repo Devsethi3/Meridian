@@ -3,13 +3,12 @@ import { FEEDBACK_PROMPT } from "@/lib/constants";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
+  const { conversation } = await req.json();
+  const FINAL_PROMPT = FEEDBACK_PROMPT.replace(
+    "{{conversation}}",
+    JSON.stringify(conversation)
+  );
   try {
-    const { conversation } = await req.json();
-    const FINAL_PROMPT = FEEDBACK_PROMPT.replace(
-      "{{conversation}}",
-      JSON.stringify(conversation)
-    );
-
     const openai = new OpenAI({
       baseURL: "https://openrouter.ai/api/v1",
       apiKey: process.env.OPENROUTER_API_KEY!,
@@ -27,3 +26,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(err);
   }
 }
+
