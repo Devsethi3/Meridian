@@ -1,15 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
+import Provider from "./provider";
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/theme/theme-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const font = Bricolage_Grotesque({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-Bricolage_Grotesque",
 });
 
 export const metadata: Metadata = {
@@ -23,11 +22,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${font.className} antialiased`}>
+        <Provider>
+          <Toaster richColors position="top-center" />
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+          </ThemeProvider>
+        </Provider>
       </body>
     </html>
   );
