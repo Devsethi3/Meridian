@@ -12,7 +12,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
-import { SidebarOptions } from "@/lib/contants";
+import { SidebarOptions } from "@/lib/constants";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";

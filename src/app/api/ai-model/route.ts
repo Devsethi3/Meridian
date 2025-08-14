@@ -1,6 +1,6 @@
 import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
-import { QUESTIONS_PROMPT } from "@/lib/contants";
+import { QUESTIONS_PROMPT } from "@/lib/constants";
 
 // Rate limiting map (in production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; lastReset: number }>();

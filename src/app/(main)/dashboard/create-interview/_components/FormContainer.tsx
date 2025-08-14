@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowRight } from "lucide-react";
-import { InterviewType } from "@/lib/contants";
+import { InterviewType } from "@/lib/constants";
 import { InterviewFormData } from "@/lib/types";
 
 interface FormContainerProps {
