@@ -73,6 +73,8 @@ Key Guidelines:
   };
 
   const stopInterview = () => {
+    console.log("vapi stop");
+
     vapi.stop();
   };
 
@@ -93,8 +95,6 @@ Key Guidelines:
   });
 
   vapi.on("message", (message) => {
-    console.log("message triggered");
-
     console.log("message: ", message);
     if (message.type === "conversation-update") {
       console.log("Updated conversation:", message.conversation);
@@ -105,13 +105,18 @@ Key Guidelines:
   const generateFeedback = async () => {
     console.log("generate feedback triggered");
 
-    const result = await axios.post("/api/ai-feedback", {
-      conversation,
-    });
-    console.log(result);
-  };
+    const result = await axios.post("/api/ai-feedback", { conversation });
 
-  // when i console log this result it shows the invalid json data 
+    try {
+      const content = result?.data?.content || "";
+      const parsedFeedback = JSON.parse(content);
+      console.log("Formatted Feedback:", parsedFeedback);
+      return parsedFeedback;
+    } catch (error) {
+      console.error("Failed to parse feedback JSON:", result?.data?.content);
+      return null;
+    }
+  };
 
   return (
     <>
