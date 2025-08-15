@@ -16,13 +16,65 @@ import {
 import { Button } from "@/components/ui/button";
 import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
 import { SidebarOptions } from "@/lib/constants";
-import { Plus } from "lucide-react";
+import {
+  Plus,
+  ChevronsUpDown,
+  Copy,
+  CreditCard,
+  LogOut,
+  Settings,
+  User as UserIcon,
+} from "lucide-react";
 import { FaAccusoft } from "react-icons/fa";
 import { useUser } from "@/context/UserContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { supabase } from "@/supabase/supabase-client";
+import { toast } from "sonner";
 
 const AppSidebar = () => {
   const pathname = usePathname();
   const { user } = useUser();
+
+  const displayName =
+    (user?.name as string) || (user?.email?.split("@")[0] as string) || "User";
+
+  const email = user?.email || "";
+  const avatarUrl = (user?.picture as string) || "";
+
+  const initials =
+    displayName
+      ?.split(" ")
+      .map((s) => s?.[0] || "")
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "U";
+
+  const copyEmail = async () => {
+    if (!email) return;
+    try {
+      await navigator.clipboard.writeText(email);
+      toast("Email copied");
+    } catch {
+      /* ignore */
+    }
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error("Failed to sign out");
+    } else {
+      window.location.href = "/";
+    }
+  };
 
   return (
     <Sidebar className="bg-card text-card-foreground border-border">
@@ -97,12 +149,108 @@ const AppSidebar = () => {
 
       {/* Footer */}
       <SidebarFooter className="border-t border-border">
+        {/* Theme row */}
         <div className="flex items-center justify-between px-3 py-3">
           <div className="min-w-0">
             <p className="truncate text-xs text-muted-foreground">Theme</p>
           </div>
           <ThemeToggleButton showLabel={false} />
         </div>
+
+        {/* User account */}
+        {user ? (
+          <div className="px-3 pb-3">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className="flex w-full items-center gap-3 rounded-md border border-transparent bg-muted/50 px-3 py-2.5 text-left transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                  aria-label="Open account menu"
+                >
+                  <Avatar className="h-9 w-9 shrink-0">
+                    <AvatarImage src={avatarUrl} alt={displayName} />
+                    <AvatarFallback className="bg-primary/10 text-primary">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium">
+                      {displayName}
+                    </p>
+                    <p className="hidden truncate text-xs text-muted-foreground sm:block">
+                      {email}
+                    </p>
+                  </div>
+                  <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
+                </button>
+              </DropdownMenuTrigger>
+
+              <DropdownMenuContent
+                side="top"
+                align="start"
+                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 border border-border bg-popover text-popover-foreground"
+              >
+                <DropdownMenuLabel className="flex items-center gap-3">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={avatarUrl} alt={displayName} />
+                    <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                      {initials}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium">
+                      {displayName}
+                    </p>
+                    <p className="truncate text-xs text-muted-foreground">
+                      {email}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link href="/account" className="flex items-center">
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/settings" className="flex items-center">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/billing" className="flex items-center">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Billing
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={copyEmail}
+                  className="flex items-center"
+                >
+                  <Copy className="mr-2 h-4 w-4" />
+                  Copy email
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleSignOut}
+                  className="flex items-center text-destructive focus:text-destructive"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ) : (
+          <div className="px-3 pb-3">
+            <Link href="/login">
+              <Button variant="secondary" className="w-full">
+                Sign in
+              </Button>
+            </Link>
+          </div>
+        )}
       </SidebarFooter>
     </Sidebar>
   );

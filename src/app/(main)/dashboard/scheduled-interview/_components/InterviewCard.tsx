@@ -12,7 +12,6 @@ interface InterviewCardProps {
 }
 
 const InterviewCard: React.FC<InterviewCardProps> = ({ interview }) => {
-  const href = `/interviews/${encodeURIComponent(interview.interview_id)}`;
   const host =
     process.env.NEXT_PUBLIC_HOST_URL ||
     (typeof window !== "undefined" ? window.location.origin : "");
@@ -65,13 +64,16 @@ const InterviewCard: React.FC<InterviewCardProps> = ({ interview }) => {
       </div>
 
       {/* Header */}
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-          <span className="text-sm font-semibold">{initials}</span>
+      <div className="flex items-center justify-between">
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+            <span className="text-sm font-semibold">{initials}</span>
+          </div>
+          <h3 className="truncate text-base font-semibold">
+            {interview.jobPosition || "Untitled Interview"}
+          </h3>
         </div>
-        <h3 className="truncate text-base font-semibold">
-          {interview.jobPosition || "Untitled Interview"}
-        </h3>
+        <span>{interview["interview-feedback"]?.length} Candidates</span>
       </div>
 
       {/* Meta */}
@@ -100,7 +102,7 @@ const InterviewCard: React.FC<InterviewCardProps> = ({ interview }) => {
       {/* Actions */}
       <div className="mt-4 flex items-center justify-between gap-2">
         <Link
-          href={href}
+          href={`/dashboard/scheduled-interview/${interview?.interview_id}/detail`}
           className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           Open

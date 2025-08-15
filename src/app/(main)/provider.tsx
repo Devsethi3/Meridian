@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import AppSidebar from "./_components/AppSidebar";
 import WelcomeInterface from "./dashboard/_components/WelcomeInterface";
 import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
-import { Bell, HelpCircle, Sparkles, BookOpen, LifeBuoy } from "lucide-react";
+import { HelpCircle, Sparkles, BookOpen, LifeBuoy } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -42,9 +42,7 @@ const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
                 </Button>
               </PopoverTrigger>
 
-              <PopoverContent
-                className="z-50 w-[min(22rem,90vw)] rounded-md border border-border bg-popover p-0 text-popover-foreground shadow-lg"
-              >
+              <PopoverContent className="z-50 w-[min(22rem,90vw)] rounded-md border border-border bg-popover p-0 text-popover-foreground shadow-lg">
                 <div className="p-4 sm:p-5">
                   {/* Header */}
                   <div className="mb-2 flex items-center gap-3">
