@@ -1,45 +1,182 @@
+"use client";
+
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Interview } from "@/lib/types";
-import { CopyIcon, Send } from "lucide-react";
+import type { Interview } from "@/lib/types";
+import {
+  Copy,
+  Send,
+  CalendarDays,
+  Timer,
+  ListChecks,
+  Hash,
+  ArrowRight,
+} from "lucide-react";
 import moment from "moment";
 import { toast } from "sonner";
+import { motion } from "motion/react";
 
 interface RecentListCardProps {
   interview: Interview;
 }
 
 const RecentListCard: React.FC<RecentListCardProps> = ({ interview }) => {
-  const copyLink = () => {
-    const url = process.env.NEXT_PUBLIC_HOST_URL + "/" + interview.interview_id;
-    navigator.clipboard.writeText(url);
-    toast("Copied");
+  const href = `/interviews/${encodeURIComponent(interview.interview_id)}`;
+  const host =
+    process.env.NEXT_PUBLIC_HOST_URL ||
+    (typeof window !== "undefined" ? window.location.origin : "");
+  const shareUrl = `${host}/${interview.interview_id || ""}`;
+
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success("Link copied to clipboard");
+    } catch {
+      toast.error("Failed to copy");
+    }
   };
 
+  const sendLink = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: interview.jobPosition || "Interview",
+          text: "Here’s the interview link",
+          url: shareUrl,
+        });
+      } catch {
+        /* user canceled */
+      }
+    } else {
+      await copyLink();
+    }
+  };
+
+  const createdLabel = interview.created_at
+    ? `${moment(interview.created_at).fromNow()} • ${moment(
+        interview.created_at
+      ).format("DD MMM YYYY")}`
+    : "—";
+
+  const durationLabel = formatDuration(interview.duration);
+  const questionCount = interview.questionList?.length ?? 0;
+
+  const initials =
+    (interview.jobPosition || "I")
+      .split(" ")
+      .map((s) => s[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "I";
+
   return (
-    <>
-      <div className="p-4 bg-background rounded-lg border">
-        <div className="h-[40px] w-[40px] bg-primary rounded-full" />
-        <h2 className="text-sm">
-          {moment(interview?.created_at).format("DD MM yyy")}
-        </h2>
-        <h2 className="mt-3 font-bold text-lg">{interview.jobPosition}</h2>
-        <h2 className="mt-2">{interview.duration}</h2>
-        <div className="flex items-center justify-between mt-4">
-          <Button onClick={copyLink} variant={"outline"}>
-            {" "}
-            <CopyIcon /> Copy
+    <motion.div
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+      className="group relative overflow-hidden rounded-xl border border-border bg-card p-5 text-card-foreground shadow-sm"
+    >
+      <div className="absolute inset-0 -z-10 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-secondary/10" />
+      </div>
+
+      {/* Header */}
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <span className="text-sm font-semibold">{initials}</span>
+        </div>
+        <div className="min-w-0">
+          <h3 className="truncate text-base font-semibold">
+            {interview.jobPosition || "Untitled Interview"}
+          </h3>
+          <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+            <CalendarDays className="h-3.5 w-3.5" />
+            <span className="truncate">{createdLabel}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Meta */}
+      <div className="mb-3 grid grid-cols-2 gap-2 text-xs">
+        <div className="rounded-md border border-border bg-muted px-2.5 py-2">
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            <Timer className="h-3.5 w-3.5" />
+            <span>Duration</span>
+          </div>
+          <div className="mt-1 font-medium text-foreground">
+            {durationLabel}
+          </div>
+        </div>
+
+        <div className="rounded-md border border-border bg-muted px-2.5 py-2">
+          <div className="flex items-center gap-1.5 text-muted-foreground">
+            <ListChecks className="h-3.5 w-3.5" />
+            <span>Questions</span>
+          </div>
+          <div className="mt-1 font-medium text-foreground">
+            {questionCount}
+          </div>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="mt-4 flex items-center justify-between gap-2">
+        <Link
+          href={href}
+          className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        >
+          Open
+          <ArrowRight className="h-4 w-4" />
+        </Link>
+
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            onClick={copyLink}
+            className="inline-flex items-center gap-2"
+          >
+            <Copy className="h-4 w-4" />
+            Copy
           </Button>
-          <Button>
-            <Send />
+          <Button
+            variant="secondary"
+            onClick={sendLink}
+            className="inline-flex items-center gap-2"
+          >
+            <Send className="h-4 w-4" />
             Send
           </Button>
         </div>
       </div>
-    </>
+    </motion.div>
   );
 };
 
 export default RecentListCard;
 
-// Create an amazing ui to show these interview with cards as the production grade application and it should be respsonsive with smooth animation with proper loading states (with skeletons), error states, make sure to only use the variable colors (init from shadcn ui) like primary, secondary, muted, etc
-// RecentList and RecentListCard are both different component so give the code separately for both components
+/* -------------------- Local helpers -------------------- */
+
+function formatDuration(d: string | null | undefined): string {
+  if (!d) return "—";
+  // ISO 8601: PT1H30M, PT45M, etc.
+  if (/^P(T.*)?/i.test(d)) {
+    const h = parseInt(d.match(/(\d+)H/i)?.[1] || "0", 10);
+    const m = parseInt(d.match(/(\d+)M/i)?.[1] || "0", 10);
+    const s = parseInt(d.match(/(\d+)S/i)?.[1] || "0", 10);
+    const parts: string[] = [];
+    if (h) parts.push(`${h}h`);
+    if (m) parts.push(`${m}m`);
+    if (s && !h && !m) parts.push(`${s}s`);
+    return parts.join(" ") || "0m";
+  }
+  // Fallback: treat as minutes
+  const mins = parseInt(String(d).replace(/[^\d]/g, ""), 10);
+  if (!isNaN(mins)) {
+    if (mins >= 60) {
+      const hh = Math.floor(mins / 60);
+      const mm = mins % 60;
+      return mm ? `${hh}h ${mm}m` : `${hh}h`;
+    }
+    return `${mins}m`;
+  }
+  return String(d);
+}
