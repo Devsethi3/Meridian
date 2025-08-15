@@ -1,15 +1,11 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Provider from "./provider";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/theme/theme-provider";
 
-const font = Bricolage_Grotesque({
-  subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-Bricolage_Grotesque",
-});
+const font = Space_Grotesk(); 
 
 export const metadata: Metadata = {
   title: "Create Next App",

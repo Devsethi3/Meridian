@@ -9,11 +9,17 @@ import { useEffect, useState } from "react";
 import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 import { toast } from "sonner";
 import axios from "axios";
+import { supabase } from "@/supabase/supabase-client";
+import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 const StartInterviewPage = () => {
+  const { interviewId } = useParams();
+  const router = useRouter();
   const { interviewInfo, setInterviewInfo } = useInterviewContext();
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY!);
   const [conversation, setConversation] = useState();
+  console.log("Interview Id:", interviewId);
 
   useEffect(() => {
     interviewInfo && startInterview();
@@ -111,7 +117,27 @@ Key Guidelines:
       const content = result?.data?.content || "";
       const parsedFeedback = JSON.parse(content);
       console.log("Formatted Feedback:", parsedFeedback);
-      return parsedFeedback;
+
+      // Save to database
+      const { data, error } = await supabase
+        .from("interview-feedback")
+        .insert([
+          {
+            userName: interviewInfo?.userName,
+            userEmail: interviewInfo?.userEmail,
+            interview_id: interviewId,
+            feedback: parsedFeedback,
+            recommended: false,
+          },
+        ])
+        .select();
+
+      if (error) {
+        console.error("Error saving feedback:", error);
+      } else {
+        console.log("Feedback saved:", data);
+        router.replace(`/interview/${interviewId}/completed`);
+      }
     } catch (error) {
       console.error("Failed to parse feedback JSON:", result?.data?.content);
       return null;

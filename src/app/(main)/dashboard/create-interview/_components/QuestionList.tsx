@@ -10,6 +10,7 @@ import {
   Copy,
   Trash2,
   AlertCircle,
+  Sparkle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/supabase/supabase-client";
@@ -42,17 +43,16 @@ const getSuggestedCount = (duration?: string) => {
 };
 
 const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
-  const [loading, setLoading] = useState(false); // Changed to false initially
+  const [loading, setLoading] = useState(false); 
   const [saveLoading, setSaveLoading] = useState(false);
   const [questionList, setQuestionList] = useState<Question[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [hasGenerated, setHasGenerated] = useState(false); // Track if questions were generated
+  const [hasGenerated, setHasGenerated] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const generationCacheRef = useRef<Map<string, Question[]>>(new Map());
 
   const { user } = useUser();
 
-  // Stable key from the fields that influence generation
   const promptKey = useMemo(() => {
     const { jobPosition, jobDescription, duration, type } = formData || {};
     if (!jobPosition || !jobDescription || !duration || !type) return "";
@@ -96,12 +96,10 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
     (content: unknown): Question[] => {
       if (!content) return [];
 
-      // If already structured
       const tryArrays = (obj: any): Question[] => {
         if (!obj) return [];
         if (Array.isArray(obj)) return normalizeQuestions(obj);
 
-        // Try different property names
         const possibleArrays = [
           obj.interviewQuestions,
           obj.questions,
@@ -125,11 +123,9 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
         if (arr.length) return arr;
       }
 
-      // String content parsing
       let s = typeof content === "string" ? content : JSON.stringify(content);
       s = s.trim();
 
-      // Remove common wrappers
       s = s
         .replace(/^\s*```(?:json)?/i, "")
         .replace(/```$/i, "")
@@ -153,13 +149,12 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
             parsed = JSON.parse(match[0]);
             break;
           } catch {
-            // Try with repairs
             const repaired = match[0]
               .replace(/,\s*([}\]])/g, "$1")
               .replace(/[\u201C\u201D]/g, '"')
               .replace(/[\u2018\u2019]/g, "'")
-              .replace(/([{,]\s*)(\w+):/g, '$1"$2":') // Add quotes to unquoted keys
-              .replace(/:\s*'([^']*)'/g, ': "$1"'); // Convert single quotes to double
+              .replace(/([{,]\s*)(\w+):/g, '$1"$2":') 
+              .replace(/:\s*'([^']*)'/g, ': "$1"');
 
             try {
               parsed = JSON.parse(repaired);
@@ -223,7 +218,6 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
           },
         });
 
-        // Better response handling
         const responseData = res.data;
         if (!responseData) {
           throw new Error("Empty response from AI");
@@ -377,7 +371,7 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
             className="gap-2"
             size="lg"
           >
-            <RefreshCcw className="h-4 w-4" />
+            <Sparkle className="h-4 w-4" />
             Generate Interview Questions
           </Button>
         </div>

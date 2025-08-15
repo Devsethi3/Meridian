@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+.container {
+  max-width: 1280px;
+  margin-inline: auto;
+  padding-inline: 0.75rem;
+}
 
 @custom-variant dark (&:is(.dark *));
 

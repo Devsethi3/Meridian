@@ -4,7 +4,6 @@ import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import type { FC, ReactNode } from "react";
 
-// --- Type Definitions ---
 interface Question {
   question: string;
   type: string;
@@ -13,8 +12,6 @@ interface Question {
 interface QuestionListContainerProps {
   questionList: Question[];
 }
-
-// --- Component Code ---
 
 // Refactored to a map for better readability and maintainability.
 const typeColors: { [key: string]: string } = {
@@ -72,10 +69,9 @@ const QuestionItem = ({ item, index }: { item: Question; index: number }) => {
     try {
       await navigator.clipboard.writeText(item.question);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000); // Increased timeout for better feedback
+      setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
-      // Optionally, show an error state to the user
     }
   };
 
