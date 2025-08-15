@@ -1,76 +1,108 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { Button } from "@/components/ui/button";
 import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
 import { SidebarOptions } from "@/lib/constants";
 import { Plus } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { FaAccusoft } from "react-icons/fa";
+import { useUser } from "@/context/UserContext";
 
 const AppSidebar = () => {
-  const path = usePathname();
-  console.log(path);
+  const pathname = usePathname();
+  const { user } = useUser();
 
   return (
-    <Sidebar>
-      <SidebarHeader>
-        <div className="flex items-center gap-3 mt-4 justify-center">
-          <FaAccusoft className="size-7 text-indigo-500" />
-          <h2 className="text-2xl font-bold tracking-widest">
-            <span className="text-indigo-500">First</span>View
-          </h2>
+    <Sidebar className="bg-card text-card-foreground border-border">
+      {/* Brand */}
+      <SidebarHeader className="border-b border-border">
+        <div className="mt-3 flex items-center justify-center gap-3 px-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow">
+            <FaAccusoft className="h-5 w-5" />
+          </div>
+          <div className="min-w-0">
+            <h2 className="truncate text-xl font-bold tracking-wide">
+              <span className="text-primary">First</span>View
+            </h2>
+            <p className="truncate text-xs text-muted-foreground">
+              Interview Hub
+            </p>
+          </div>
         </div>
-        <Button className="w-full mt-5">
-          {" "}
-          <Plus /> Create Interview
-        </Button>
+
+        <div className="px-3 pb-3 pt-4">
+          <Link href="/interviews/new">
+            <Button className="w-full">
+              <Plus className="mr-2 h-4 w-4" />
+              Create Interview
+            </Button>
+          </Link>
+        </div>
       </SidebarHeader>
-      <SidebarContent>
+
+      {/* Nav */}
+      <SidebarContent className="bg-card">
         <SidebarGroup>
-          <SidebarContent>
-            <SidebarMenu>
-              {SidebarOptions.map((option, index) => (
-                <SidebarMenuItem key={index} className="p-1">
+          <SidebarGroupLabel className="text-xs text-muted-foreground">
+            Navigation
+          </SidebarGroupLabel>
+          <SidebarMenu>
+            {SidebarOptions.map((option, i) => {
+              const isActive = pathname === option.path;
+              return (
+                <SidebarMenuItem key={i}>
                   <SidebarMenuButton
                     asChild
-                    className={`p-4 py-5 ${
-                      path == option.path && "bg-primary/10"
-                    }`}
+                    className={[
+                      "group w-full rounded-md border border-transparent px-3 py-2.5 transition",
+                      isActive
+                        ? "bg-primary/10 text-primary"
+                        : "hover:bg-muted text-foreground",
+                    ].join(" ")}
+                    aria-current={isActive ? "page" : undefined}
                   >
-                    <Link href={option.path}>
+                    <Link
+                      href={option.path}
+                      className="flex items-center gap-2"
+                    >
                       <option.icon
-                        className={`text-[16px] ${
-                          path === option.path && "text-primary"
-                        }`}
+                        className={[
+                          "h-4 w-4",
+                          isActive
+                            ? "text-primary"
+                            : "text-muted-foreground group-hover:text-foreground",
+                        ].join(" ")}
                       />
-                      <span
-                        className={`text-[16px] ${
-                          path === option.path && "text-primary"
-                        }`}
-                      >
-                        {option.name}
-                      </span>
+                      <span className="truncate text-sm">{option.name}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarContent>
+              );
+            })}
+          </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
-        <ThemeToggleButton showLabel variant="circle-blur" start="top-right" />{" "}
+
+      {/* Footer */}
+      <SidebarFooter className="border-t border-border">
+        <div className="flex items-center justify-between px-3 py-3">
+          <div className="min-w-0">
+            <p className="truncate text-xs text-muted-foreground">Theme</p>
+          </div>
+          <ThemeToggleButton showLabel={false} />
+        </div>
       </SidebarFooter>
     </Sidebar>
   );
