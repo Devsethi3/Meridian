@@ -31,3 +31,19 @@ export interface VapiEvent {
 }
 
 export type ConnectionStatus = "connecting" | "connected" | "disconnected";
+
+interface Question {
+  question: string;
+}
+
+export interface Interview {
+  id: number;
+  created_at: string;
+  duration: string;
+  interview_id: string;
+  jobDescription: string;
+  jobPosition: string;
+  questionList: Question[];
+  type: string;
+  userEmail: string;
+}

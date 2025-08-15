@@ -1,5 +1,3 @@
-
-
 import CreateOptions from "./_components/CreateOptions";
 import RecentLists from "./_components/RecentLists";
 
