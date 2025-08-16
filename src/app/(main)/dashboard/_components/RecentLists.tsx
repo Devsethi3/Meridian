@@ -46,7 +46,9 @@ const RecentLists = () => {
     <section className="my-10">
       <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Previously Created Interviews</h2>
+          <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+            Previously Created Interviews
+          </h2>
           <p className="text-sm text-muted-foreground">
             Quickly access your most recent sessions.
           </p>
