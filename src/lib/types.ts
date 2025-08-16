@@ -1,10 +1,8 @@
-// types.ts
-
 export type InterviewFormData = {
   jobPosition?: string;
   jobDescription?: string;
   duration?: string;
-  type?: string;
+  type?: "Technical" | "Behavior" | "Experience" | "Problem Solving";
 };
 
 export type InterviewInfo = {

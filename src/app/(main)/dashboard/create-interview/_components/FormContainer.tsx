@@ -21,7 +21,7 @@ interface FormContainerProps {
   GoToNext: () => void;
 }
 
-const MAX_DESC = 500;
+const MAX_DESC = 2000;
 
 const FormContainer = ({
   formData,
@@ -146,13 +146,15 @@ const FormContainer = ({
             </span>
 
             <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {InterviewType.map((type, index) => {
-                const selected = formData.type === type.title;
+              {InterviewType.map((type: any, index: number) => {
+                const value = type?.value ?? type?.title ?? String(type);
+                const selected = formData.type === value;
+
                 return (
                   <button
                     key={index}
                     type="button"
-                    onClick={() => onInputChange("type", type.title)}
+                    onClick={() => onInputChange("type", value)}
                     aria-pressed={selected}
                     aria-labelledby={`${typeId}-${index}`}
                     className={[
@@ -163,20 +165,25 @@ const FormContainer = ({
                         : "bg-muted/40 hover:bg-muted border-border",
                     ].join(" ")}
                   >
-                    <type.icon
-                      className={[
-                        "h-4 w-4",
-                        selected ? "opacity-90" : "text-muted-foreground",
-                      ].join(" ")}
-                    />
-                    <span id={`${typeId}-${index}`}>{type.title}</span>
+                    {type?.icon ? (
+                      <type.icon
+                        className={[
+                          "h-4 w-4",
+                          selected ? "opacity-90" : "text-muted-foreground",
+                        ].join(" ")}
+                      />
+                    ) : null}
+                    <span id={`${typeId}-${index}`}>
+                      {type?.title ?? value}
+                    </span>
                   </button>
                 );
               })}
             </div>
 
             <p className="mt-1 text-xs text-muted-foreground">
-              Pick how candidates will respond (e.g., video, audio, or text).
+              Pick the interview type (e.g., Technical, Behavioral, System
+              Design).
             </p>
           </div>
         </div>

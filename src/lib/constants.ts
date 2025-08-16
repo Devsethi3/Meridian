@@ -56,7 +56,6 @@ export const InterviewType = [
     icon: Puzzle,
   },
 ];
-
 export const QUESTIONS_PROMPT = `You are an expert technical interviewer.  
 Based on the following inputs, generate a well-structured list of high-quality interview questions:
 
@@ -64,27 +63,35 @@ Job Title: {{jobTitle}}
 Job Description: {{jobDescription}}  
 Interview Duration: {{duration}}  
 Interview Type: {{type}}
+Number of Questions Needed: {{suggestedCount}}
 
 🍊 Your task:
 - Analyze the job description to identify key responsibilities, required skills, and expected experience.
-- Generate a list of interview questions depending on the interview duration.
-- Adjust the number and depth of questions to match the interview duration.
-- Ensure the questions match the tone and structure of a real-life {{type}} interview.
+- Generate exactly {{suggestedCount}} interview questions optimized for the {{duration}} duration.
+- Adjust the depth and complexity of questions to match the interview duration.
+- Ensure ALL questions are specifically tailored for a {{type}} interview style.
+- For Technical interviews: focus on coding, system design, technical concepts, and domain expertise
+- For Behavior interviews: focus on past experiences, team dynamics, conflict resolution, and soft skills  
+- For Experience interviews: focus on career progression, achievements, lessons learned, and role-specific experience
+- For Problem Solving interviews: focus on analytical thinking, logical reasoning, and problem-solving methodologies
 
-🍀 Format your response in JSON format with an array list of questions.
+🍀 IMPORTANT: You must respond with valid JSON only. No additional text, explanations, or markdown formatting.
 
-Format:
-interviewQuestions = [
-  {
-    question: "",
-    type: "Technical / Behavioral / Experience / Problem Solving / Leadership"
-  },
-  {
-    ...
-  }
-]
+Required JSON format:
+{
+  "interviewQuestions": [
+    {
+      "question": "Your question text here",
+      "type": "Technical"
+    },
+    {
+      "question": "Your question text here", 
+      "type": "Behavioral"
+    }
+  ]
+}
 
-🎯 The goal is to create a structured, relevant, and time-optimized interview plan for a {{jobTitle}} role.`;
+🎯 The goal is to create a structured, relevant, and time-optimized interview plan for a {{jobTitle}} role that strictly follows the {{type}} interview format.`;
 
 export const FEEDBACK_PROMPT = `
 {{conversation}}

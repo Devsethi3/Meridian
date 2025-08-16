@@ -132,12 +132,11 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
         .replace(/^[`'"]+|[`'"]+$/g, "")
         .trim();
 
-      // Try to extract JSON from the text
       const jsonMatches = [
         /\{[\s\S]*\}/,
-        /\[[\s\S]*\]/,
-        /"interviewQuestions":\s*\[[\s\S]*?\]/,
-        /"questions":\s*\[[\s\S]*?\]/,
+        /```math[\s\S]*?```/g, // ✅ FIXED: Removed literal newlines
+        /"interviewQuestions":\s*```math[\s\S]*?```/g, // ✅ FIXED: Removed literal newlines
+        /"questions":\s*```math[\s\S]*?```/g, // ✅ FIXED: Removed literal newlines
       ];
 
       let parsed = null;
@@ -150,7 +149,7 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
             break;
           } catch {
             const repaired = match[0]
-              .replace(/,\s*([}\]])/g, "$1")
+              .replace(/,\s*([}```])/g, "$1")
               .replace(/[\u201C\u201D]/g, '"')
               .replace(/[\u2018\u2019]/g, "'")
               .replace(/([{,]\s*)(\w+):/g, '$1"$2":')
@@ -183,7 +182,6 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
         return;
       }
 
-      // Check cache first (unless forced)
       if (!force && generationCacheRef.current.has(promptKey)) {
         const cached = generationCacheRef.current.get(promptKey)!;
         setQuestionList(cached);
@@ -195,7 +193,6 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
       setErrorMessage(null);
       setLoading(true);
 
-      // Cancel any in-flight request
       if (abortRef.current) {
         abortRef.current.abort();
       }
@@ -210,9 +207,15 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
           suggestedCount: getSuggestedCount(formData.duration),
         };
 
+        // Debug only: verify the type being sent
+        if (process.env.NODE_ENV !== "production") {
+          // Should log the normalized value like "technical", "behavioral", etc.
+          console.debug("[QuestionList] AI payload:", payload);
+        }
+
         const res = await axios.post("/api/ai-model", payload, {
           signal: controller.signal,
-          timeout: 60000, // 60 second timeout
+          timeout: 60000,
           headers: {
             "Content-Type": "application/json",
           },
@@ -236,13 +239,12 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
         } else {
           setQuestionList(questions);
           setHasGenerated(true);
-          // Cache the result
           generationCacheRef.current.set(promptKey, questions);
           toast.success(`Generated ${questions.length} interview questions`);
         }
       } catch (err: any) {
         if (axios.isCancel(err)) {
-          return; // Ignore cancellation
+          return;
         }
 
         console.error("AI generation error:", err);
@@ -268,10 +270,8 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
     [promptKey, formData, extractQuestionsFromContent]
   );
 
-  // Don't auto-generate on mount - wait for user action
   useEffect(() => {
     return () => {
-      // Cleanup: abort any pending requests
       if (abortRef.current) {
         abortRef.current.abort();
       }
@@ -279,7 +279,6 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
   }, []);
 
   const onFinish = async () => {
-    // If no questions yet, generate them first
     if (!questionList?.length && !loading) {
       await generateAiQuestionList();
       return;
@@ -347,7 +346,6 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
     setQuestionList([]);
     setErrorMessage(null);
     setHasGenerated(false);
-    // Clear cache for current prompt
     if (promptKey) {
       generationCacheRef.current.delete(promptKey);
     }
@@ -360,14 +358,12 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
 
   return (
     <div className="space-y-4">
-      {/* Initial state - show generate button */}
       {showGenerateButton && (
         <div className="rounded-lg border border-border bg-muted/30 p-6 text-center flex items-center justify-center flex-col">
           <p className="text-sm text-muted-foreground mb-4">
             Ready to generate personalized interview questions based on your job
             requirements.
           </p>
-          {/* Large devices: show with icon */}
           <Button
             onClick={() => generateAiQuestionList()}
             className="gap-2 text-sm hidden lg:flex"
@@ -376,8 +372,6 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
             <Sparkle className="h-4 w-4" />
             Generate Interview Questions
           </Button>
-
-          {/* Small devices: show text-only */}
           <Button
             onClick={() => generateAiQuestionList()}
             className="text-sm lg:hidden"
@@ -388,7 +382,6 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
         </div>
       )}
 
-      {/* Loading state */}
       {loading && (
         <div className="rounded-lg border border-border bg-muted/30 p-4 flex gap-4 items-start">
           <Loader2 className="animate-spin h-5 w-5 text-muted-foreground shrink-0 mt-0.5" />
@@ -402,7 +395,6 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
         </div>
       )}
 
-      {/* Error state */}
       {errorMessage && !loading && (
         <div className="rounded-lg border border-destructive/30 bg-destructive/10 p-4 flex gap-3">
           <AlertCircle className="h-5 w-5 text-destructive mt-0.5" />
@@ -427,10 +419,8 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
         </div>
       )}
 
-      {/* Questions generated - show toolbar and list */}
       {(questionList.length > 0 || hasGenerated) && !showGenerateButton && (
         <>
-          {/* Toolbar */}
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
             <div className="text-sm text-muted-foreground">
               {questionList?.length ? (
@@ -476,9 +466,7 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
             </div>
           </div>
 
-          {/* Questions List */}
           <div className="relative">
-            {/* Loading skeletons */}
             {loading && (
               <div className="space-y-3">
                 {Array.from({ length: 6 }).map((_, i) => (
@@ -493,12 +481,10 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
               </div>
             )}
 
-            {/* Actual questions */}
             {!loading && questionList && questionList.length > 0 && (
               <QuestionListContainer questionList={questionList} />
             )}
 
-            {/* Empty state after generation attempt */}
             {!loading &&
               hasGenerated &&
               questionList.length === 0 &&

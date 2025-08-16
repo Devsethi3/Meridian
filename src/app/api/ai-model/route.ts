@@ -1,3 +1,5 @@
+// /api/ai-model/route.ts
+
 import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
 import { QUESTIONS_PROMPT } from "@/lib/constants";
@@ -65,7 +67,10 @@ function validateInput(data: any): { valid: boolean; error?: string } {
     return { valid: false, error: "Invalid duration selected" };
   }
 
-  if (!type || !["Technical", "Behavioral", "Mixed"].includes(type)) {
+  // Updated to match the types defined in type.ts
+  const validTypes = ["Technical", "Behavior", "Experience", "Problem Solving"];
+  if (!type || !validTypes.includes(type)) {
+    console.log("Invalid type received:", type, "Valid types:", validTypes);
     return { valid: false, error: "Invalid interview type selected" };
   }
 
@@ -107,6 +112,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Log the received data for debugging
+    console.log("Received request body:", body);
+
     // Rate limiting
     const rateLimitKey = getRateLimitKey(req);
     const { allowed, remaining } = checkRateLimit(rateLimitKey);
@@ -127,6 +135,7 @@ export async function POST(req: NextRequest) {
     // Input validation
     const validation = validateInput(body);
     if (!validation.valid) {
+      console.log("Validation failed:", validation.error);
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 

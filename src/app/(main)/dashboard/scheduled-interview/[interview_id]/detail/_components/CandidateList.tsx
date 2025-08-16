@@ -97,7 +97,7 @@ const CandidateList: React.FC<CandidateListProps> = ({
 
   if (!sortedCandidates || sortedCandidates.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed bg-card/50 p-10 text-center">
+      <div className="rounded-xl border border-dashed bg-card/50 my-6 p-10 text-center">
         <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-secondary/40">
           <Users className="h-6 w-6 text-muted-foreground" />
         </div>
@@ -190,3 +190,5 @@ const CandidateList: React.FC<CandidateListProps> = ({
 };
 
 export default CandidateList;
+
+// Improve the ui this is not 
