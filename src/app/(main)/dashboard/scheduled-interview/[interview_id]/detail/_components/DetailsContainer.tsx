@@ -7,6 +7,7 @@ import {
   FileText,
   Mail,
   Copy,
+  Check,
 } from "lucide-react";
 import { InterviewDetail } from "@/lib/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,6 +20,7 @@ import moment from "moment";
 import StatChip from "./StatChip";
 import * as React from "react";
 import ExpandableDescription from "./ExpandableDescription";
+import { toast } from "sonner";
 
 interface DetailsContainerProps {
   interviewDetail: InterviewDetail | null;
@@ -34,6 +36,9 @@ const DetailsContainer: React.FC<DetailsContainerProps> = ({
   onRetry,
 }) => {
   const [copied, setCopied] = React.useState(false);
+  const [copiedIndex, setCopiedIndex] = React.useState<number | null>(null);
+  const [copiedAll, setCopiedAll] = React.useState(false);
+  const [expanded, setExpanded] = React.useState<Set<number>>(new Set());
 
   const handleCopy = React.useCallback(async () => {
     if (!interviewDetail?.userEmail) return;
@@ -45,6 +50,58 @@ const DetailsContainer: React.FC<DetailsContainerProps> = ({
       // noop
     }
   }, [interviewDetail?.userEmail]);
+
+  const handleCopyQuestion = async (idx: number, text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedIndex(idx);
+      toast.success("Question copied");
+      setTimeout(
+        () => setCopiedIndex((cur) => (cur === idx ? null : cur)),
+        1000
+      );
+    } catch {
+      toast.error("Failed to copy");
+    }
+  };
+
+  const handleCopyAll = async (questions: Array<{ question: string }>) => {
+    try {
+      const combined = questions
+        .map((q, i) => `Q${i + 1}. ${q.question}`)
+        .join("\n");
+      await navigator.clipboard.writeText(combined);
+      setCopiedAll(true);
+      toast.success("All questions copied");
+      setTimeout(() => setCopiedAll(false), 1200);
+    } catch {
+      toast.error("Failed to copy");
+    }
+  };
+
+  const toggleExpanded = (i: number) => {
+    setExpanded((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+  };
+
+  const getTypeBadgeClass = (type?: string) => {
+    const t = (type || "").toLowerCase();
+    if (t.includes("technical"))
+      return "border-primary/30 bg-primary/10 text-primary";
+    if (t.includes("behavior"))
+      return "border-amber-400/30 bg-amber-400/10 text-amber-500";
+    if (t.includes("experience"))
+      return "border-emerald-400/30 bg-emerald-400/10 text-emerald-600";
+    if (t.includes("problem"))
+      return "border-fuchsia-400/30 bg-fuchsia-400/10 text-fuchsia-600";
+    if (t.includes("system"))
+      return "border-sky-400/30 bg-sky-400/10 text-sky-600";
+    return "border-muted-foreground/30 bg-muted/20 text-muted-foreground";
+  };
 
   if (loading) {
     return (
@@ -143,10 +200,16 @@ const DetailsContainer: React.FC<DetailsContainerProps> = ({
     );
   }
 
-  // Convert questionList object to array for easier rendering
-  const questions = Object.keys(interviewDetail.questionList || {})
-    .filter((key) => key !== "length" && !isNaN(Number(key)))
-    .map((key) => interviewDetail.questionList[Number(key)]);
+  // Normalize question list to array
+  const rawList: any = interviewDetail.questionList ?? [];
+  const questions: Array<{ question: string; type?: string }> = Array.isArray(
+    rawList
+  )
+    ? rawList
+    : Object.keys(rawList || {})
+        .filter((key) => key !== "length" && !isNaN(Number(key)))
+        .map((key) => rawList[Number(key)])
+        .filter(Boolean);
 
   return (
     <div className="space-y-6">
@@ -254,51 +317,135 @@ const DetailsContainer: React.FC<DetailsContainerProps> = ({
       {/* Questions */}
       <Card className="border-border shadow-sm">
         <CardHeader className="pb-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <CardTitle className="flex items-center space-x-2 text-foreground">
               <div className="rounded-lg bg-secondary/10 p-2">
                 <FileText className="h-5 w-5 text-secondary-foreground" />
               </div>
               <span>Interview Questions</span>
             </CardTitle>
-            <Badge variant="outline" className="font-semibold">
-              {questions.length} Questions
-            </Badge>
+
+            <div className="flex items-center gap-2">
+              <Badge variant="outline" className="font-semibold">
+                {questions.length} Questions
+              </Badge>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleCopyAll(questions)}
+                disabled={questions.length === 0}
+                className="gap-2"
+                aria-label="Copy all questions"
+              >
+                {copiedAll ? (
+                  <>
+                    <Check className="h-4 w-4" />
+                    Copied
+                  </>
+                ) : (
+                  <>
+                    <Copy className="h-4 w-4" />
+                    Copy All
+                  </>
+                )}
+              </Button>
+            </div>
           </div>
         </CardHeader>
+
         <CardContent>
           {questions.length === 0 ? (
-            <div className="text-center py-8">
-              <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+            <div className="py-10 text-center">
+              <FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
               <p className="text-muted-foreground">
                 No questions available for this interview.
               </p>
             </div>
           ) : (
-            <div className="space-y-4">
-              {questions.map((question, index) => (
-                <div
-                  key={index}
-                  className="group relative rounded-lg border border-border bg-muted/20 hover:bg-muted/40 transition-colors p-4"
-                >
-                  <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0">
-                      <Badge
-                        variant="secondary"
-                        className="font-bold group-hover:scale-105 transition-transform"
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3 sm:gap-4">
+              {questions.map((q, index) => {
+                const text = q?.question || "";
+                const type = q?.type as string | undefined;
+                const isExpanded = expanded.has(index);
+
+                return (
+                  <div
+                    key={index}
+                    className="group relative overflow-hidden rounded-xl border border-border bg-card/60 p-4 transition-colors hover:bg-card hover:shadow-md sm:p-5"
+                  >
+                    {/* Accent bar */}
+                    <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/60 via-secondary/60 to-primary/60 opacity-70 group-hover:opacity-100" />
+
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-center gap-2">
+                        {/* Number bubble */}
+                        <div className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-muted/40 text-xs font-semibold text-foreground">
+                          {index + 1}
+                        </div>
+
+                        {/* Type badge (if available) */}
+                        {type ? (
+                          <Badge
+                            variant="outline"
+                            className={`px-2 py-0.5 text-xs ${getTypeBadgeClass(
+                              type
+                            )}`}
+                            title={type}
+                          >
+                            {type}
+                          </Badge>
+                        ) : (
+                          <Badge
+                            variant="outline"
+                            className="px-2 py-0.5 text-xs border-muted-foreground/20 text-muted-foreground"
+                          >
+                            General
+                          </Badge>
+                        )}
+                      </div>
+
+                      {/* Copy single */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => handleCopyQuestion(index, text)}
+                        aria-label={`Copy question ${index + 1}`}
                       >
-                        Q{index + 1}
-                      </Badge>
+                        {copiedIndex === index ? (
+                          <Check className="h-4 w-4 text-primary" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-foreground leading-relaxed font-medium">
-                        {question.question}
+
+                    {/* Text */}
+                    <div className="mt-3">
+                      <p
+                        className={[
+                          "text-foreground leading-relaxed",
+                          isExpanded ? "" : "line-clamp-3",
+                        ].join(" ")}
+                      >
+                        {text}
                       </p>
+
+                      {/* Expand/Collapse */}
+                      {text && text.length > 140 && (
+                        <button
+                          className="mt-2 text-xs font-medium text-primary underline-offset-2 hover:underline"
+                          onClick={() => toggleExpanded(index)}
+                          aria-expanded={isExpanded}
+                          aria-controls={`q-${index}`}
+                        >
+                          {isExpanded ? "Show less" : "Show more"}
+                        </button>
+                      )}
                     </div>
                   </div>
-                  <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-lg opacity-50 group-hover:opacity-100 transition-opacity" />
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </CardContent>

@@ -15,7 +15,9 @@ export function Header() {
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
                 <Rocket className="h-4 w-4" />
               </span>
-              <span className="text-base">MockMate</span>
+              <span className="text-base bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+                Meridian
+              </span>
             </Link>
             {/* <Badge variant="secondary" className="hidden md:inline-flex">
               Free

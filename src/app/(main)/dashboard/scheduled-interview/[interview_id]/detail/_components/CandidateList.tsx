@@ -8,7 +8,13 @@ import moment from "moment";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Users, CheckCircle2, XCircle } from "lucide-react";
+import {
+  Users,
+  CheckCircle2,
+  XCircle,
+  MinusCircle,
+  ChevronRight,
+} from "lucide-react";
 
 interface CandidateListProps {
   candidates: InterviewFeedback[] | undefined;
@@ -19,22 +25,25 @@ interface CandidateListProps {
 
 const getInitials = (name?: string) => {
   if (!name) return "NA";
-  const parts = name.trim().split(" ");
+  const parts = name.trim().split(/\s+/);
   const first = parts[0]?.[0] ?? "";
   const last = parts[1]?.[0] ?? "";
-  return (first + last).toUpperCase() || name.slice(0, 2).toUpperCase();
+  const initials = (first + last).toUpperCase();
+  return initials || name.slice(0, 2).toUpperCase();
 };
 
 const CandidateRowSkeleton = () => (
-  <div className="flex items-center justify-between rounded-lg bg-card/50 p-5">
-    <div className="flex items-center gap-5">
-      <Skeleton className="h-10 w-10 rounded-full" />
-      <div>
-        <Skeleton className="mb-2 h-4 w-40" />
-        <Skeleton className="h-4 w-32" />
+  <div className="rounded-xl border border-border bg-card/50 p-4 sm:p-5">
+    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex items-center gap-4 sm:gap-5">
+        <Skeleton className="h-12 w-12 rounded-full" />
+        <div className="min-w-0">
+          <Skeleton className="mb-2 h-4 w-40" />
+          <Skeleton className="h-4 w-32" />
+        </div>
       </div>
+      <Skeleton className="h-10 w-full sm:w-28" />
     </div>
-    <Skeleton className="h-9 w-28" />
   </div>
 );
 
@@ -58,10 +67,20 @@ const CandidateList: React.FC<CandidateListProps> = ({
   const getAverage = (c: InterviewFeedback) => {
     const r = c.feedback?.feedback?.rating;
     if (!r) return 0;
-    const vals = Object.values(r);
+    const vals = Object.values(r).map((v) => Number(v) || 0);
     if (!vals.length) return 0;
     const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
     return Math.round(avg * 10) / 10;
+  };
+
+  const getRecommendationState = (c: InterviewFeedback) => {
+    const raw = (c.feedback?.feedback?.recommendation || "")
+      .toString()
+      .trim()
+      .toLowerCase();
+    if (raw === "yes") return { state: "yes" as const, label: "Recommended" };
+    if (raw === "no") return { state: "no" as const, label: "Not Recommended" };
+    return { state: "neutral" as const, label: "Needs Review" };
   };
 
   if (loading) {
@@ -97,7 +116,7 @@ const CandidateList: React.FC<CandidateListProps> = ({
 
   if (!sortedCandidates || sortedCandidates.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed bg-card/50 my-6 p-10 text-center">
+      <div className="my-6 rounded-xl border border-dashed bg-card/50 p-10 text-center">
         <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-secondary/40">
           <Users className="h-6 w-6 text-muted-foreground" />
         </div>
@@ -126,52 +145,82 @@ const CandidateList: React.FC<CandidateListProps> = ({
         <div className="space-y-3">
           {sortedCandidates.map((candidate, index) => {
             const avg = getAverage(candidate);
-            const recommended =
-              (
-                candidate.feedback?.feedback?.recommendation || ""
-              ).toLowerCase() === "yes";
+            const { state, label } = getRecommendationState(candidate);
 
             return (
               <div
                 key={index}
-                className="group flex items-center justify-between rounded-lg border bg-gradient-to-br from-primary/10 via-secondary/10 to-muted/10 p-5"
+                className="group relative overflow-hidden rounded-xl border border-border bg-card/50 p-4 transition-colors hover:border-primary/40 hover:bg-primary/5 sm:p-5"
               >
-                <div className="flex items-center gap-5">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    {getInitials(candidate.userName)}
-                  </div>
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="font-medium">{candidate.userName}</h3>
-                      {recommended ? (
-                        <Badge
-                          variant="outline"
-                          className="border-primary/30 text-primary inline-flex items-center gap-1"
-                        >
-                          <CheckCircle2 className="h-3.5 w-3.5" />
-                          Recommended
-                        </Badge>
-                      ) : (
-                        <Badge
-                          variant="outline"
-                          className="border-destructive/30 text-destructive inline-flex items-center gap-1"
-                        >
-                          <XCircle className="h-3.5 w-3.5" />
-                          Not Recommended
-                        </Badge>
-                      )}
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  {/* Left: Avatar + Info */}
+                  <div className="flex min-w-0 items-center gap-4 sm:gap-5">
+                    {/* Stable avatar (never shrinks) */}
+                    <div className="grid size-12 flex-shrink-0 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground ring-1 ring-border sm:size-14">
+                      <span className="select-none">
+                        {getInitials(candidate.userName)}
+                      </span>
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      Completed on{" "}
-                      {moment(candidate.created_at).format("MMM DD, YYYY")} •
-                      Avg {avg}/10
-                    </p>
+
+                    {/* Name + Meta */}
+                    <div className="min-w-0">
+                      <div className="flex min-w-0 flex-wrap items-center gap-2">
+                        <h3 className="truncate text-sm font-semibold sm:text-base">
+                          {candidate.userName || "Unnamed Candidate"}
+                        </h3>
+
+                        {/* Status Badge */}
+                        {state === "yes" && (
+                          <Badge
+                            variant="outline"
+                            className="inline-flex items-center gap-1 border-primary/30 bg-primary/10 text-primary"
+                          >
+                            <CheckCircle2 className="h-3.5 w-3.5" />
+                            {label}
+                          </Badge>
+                        )}
+                        {state === "no" && (
+                          <Badge
+                            variant="outline"
+                            className="inline-flex items-center gap-1 border-destructive/30 bg-destructive/10 text-destructive"
+                          >
+                            <XCircle className="h-3.5 w-3.5" />
+                            {label}
+                          </Badge>
+                        )}
+                        {state === "neutral" && (
+                          <Badge
+                            variant="outline"
+                            className="inline-flex items-center gap-1 border-muted-foreground/30 bg-muted/20 text-muted-foreground"
+                          >
+                            <MinusCircle className="h-3.5 w-3.5" />
+                            {label}
+                          </Badge>
+                        )}
+                      </div>
+
+                      <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground sm:text-sm">
+                        Completed on{" "}
+                        {moment(candidate.created_at).format("MMM DD, YYYY")}
+                        {avg > 0 ? ` • Avg ${avg}/10` : ""}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Right: CTA */}
+                  <div className="sm:ml-6">
+                    <Button
+                      className="w-full gap-1 sm:w-auto"
+                      onClick={() => setSelectedCandidate(candidate)}
+                      aria-label={`View report for ${
+                        candidate.userName || "candidate"
+                      }`}
+                    >
+                      View Report
+                      <ChevronRight className="h-4 w-4" />
+                    </Button>
                   </div>
                 </div>
-
-                <Button onClick={() => setSelectedCandidate(candidate)}>
-                  View Report
-                </Button>
               </div>
             );
           })}
@@ -190,5 +239,3 @@ const CandidateList: React.FC<CandidateListProps> = ({
 };
 
 export default CandidateList;
-
-// Improve the ui this is not 
