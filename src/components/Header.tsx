@@ -1,69 +1,243 @@
-import React from "react";
+"use client";
+
 import Link from "next/link";
-import { Rocket } from "lucide-react";
-import { Badge } from "./ui/badge";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Rocket, Menu, X, ChevronRight, User as UserIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { ThemeToggleButton } from "./ui/theme-toggle-button";
+import { useUser } from "@/context/UserContext";
+import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+
+const NAV_LINKS = [
+  { href: "#features", label: "Features" },
+  { href: "#about", label: "About" },
+  { href: "#how", label: "How it works" },
+  { href: "#cta", label: "Get started" },
+];
 
 export function Header() {
+  const { user } = useUser();
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Shadow + solidify header on scroll
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Prevent body scroll when menu is open
+  useEffect(() => {
+    if (open) {
+      const original = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = original;
+      };
+    }
+  }, [open]);
+
+  const toggle = useCallback(() => setOpen((o) => !o), []);
+  const close = useCallback(() => setOpen(false), []);
+
+  const headerClass = useMemo(
+    () =>
+      [
+        "sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        scrolled ? "bg-background/80 shadow-sm" : "bg-background/60",
+      ].join(" "),
+    [scrolled]
+  );
+
   return (
-    <div>
-      <header className="sticky top-0 z-50 w-full border-b bg-background/60 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className=" flex h-16 container items-center justify-between px-4 md:px-6">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                <Rocket className="h-4 w-4" />
-              </span>
-              <span className="text-base bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
-                Meridian
-              </span>
-            </Link>
-            {/* <Badge variant="secondary" className="hidden md:inline-flex">
-              Free
-            </Badge> */}
-          </div>
+    <header className={headerClass}>
+      <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+        {/* Brand */}
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center gap-2 font-semibold">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
+              <Rocket className="h-4 w-4" />
+            </span>
+            <span className="text-base bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+              Meridian
+            </span>
+          </Link>
+        </div>
 
-          <nav className="hidden items-center gap-6 md:flex">
+        {/* Desktop nav */}
+        <nav className="hidden items-center gap-6 md:flex">
+          {NAV_LINKS.map((link) => (
             <Link
-              href="#features"
-              className="text-sm text-muted-foreground hover:text-foreground"
+              key={link.href}
+              href={link.href}
+              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
-              Features
+              {link.label}
             </Link>
-            <Link
-              href="#about"
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              About
-            </Link>
-            <Link
-              href="#how"
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              How it works
-            </Link>
-            <Link
-              href="#cta"
-              className="text-sm text-muted-foreground hover:text-foreground"
-            >
-              Get started
-            </Link>
-          </nav>
+          ))}
+        </nav>
 
-          <div className="flex items-center gap-2">
-            <ThemeToggleButton
-              showLabel
-              variant="circle-blur"
-              start="top-right"
+        {/* Right actions */}
+        <div className="flex items-center gap-2">
+          <ThemeToggleButton
+            showLabel
+            variant="circle-blur"
+            start="top-right"
+          />
+
+          <Link href="/dashboard" className="hidden sm:block">
+            <Button size="sm">Go to app</Button>
+          </Link>
+
+          {/* Avatar (links to dashboard on click) */}
+          <Link
+            href="/dashboard"
+            className="hidden sm:inline-flex rounded-full ring-1 ring-border hover:ring-primary/40 transition"
+            aria-label="Open dashboard"
+          >
+            <Avatar className="h-9 w-9">
+              <AvatarImage src={user?.picture} />
+              <AvatarFallback>
+                <UserIcon className="h-4 w-4" />
+              </AvatarFallback>
+            </Avatar>
+          </Link>
+
+          {/* Mobile menu button */}
+          <Button
+            variant="outline"
+            size="icon"
+            className="md:hidden"
+            onClick={toggle}
+            aria-expanded={open}
+            aria-controls="mobile-menu"
+            aria-label="Toggle menu"
+          >
+            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile menu (framer-motion) */}
+      <AnimatePresence>
+        {open && (
+          <>
+            {/* Backdrop */}
+            <motion.button
+              key="backdrop"
+              onClick={close}
+              aria-label="Close menu"
+              className="fixed inset-0 z-40 bg-background/80 backdrop-blur-sm md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
             />
 
-            <Link href="/dashboard">
-              <Button size="sm">Go to app</Button>
-            </Link>
-          </div>
-        </div>
-      </header>
-    </div>
+            {/* Sliding panel */}
+            <motion.aside
+              key="panel"
+              id="mobile-menu"
+              className="fixed right-0 top-0 z-50 h-[100dvh] w-[85%] max-w-sm overflow-y-auto border-l border-border bg-background/95 backdrop-blur-xl p-4 shadow-2xl md:hidden"
+              role="dialog"
+              aria-modal="true"
+              initial={{ x: 24, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: 24, opacity: 0 }}
+              transition={{ type: "spring", stiffness: 260, damping: 30 }}
+            >
+              <div className="flex items-center justify-between pb-2">
+                <Link
+                  href="/"
+                  onClick={close}
+                  className="flex items-center gap-2 font-semibold"
+                >
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
+                    <Rocket className="h-4 w-4" />
+                  </span>
+                  <span>Meridian</span>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={close}
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" />
+                </Button>
+              </div>
+
+              <div className="mt-2 border-t border-border/60 pt-2" />
+
+              <motion.ul
+                className="mt-2 space-y-1"
+                initial="hidden"
+                animate="show"
+                exit="hidden"
+                variants={{
+                  hidden: {
+                    transition: { staggerChildren: 0.03, staggerDirection: -1 },
+                  },
+                  show: { transition: { staggerChildren: 0.04 } },
+                }}
+              >
+                {NAV_LINKS.map((link) => (
+                  <motion.li
+                    key={link.href}
+                    variants={{
+                      hidden: { opacity: 0, x: 10 },
+                      show: { opacity: 1, x: 0 },
+                    }}
+                  >
+                    <Link
+                      href={link.href}
+                      onClick={close}
+                      className="flex items-center justify-between rounded-lg px-3 py-2 text-sm text-foreground hover:bg-muted/60"
+                    >
+                      <span>{link.label}</span>
+                      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    </Link>
+                  </motion.li>
+                ))}
+              </motion.ul>
+
+              {/* CTA + Theme + Avatar on mobile */}
+              <div className="mt-4 border-t border-border/60 pt-4">
+                <div className="flex items-center gap-3">
+                  <Link href="/dashboard" onClick={close} className="flex-1">
+                    <Button className="w-full">Go to app</Button>
+                  </Link>
+                  <ThemeToggleButton />
+                </div>
+
+                <Link
+                  href="/dashboard"
+                  onClick={close}
+                  className="mt-4 flex items-center gap-3 rounded-lg border border-border p-2"
+                >
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src={user?.picture} />
+                    <AvatarFallback>
+                      <UserIcon className="h-4 w-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0">
+                    <div className="truncate text-sm font-medium">
+                      {user?.name || "Guest"}
+                    </div>
+                    <div className="truncate text-xs text-muted-foreground">
+                      {user?.email || "Not signed in"}
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+    </header>
   );
 }
+
