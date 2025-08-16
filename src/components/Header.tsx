@@ -17,9 +17,9 @@ export function Header() {
               </span>
               <span className="text-base">MockMate</span>
             </Link>
-            <Badge variant="secondary" className="hidden md:inline-flex">
+            {/* <Badge variant="secondary" className="hidden md:inline-flex">
               Free
-            </Badge>
+            </Badge> */}
           </div>
 
           <nav className="hidden items-center gap-6 md:flex">

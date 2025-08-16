@@ -61,7 +61,7 @@ const RecentLists = () => {
             <RefreshCw className="h-4 w-4" />
             Refresh
           </Button>
-          <Link href="/interviews/new">
+          <Link href="/dashboard/create-interview">
             <Button className="inline-flex items-center gap-2">
               <Plus className="h-4 w-4" />
               Create New Interview
@@ -174,10 +174,10 @@ function EmptyState() {
       </div>
       <h3 className="mb-1 text-lg font-semibold">No Interviews Found</h3>
       <p className="mb-6 max-w-md text-sm text-muted-foreground">
-        You haven’t created any interviews yet. Once you do, they’ll show up
-        here.
+        You haven&apos;t created any interviews yet. Once you do, they&apos;ll
+        show up here.
       </p>
-      <Link href="/interviews/new">
+      <Link href="/dashboard/create-interview">
         <Button className="inline-flex items-center gap-2">
           <Plus className="h-4 w-4" />
           Create New Interview

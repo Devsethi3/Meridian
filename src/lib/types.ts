@@ -32,10 +32,6 @@ export interface VapiEvent {
 
 export type ConnectionStatus = "connecting" | "connected" | "disconnected";
 
-interface Question {
-  question: string;
-}
-
 export interface Interview {
   id: number;
   created_at: string;
@@ -46,4 +42,46 @@ export interface Interview {
   questionList: Question[];
   type: string;
   userEmail: string;
+}
+
+export interface InterviewFeedback {
+  userEmail: string;
+  userName: string;
+  created_at: string;
+  feedback: {
+    feedback: {
+      rating: {
+        experience: number;
+        communication: number;
+        problemSolving: number;
+        technicalSkills: number;
+      };
+      summary: string;
+      recommendation: string;
+      recommendationMsg: string;
+    };
+  };
+}
+
+export interface Question {
+  question: string;
+}
+
+export interface QuestionList {
+  length: number;
+  [key: number]: Question;
+}
+
+export interface InterviewDetail {
+  created_at: string;
+  duration: string;
+  id: number;
+  "interview-feedback": InterviewFeedback[];
+  interview_id: string;
+  jobDescription: string;
+  jobPosition: string;
+  questionList: QuestionList;
+  type: string;
+  userEmail: string;
+  userName: string;
 }

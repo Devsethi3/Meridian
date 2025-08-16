@@ -152,7 +152,7 @@ const AllInterviewPage = () => {
 
           <div className="flex items-center gap-2">
             <Link
-              href="#"
+              href="/dashboard/create-interview"
               className="inline-flex items-center gap-2 rounded-md bg-primary px-3.5 py-2.5 text-sm font-medium text-primary-foreground shadow transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               aria-label="Create new interview"
               title="Create new interview"
@@ -508,7 +508,7 @@ function EmptyState({
           </button>
         )}
         <Link
-          href="#"
+          href="/dashboard/create-interview"
           className="inline-flex items-center gap-2 rounded-md bg-primary px-3.5 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           <PlusIcon className="size-4" />

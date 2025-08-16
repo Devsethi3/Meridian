@@ -32,9 +32,9 @@ const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="icon"
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground hover:text-foreground focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                   aria-label="Open help"
                 >
                   <HelpCircle className="h-5 w-5" />
@@ -42,64 +42,74 @@ const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
                 </Button>
               </PopoverTrigger>
 
-              <PopoverContent className="z-50 w-[min(22rem,90vw)] rounded-md border border-border bg-popover p-0 text-popover-foreground shadow-lg">
+              <PopoverContent
+                align="end"
+                className="z-50 w-[min(22rem,90vw)] rounded-lg border border-border bg-popover p-0 text-popover-foreground shadow-lg"
+              >
                 <div className="p-4 sm:p-5">
                   {/* Header */}
-                  <div className="mb-2 flex items-center gap-3">
-                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <div className="mb-4 flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
                       <HelpCircle className="h-5 w-5" />
                     </div>
                     <div className="min-w-0">
-                      <h4 className="text-sm font-semibold">Need help?</h4>
-                      <p className="text-xs text-muted-foreground">
+                      <h4 className="text-base font-semibold sm:text-sm">
+                        Need help?
+                      </h4>
+                      <p className="text-xs text-muted-foreground sm:text-sm">
                         FirstView helps you create, manage, and share interview
                         sessions.
                       </p>
                     </div>
                   </div>
 
+                  {/* Divider */}
+                  <div className="h-px w-full bg-border" />
+
                   {/* Tips */}
-                  <ul className="mt-3 space-y-3 text-sm">
-                    <li className="flex items-start gap-3">
-                      <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-primary">
-                        <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </div>
-                      <p className="min-w-0 leading-relaxed">
-                        Create a new interview from the sidebar or the “Create
-                        Interview” button in the header.
-                      </p>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-primary">
-                        <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </div>
-                      <p className="min-w-0 leading-relaxed">
-                        Use filters and search to quickly find past interviews
-                        by role, description, or ID.
-                      </p>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center text-primary">
-                        <LifeBuoy className="h-4 w-4 sm:h-5 sm:w-5" />
-                      </div>
-                      <p className="min-w-0 leading-relaxed">
-                        Share links with candidates and review results anytime
-                        from your dashboard.
-                      </p>
-                    </li>
+                  <ul className="mt-3 space-y-2">
+                    {[
+                      {
+                        icon: <Sparkles className="h-4 w-4 sm:h-5 sm:w-5" />,
+                        text: "Create a new interview from the sidebar or the “Create Interview” button in the header.",
+                      },
+                      {
+                        icon: <BookOpen className="h-4 w-4 sm:h-5 sm:w-5" />,
+                        text: "Use filters and search to quickly find past interviews by role, description, or ID.",
+                      },
+                      {
+                        icon: <LifeBuoy className="h-4 w-4 sm:h-5 sm:w-5" />,
+                        text: "Share links with candidates and review results anytime from your dashboard.",
+                      },
+                    ].map((tip, idx) => (
+                      <li
+                        key={idx}
+                        className="flex items-start gap-3 rounded-md p-2 transition-colors hover:bg-muted/30 focus-within:bg-muted/30"
+                      >
+                        <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center text-primary">
+                          {tip.icon}
+                        </div>
+                        <p className="min-w-0 text-sm leading-relaxed">
+                          {tip.text}
+                        </p>
+                      </li>
+                    ))}
                   </ul>
+
+                  {/* Divider */}
+                  <div className="mt-4 h-px w-full bg-border" />
 
                   {/* Links */}
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                     <Link
                       href="/docs"
-                      className="text-sm text-primary underline-offset-4 hover:underline"
+                      className="text-sm font-medium text-primary underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                     >
                       Read the docs
                     </Link>
                     <Link
                       href="/support"
-                      className="text-sm text-muted-foreground hover:text-foreground"
+                      className="text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                     >
                       Contact support
                     </Link>

@@ -7,6 +7,11 @@
   padding-inline: 0.75rem;
 }
 
+.feedback-dialog {
+  max-width: 1000px;
+  width: 100%;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -63,6 +68,8 @@
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
+  /* emerald-ish success tone for light mode */
+  --success: 142 72% 35%;
 }
 
 .dark {
@@ -117,6 +124,8 @@
   --shadow-xl: 0 1px 3px 0px hsl(0 0% 0% / 0.1),
     0 8px 10px -1px hsl(0 0% 0% / 0.1);
   --shadow-2xl: 0 1px 3px 0px hsl(0 0% 0% / 0.25);
+  /* slightly lighter for better contrast in dark mode */
+  --success: 142 65% 45%;
 }
 
 @theme inline {

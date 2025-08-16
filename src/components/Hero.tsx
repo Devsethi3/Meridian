@@ -6,6 +6,7 @@ import { ArrowRight, PlayCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { HeroVideoDialog } from "./ui/hero-video-dialog";
+import { Glow } from "./ui/glow";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },

@@ -45,16 +45,16 @@ const Welcome = () => {
 
         {/* Text */}
         <div className="text-center sm:text-left">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground">
+          <div className="lg:inline-flex hidden items-center gap-2 rounded-full border border-border bg-muted/50 px-3 py-1 text-xs text-muted-foreground">
             {getGreeting()}
             <span className="h-1.5 w-1.5 rounded-full bg-primary" />
           </div>
 
-          <h2 className="mt-2 text-xl font-semibold tracking-tight md:text-2xl text-card-foreground">
-            {getGreeting()}, <span className="font-bold">{name}</span> 👋
+          <h2 className="mt-2 text-xl font-medium tracking-tight md:text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+            {getGreeting()}, <span className="">{name}</span> 👋
           </h2>
           <p className="mt-1 text-sm md:text-base text-muted-foreground">
-            Welcome back! Hope you&apos;re having a great day.
+            Welcome back! Hope you&apos;re having great day.
           </p>
         </div>
       </div>

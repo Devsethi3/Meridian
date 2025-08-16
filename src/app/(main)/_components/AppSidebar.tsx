@@ -95,7 +95,7 @@ const AppSidebar = () => {
         </div>
 
         <div className="px-3 pb-3 pt-4">
-          <Link href="/interviews/new">
+          <Link href="/dashboard/create-interview">
             <Button className="w-full">
               <Plus className="mr-2 h-4 w-4" />
               Create Interview

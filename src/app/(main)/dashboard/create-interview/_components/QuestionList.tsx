@@ -43,7 +43,7 @@ const getSuggestedCount = (duration?: string) => {
 };
 
 const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
   const [questionList, setQuestionList] = useState<Question[]>([]);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -153,7 +153,7 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
               .replace(/,\s*([}\]])/g, "$1")
               .replace(/[\u201C\u201D]/g, '"')
               .replace(/[\u2018\u2019]/g, "'")
-              .replace(/([{,]\s*)(\w+):/g, '$1"$2":') 
+              .replace(/([{,]\s*)(\w+):/g, '$1"$2":')
               .replace(/:\s*'([^']*)'/g, ': "$1"');
 
             try {
@@ -353,7 +353,8 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
     }
   };
 
-  const isContinueDisabled = loading || saveLoading;
+  const isContinueDisabled =
+    loading || saveLoading || !hasGenerated || questionList.length === 0;
   const showGenerateButton =
     !hasGenerated && !loading && questionList.length === 0;
 
@@ -361,18 +362,28 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
     <div className="space-y-4">
       {/* Initial state - show generate button */}
       {showGenerateButton && (
-        <div className="rounded-lg border border-border bg-muted/30 p-6 text-center">
+        <div className="rounded-lg border border-border bg-muted/30 p-6 text-center flex items-center justify-center flex-col">
           <p className="text-sm text-muted-foreground mb-4">
             Ready to generate personalized interview questions based on your job
             requirements.
           </p>
+          {/* Large devices: show with icon */}
           <Button
             onClick={() => generateAiQuestionList()}
-            className="gap-2"
+            className="gap-2 text-sm hidden lg:flex"
             size="lg"
           >
             <Sparkle className="h-4 w-4" />
             Generate Interview Questions
+          </Button>
+
+          {/* Small devices: show text-only */}
+          <Button
+            onClick={() => generateAiQuestionList()}
+            className="text-sm lg:hidden"
+            size="lg"
+          >
+            Generate Questions
           </Button>
         </div>
       )}
@@ -511,14 +522,8 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
         </>
       )}
 
-      {/* Continue Button */}
       <div className="flex justify-center sm:justify-end">
-        <Button
-          disabled={isContinueDisabled}
-          size="lg"
-          className="text-base sm:text-lg py-5 sm:py-6 gap-2"
-          onClick={onFinish}
-        >
+        <Button disabled={isContinueDisabled} size="lg" onClick={onFinish}>
           {saveLoading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -528,6 +533,11 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
               Generating Questions...
+            </>
+          ) : !hasGenerated || questionList.length === 0 ? (
+            <>
+              Generate Questions First
+              <ArrowRight className="h-4 w-4" />
             </>
           ) : (
             <>
