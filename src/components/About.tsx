@@ -1,4 +1,4 @@
-import { CheckIcon } from "lucide-react";
+import {  BadgeCheck } from "lucide-react";
 import { motion } from "motion/react";
 
 const About = () => {
@@ -18,7 +18,7 @@ const About = () => {
               viewport={{ once: true, amount: 0.2 }}
               transition={fadeUp.transition}
             >
-              <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              <h2 className="text-2xl font-semibold bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight sm:text-3xl">
                 Interview smarter, not harder
               </h2>
               <p className="mt-3 text-muted-foreground">
@@ -29,20 +29,20 @@ const About = () => {
 
               <ul className="mt-6 space-y-3">
                 <li className="flex items-start gap-3">
-                  <CheckIcon />
+                  <BadgeCheck />
                   <span className="text-sm text-foreground">
                     Role-specific question sets for engineering, product, data,
                     and more
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CheckIcon />
+                  <BadgeCheck />
                   <span className="text-sm text-foreground">
                     Configurable rounds, difficulty, and time limits
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <CheckIcon />
+                  <BadgeCheck />
                   <span className="text-sm text-foreground">
                     Instant scoring, strengths/areas to improve, and follow-up
                     practice

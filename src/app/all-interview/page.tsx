@@ -141,7 +141,7 @@ const AllInterviewPage = () => {
               >
                 <ArrowLeft />
               </Button>
-              <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              <h1 className="text-2xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight sm:text-3xl">
                 Your Interviews
               </h1>
             </div>
@@ -356,7 +356,7 @@ function InterviewCard({ interview }: { interview: Interview }) {
         {/* Header */}
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="truncate text-base font-semibold">
+            <h3 className="truncate text-base font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
               {jobPosition || "Untitled"}
             </h3>
             <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
@@ -490,7 +490,7 @@ function EmptyState({
       <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
         <FolderIcon className="size-6" />
       </div>
-      <h3 className="mb-1 text-lg font-semibold">No interviews found</h3>
+      <h3 className="mb-1 text-lg font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">No interviews found</h3>
       <p className="mb-6 max-w-md text-sm text-muted-foreground">
         {hasFilters
           ? "No results match your current filters. Try adjusting the search or filter settings."

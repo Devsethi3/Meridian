@@ -41,7 +41,7 @@ const RecentListCard: React.FC<RecentListCardProps> = ({ interview }) => {
       try {
         await navigator.share({
           title: interview.jobPosition || "Interview",
-          text: "Here’s the interview link",
+          text: "Here&apos;s the interview link",
           url: shareUrl,
         });
       } catch {
@@ -82,10 +82,10 @@ const RecentListCard: React.FC<RecentListCardProps> = ({ interview }) => {
       {/* Header */}
       <div className="mb-4 flex items-center gap-3">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground">
-          <span className="text-sm font-semibold">{initials}</span>
+          <span className="text-sm font-medium">{initials}</span>
         </div>
         <div className="min-w-0">
-          <h3 className="truncate text-base font-semibold">
+          <h3 className="truncate text-base font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
             {interview.jobPosition || "Untitled Interview"}
           </h3>
           <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">

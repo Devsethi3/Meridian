@@ -21,7 +21,7 @@ const Features = () => {
       <section id="features">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h2 className="text-2xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight sm:text-3xl">
               Everything you need to practice
             </h2>
             <p className="mt-3 text-muted-foreground">
@@ -44,7 +44,7 @@ const Features = () => {
             <Feature
               icon={Clock}
               title="Time-boxed rounds"
-              desc="Set 10–60 minute interviews with structured sections."
+              desc="Set 10-60 minute interviews with structured sections."
             />
             <Feature
               icon={AudioLines}
@@ -99,7 +99,7 @@ function Feature({
         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
           <Icon className="h-5 w-5" />
         </div>
-        <h3 className="text-base font-medium">{title}</h3>
+        <h3 className="text-base font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">{title}</h3>
       </div>
       <p className="text-sm text-muted-foreground">{desc}</p>
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-muted/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

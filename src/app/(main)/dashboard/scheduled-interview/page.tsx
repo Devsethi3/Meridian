@@ -85,10 +85,10 @@ const ScheduledInterview = () => {
   return (
     <div className="my-5">
       <div className="flex flex-col gap-1">
-        <h2 className="text-xl font-bold">
+        <h2 className="lg:text-xl text-lg font-semibold bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
           Interview List with Candidate Feedback
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground lg:text-left text-center">
           Manage your interviews and share links with candidates.
         </p>
       </div>
@@ -96,7 +96,7 @@ const ScheduledInterview = () => {
       {error && (
         <div className="mt-6">
           <Alert variant="destructive" className="border border-destructive/30">
-            <AlertTitle>Couldn’t load interviews</AlertTitle>
+            <AlertTitle>Couldn&apos;t load interviews</AlertTitle>
             <AlertDescription className="mt-1">
               {error}
               <div className="mt-3">

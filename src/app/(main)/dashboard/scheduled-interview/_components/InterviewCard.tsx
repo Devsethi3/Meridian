@@ -81,9 +81,9 @@ const InterviewCard: React.FC<InterviewCardProps> = ({ interview }) => {
       <div className="flex items-center justify-between gap-3">
         <div className="mb-4 flex min-w-0 items-center gap-3">
           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground ring-1 ring-border">
-            <span className="text-sm font-semibold">{initials}</span>
+            <span className="text-sm font-medium">{initials}</span>
           </div>
-          <h3 className="truncate text-base font-semibold">
+          <h3 className="truncate text-base font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
             {interview.jobPosition || "Untitled Interview"}
           </h3>
         </div>
