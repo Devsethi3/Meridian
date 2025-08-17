@@ -106,7 +106,7 @@ export function Header() {
           </Link>
         </div>
 
-        {/* Desktop nav */}
+        {/* Desktop nav links */}
         <nav className="hidden items-center gap-6 md:flex">
           {NAV_LINKS.map((link) => (
             <HoverLink key={link.href} href={link.href} label={link.label} />
