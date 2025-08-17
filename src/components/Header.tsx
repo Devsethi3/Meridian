@@ -81,7 +81,7 @@ export function Header() {
   return (
     <header className={headerClass}>
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
-        {/* Logo */}
+        {/* Meridian Logo */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 font-semibold">
             <Image
