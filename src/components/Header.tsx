@@ -8,6 +8,8 @@ import { Button } from "./ui/button";
 import { ThemeToggleButton } from "./ui/theme-toggle-button";
 import { useUser } from "@/context/UserContext";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import Image from "next/image";
+import { HoverLink } from "./HoverLink";
 
 const NAV_LINKS = [
   { href: "#features", label: "Features" },
@@ -46,7 +48,7 @@ export function Header() {
   const headerClass = useMemo(
     () =>
       [
-        "sticky top-0 z-50 w-full border-b backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        "sticky top-0 z-50 w-full border-b ",
         scrolled ? "bg-background/80 shadow-sm" : "bg-background/60",
       ].join(" "),
     [scrolled]
@@ -58,9 +60,20 @@ export function Header() {
         {/* Brand */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 font-semibold">
-            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
-              <Rocket className="h-4 w-4" />
-            </span>
+            <Image
+              src="/logo-light.svg"
+              width={20}
+              height={20}
+              alt="logo"
+              className="block dark:hidden"
+            />
+            <Image
+              src="/logo-dark.svg"
+              width={20}
+              height={20}
+              alt="logo"
+              className="dark:block hidden"
+            />
             <span className="text-base bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
               Meridian
             </span>
@@ -70,13 +83,7 @@ export function Header() {
         {/* Desktop nav */}
         <nav className="hidden items-center gap-6 md:flex">
           {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </Link>
+            <HoverLink key={link.href} href={link.href} label={link.label} />
           ))}
         </nav>
 
@@ -154,10 +161,23 @@ export function Header() {
                   onClick={close}
                   className="flex items-center gap-2 font-semibold"
                 >
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
-                    <Rocket className="h-4 w-4" />
+                  <Image
+                    src="/logo-light.svg"
+                    width={20}
+                    height={20}
+                    alt="logo"
+                    className="block dark:hidden"
+                  />
+                  <Image
+                    src="/logo-dark.svg"
+                    width={20}
+                    height={20}
+                    alt="logo"
+                    className="dark:block hidden"
+                  />{" "}
+                  <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+                    Meridian
                   </span>
-                  <span>Meridian</span>
                 </Link>
                 <Button
                   variant="ghost"
@@ -240,4 +260,3 @@ export function Header() {
     </header>
   );
 }
-

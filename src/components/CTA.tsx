@@ -25,7 +25,7 @@ const CTA = () => {
           >
             <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <h3 className="text-2xl font-semibold sm:text-3xl">
+                <h3 className="text-2xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 sm:text-3xl">
                   Ready to ace your next interview?
                 </h3>
                 <p className="mt-3 text-muted-foreground">

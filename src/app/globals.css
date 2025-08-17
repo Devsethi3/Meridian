@@ -3,17 +3,9 @@
 
 .container {
   max-width: 1280px;
+  width: 100%;
   margin-inline: auto;
   padding-inline: 0.75rem;
-}
-
-.html {
-  scroll-behavior: smooth;
-}
-
-.feedback-dialog {
-  max-width: 1000px;
-  width: 100%;
 }
 
 @custom-variant dark (&:is(.dark *));

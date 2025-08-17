@@ -37,8 +37,15 @@ const Process = () => {
   };
 
   return (
-    <section id="how" className="border-y bg-muted/30">
-      <div className="mx-auto max-w-7xl px-4 py-16 md:px-6 lg:py-24">
+    <section
+      id="how"
+      className="relative rounded-b-4xl border-b"
+      style={{
+        background:
+          "radial-gradient(60% 150px at 50% 100%, rgba(255,255,255,0.08), transparent 70%)",
+      }}
+    >
+      <div className="container py-16">
         <motion.div
           variants={fadeInUp}
           initial="hidden"
@@ -46,7 +53,9 @@ const Process = () => {
           viewport={{ once: true, amount: 0.2 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <h2 className="text-3xl font-semibold sm:text-4xl">How it works</h2>
+          <h2 className="text-3xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 sm:text-4xl">
+            How it works
+          </h2>
           <p className="mt-3 text-muted-foreground">
             Start practicing in under a minute.
           </p>
@@ -64,10 +73,12 @@ const Process = () => {
               <Card className="h-full">
                 <CardHeader>
                   <div className="flex items-center gap-3">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border bg-background text-sm font-semibold">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border bg-background text-sm font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                       {i + 1}
                     </span>
-                    <CardTitle className="text-base">{s.title}</CardTitle>
+                    <CardTitle className="text-base bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+                      {s.title}
+                    </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="pt-0 text-sm text-muted-foreground">

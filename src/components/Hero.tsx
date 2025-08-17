@@ -2,11 +2,10 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "motion/react";
-import { ArrowRight, PlayCircle } from "lucide-react";
+import { ArrowRight, BadgeCheck, CheckCircle2, PlayCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { HeroVideoDialog } from "./ui/hero-video-dialog";
-import { Glow } from "./ui/glow";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -21,18 +20,106 @@ const stagger = {
   },
 };
 
+const staticRings = {
+  initial: { opacity: 0 },
+  animate: {
+    opacity: 1,
+    transition: {
+      duration: 1,
+      ease: "easeOut" as const,
+    },
+  },
+};
+
 export default function HeroSection() {
   const prefersReduced = useReducedMotion();
 
   return (
     <section className="relative overflow-hidden bg-background">
-      {/* Background spotlights */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_-10%,hsl(var(--primary)/0.16),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_110%,hsl(var(--secondary)/0.12),transparent_65%)]" />
+      {/* Background elements - Fixed z-index */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0">
+        {/* Gradient overlays */}
+        <div className="absolute inset-0 bg-[radial-gradient(70%_60%_at_50%_-10%,hsl(var(--primary)/0.12),transparent_70%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(60%_50%_at_50%_110%,hsl(var(--secondary)/0.08),transparent_75%)]" />
+
+        {/* Static Rings Container */}
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Ring 1 - Largest */}
+          <motion.div
+            variants={staticRings}
+            initial="initial"
+            animate="animate"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(600px,140vw,1600px)] h-[clamp(600px,140vw,1600px)]"
+          >
+            <div className="relative w-full h-full rounded-full border border-border/15 dark:border-border/8">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/3 via-transparent to-secondary/3 opacity-50" />
+            </div>
+          </motion.div>
+
+          {/* Ring 2 */}
+          <motion.div
+            variants={staticRings}
+            initial="initial"
+            animate="animate"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(500px,120vw,1400px)] h-[clamp(500px,120vw,1400px)]"
+          >
+            <div className="relative w-full h-full rounded-full border border-border/20 dark:border-border/12">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tl from-secondary/4 via-transparent to-primary/4 opacity-60" />
+            </div>
+          </motion.div>
+
+          {/* Ring 3 */}
+          <motion.div
+            variants={staticRings}
+            initial="initial"
+            animate="animate"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(400px,100vw,1200px)] h-[clamp(400px,100vw,1200px)]"
+          >
+            <div className="relative w-full h-full rounded-full border border-border/25 dark:border-border/15">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary/4 via-transparent to-secondary/4 opacity-45" />
+            </div>
+          </motion.div>
+
+          {/* Ring 4 */}
+          <motion.div
+            variants={staticRings}
+            initial="initial"
+            animate="animate"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(320px,80vw,1000px)] h-[clamp(320px,80vw,1000px)]"
+          >
+            <div className="relative w-full h-full rounded-full border border-border/30 dark:border-border/18">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-bl from-secondary/5 via-transparent to-primary/5 opacity-55" />
+            </div>
+          </motion.div>
+
+          {/* Ring 5 */}
+          <motion.div
+            variants={staticRings}
+            initial="initial"
+            animate="animate"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(240px,60vw,800px)] h-[clamp(240px,60vw,800px)]"
+          >
+            <div className="relative w-full h-full rounded-full border border-border/35 dark:border-border/22">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/5 via-transparent to-secondary/5 opacity-40" />
+            </div>
+          </motion.div>
+
+          {/* Ring 6 - Smallest */}
+          <motion.div
+            variants={staticRings}
+            initial="initial"
+            animate="animate"
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(160px,40vw,600px)] h-[clamp(160px,40vw,600px)]"
+          >
+            <div className="relative w-full h-full rounded-full border border-border/40 dark:border-border/25">
+              <div className="absolute inset-0 rounded-full bg-gradient-to-b from-secondary/6 via-primary/4 to-secondary/6 opacity-65" />
+            </div>
+          </motion.div>
+        </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 pb-20 pt-24 sm:px-6 lg:px-8 lg:pb-28 lg:pt-28">
+      {/* Main content - Proper z-index */}
+      <div className="relative z-10 container pb-20 pt-20 lg:pb-28 lg:pt-28">
         <motion.div
           variants={stagger}
           initial="initial"
@@ -40,11 +127,17 @@ export default function HeroSection() {
           className="flex flex-col items-center text-center"
         >
           <motion.div variants={fadeUp}>
-            <div className="mb-4 flex items-center justify-center gap-2">
-              <Badge variant="secondary" className="border border-border">
-                Free AI Interview Practice
+            <div className="mb-6 flex flex-col items-center justify-center gap-2 sm:flex-row">
+              <Badge
+                variant="secondary"
+                className="relative overflow-hidden border border-border/50 bg-card/80 backdrop-blur-sm hover:bg-card/90 transition-colors"
+              >
+                <span className="relative z-10">
+                  🚀 Free AI Interview Practice
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5" />
               </Badge>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-muted-foreground/80">
                 No credit card required
               </span>
             </div>
@@ -63,7 +156,7 @@ export default function HeroSection() {
             variants={fadeUp}
             className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg"
           >
-            Create realistic, role‑specific mock interviews with adjustable
+            Create realistic, role-specific mock interviews with adjustable
             duration and get immediate feedback.
           </motion.p>
 
@@ -72,13 +165,22 @@ export default function HeroSection() {
             variants={fadeUp}
             className="mt-8 flex flex-col gap-3 sm:flex-row"
           >
-            <Button asChild size="lg" className="shadow-lg shadow-primary/20">
+            <Button
+              asChild
+              size="lg"
+              className="shadow-lg shadow-primary/20 relative z-10"
+            >
               <Link href="/sign-up">
                 Create your interview
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg">
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="relative z-10"
+            >
               <Link href="#demo">
                 <PlayCircle className="mr-2 h-5 w-5" />
                 Watch demo
@@ -89,71 +191,27 @@ export default function HeroSection() {
           {/* Feature chips */}
           <motion.div
             variants={fadeUp}
-            className="mt-8 grid w-full max-w-2xl gap-3 sm:grid-cols-2"
+            className="mt-8 grid w-full max-w-2xl gap-3 sm:grid-cols-2 relative z-10"
           >
-            <FeatureChip
+            <Stat
               title="Role-specific questions"
               desc="Engineer, DS, PM, Design, and more"
             />
-            <FeatureChip
+            <Stat
               title="Voice + transcription"
               desc="Speak naturally, see real-time text"
             />
           </motion.div>
 
-          {/* Demo video with animated glow */}
+          {/* Video section */}
           <motion.div
             id="demo"
             variants={fadeUp}
-            className="relative mx-auto mt-10 w-full max-w-5xl"
+            className="relative mx-auto mt-10 w-full max-w-5xl z-10"
           >
-            {/* Animated gradient aura */}
-            <motion.div
-              aria-hidden
-              className="pointer-events-none absolute -inset-4 rounded-3xl"
-              style={{
-                background:
-                  "conic-gradient(from 0deg, hsl(var(--primary)/0.45), hsl(var(--secondary)/0.35), transparent 30%, hsl(var(--primary)/0.45))",
-              }}
-              animate={
-                prefersReduced ? {} : { rotate: 360, opacity: [0.6, 0.85, 0.6] }
-              }
-              transition={
-                prefersReduced
-                  ? {}
-                  : { duration: 28, repeat: Infinity, ease: "linear" }
-              }
-            />
-            {/* Soft blurred orbs */}
-            {!prefersReduced && (
-              <>
-                <motion.div
-                  aria-hidden
-                  className="pointer-events-none absolute -top-10 -left-8 h-44 w-44 rounded-full bg-primary/25 blur-3xl"
-                  animate={{ x: [0, 20, -10, 0], y: [0, -10, 10, 0] }}
-                  transition={{
-                    duration: 12,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-                <motion.div
-                  aria-hidden
-                  className="pointer-events-none absolute -bottom-10 -right-8 h-48 w-48 rounded-full bg-secondary/25 blur-3xl"
-                  animate={{ x: [0, -15, 10, 0], y: [0, 12, -8, 0] }}
-                  transition={{
-                    duration: 14,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                  }}
-                />
-              </>
-            )}
-
-            {/* Video frame */}
-            <div className="relative rounded-2xl border border-border bg-card/60 p-1 backdrop-blur">
+            {/* Video frame with clean styling */}
+            <div className="relative rounded-2xl border border-border bg-card/60 p-1 backdrop-blur-sm">
               <div className="rounded-xl border border-border bg-card">
-                {/* Light/Dark thumbnails handled internally; keep both for theme */}
                 <div className="relative overflow-hidden rounded-xl">
                   <HeroVideoDialog
                     className="block dark:hidden"
@@ -173,19 +231,6 @@ export default function HeroSection() {
               </div>
             </div>
           </motion.div>
-
-          {/* Powered by */}
-          <motion.div
-            variants={fadeUp}
-            className="mt-10 flex flex-wrap items-center justify-center gap-3"
-          >
-            <span className="text-xs text-muted-foreground">Powered by</span>
-            <TechBadge>OpenAI</TechBadge>
-            <TechBadge>Deepgram</TechBadge>
-            <TechBadge>Vapi</TechBadge>
-            <TechBadge>Supabase</TechBadge>
-            <TechBadge>Clerk</TechBadge>
-          </motion.div>
         </motion.div>
       </div>
     </section>
@@ -194,20 +239,28 @@ export default function HeroSection() {
 
 function FeatureChip({ title, desc }: { title: string; desc: string }) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-border bg-card/50 p-4">
-      <div className="mt-0.5 h-2.5 w-2.5 shrink-0 rounded-full bg-primary" />
-      <div>
+    <div className="flex items-start gap-3 rounded-xl border border-border bg-card/50 p-4 transition-colors hover:bg-card backdrop-blur-sm">
+      <CheckCircle2 className="h-5 w-5 shrink-0 text-primary mt-0.5" />
+      <div className="text-left">
         <p className="text-sm font-medium">{title}</p>
-        <p className="text-xs text-muted-foreground">{desc}</p>
+        <p className="text-sm text-muted-foreground">{desc}</p>
       </div>
     </div>
   );
 }
 
-function TechBadge({ children }: { children: React.ReactNode }) {
+function Stat({ title, desc }: { title: string; desc: string }) {
   return (
-    <span className="inline-flex items-center rounded-md border border-border bg-muted px-2 py-1 text-xs text-muted-foreground">
-      {children}
-    </span>
+    <div className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px] transition-transform duration-300 hover:-translate-y-0.5">
+      <div className="rounded-xl bg-card/80 p-4 ring-1 ring-border/50 backdrop-blur">
+        <div className="flex items-start gap-3">
+          <BadgeCheck className="h-5 w-5 shrink-0 text-primary mt-0.5" />
+          <div className="text-left">
+            <p className="text-sm">{title}</p>
+            <p className="text-sm text-muted-foreground">{desc}</p>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

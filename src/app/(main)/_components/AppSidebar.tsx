@@ -38,6 +38,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/supabase/supabase-client";
 import { toast } from "sonner";
+import Image from "next/image";
 
 const AppSidebar = () => {
   const pathname = usePathname();
@@ -81,16 +82,24 @@ const AppSidebar = () => {
       {/* Brand */}
       <SidebarHeader className="border-b border-border">
         <div className="mt-3 flex items-center justify-center gap-3 px-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow">
-            <FaAccusoft className="h-5 w-5" />
-          </div>
+          <Image
+            src="/logo-light.svg"
+            width={27}
+            height={27}
+            alt="logo"
+            className="block dark:hidden"
+          />
+          <Image
+            src="/logo-dark.svg"
+            width={27}
+            height={27}
+            alt="logo"
+            className="dark:block hidden"
+          />{" "}
           <div className="min-w-0">
-            <h2 className="truncate text-xl font-bold tracking-wide">
-              <span className="text-primary">First</span>View
+            <h2 className="truncate text-xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/70">
+              Meridian
             </h2>
-            <p className="truncate text-xs text-muted-foreground">
-              Interview Hub
-            </p>
           </div>
         </div>
 
