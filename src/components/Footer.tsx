@@ -1,8 +1,5 @@
 import {
-  Facebook,
   Github,
-  Heart,
-  Instagram,
   Linkedin,
   Twitter,
 } from "lucide-react";
