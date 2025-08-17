@@ -170,7 +170,7 @@ export default function HeroSection() {
               size="lg"
               className="shadow-lg shadow-primary/20 relative z-10"
             >
-              <Link href="/sign-up">
+              <Link href="/auth">
                 Create your interview
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>

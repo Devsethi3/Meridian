@@ -11,6 +11,8 @@ import {
   Clock,
   Shield,
 } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 import { useState, useCallback } from "react";
 import { FcGoogle } from "react-icons/fc";
 
@@ -105,20 +107,28 @@ const SignUpPage = () => {
           <div className="w-full max-w-md space-y-6 lg:space-y-8">
             {/* Header */}
             <header className="text-center space-y-4">
-              <div className="flex items-center justify-center mb-6">
-                <div className="relative">
-                  <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center shadow-lg">
-                    <Brain className="w-6 h-6 text-primary-foreground" />
-                  </div>
-                  <div className="absolute inset-0 bg-primary rounded-xl blur opacity-20" />
-                </div>
-                <span className="ml-3 text-2xl font-bold text-foreground">
-                  InterviewAI
-                </span>
+              <div className="flex items-center mb-6 gap-3 justify-center">
+                <Link href="/" className="flex items-center gap-2">
+                  <Image
+                    src="/logo-light.svg"
+                    width={25}
+                    height={25}
+                    alt="logo"
+                    className="block dark:hidden"
+                  />
+                  <Image
+                    src="/logo-dark.svg"
+                    width={25}
+                    height={25}
+                    alt="logo"
+                    className="dark:block hidden"
+                  />
+                  <span className="text-xl">Meridian</span>
+                </Link>
               </div>
 
               <div className="space-y-2">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                   Start Your Journey
                 </h1>
                 <p className="text-muted-foreground">
@@ -126,26 +136,6 @@ const SignUpPage = () => {
                 </p>
               </div>
             </header>
-
-            {/* Benefits Grid */}
-            <section className="space-y-4" aria-label="Benefits">
-              <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide text-center">
-                Why Choose Us
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {benefits.map((benefit) => (
-                  <div
-                    key={benefit.id}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
-                  >
-                    {benefit.icon}
-                    <span className="text-sm font-medium text-foreground">
-                      {benefit.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </section>
 
             {/* Google Sign In Button */}
             <div className="space-y-4">
@@ -168,6 +158,29 @@ const SignUpPage = () => {
                 </span>
               </Button>
             </div>
+
+            {/* Benefits Grid */}
+            <section className="space-y-4" aria-label="Benefits">
+              <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide text-center">
+                Why Choose Us
+              </h2>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {benefits.map((benefit) => (
+                  <div
+                    key={benefit.id}
+                    className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px] transition-transform duration-300 hover:-translate-y-0.5"
+                  >
+                    <div className="flex items-center gap-3 p-3 rounded-lg bg-card/80 ring-1 ring-border/50 backdrop-blur transition-colors">
+                      {benefit.icon}
+                      <span className="text-sm font-medium text-foreground">
+                        {benefit.text}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
 
             {/* Terms */}
             <p className="text-xs text-muted-foreground text-center leading-relaxed">
@@ -272,5 +285,3 @@ const SignUpPage = () => {
 };
 
 export default SignUpPage;
-
-// Improve the ui and make it better with gradient(shiny) which looks good in light and dark theme both
