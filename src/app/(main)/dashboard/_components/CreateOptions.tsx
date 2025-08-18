@@ -52,7 +52,6 @@ function ActionCard({
   desc,
   icon,
   cta,
-  accent,
   disabled = false,
   comingSoon = false,
 }: {

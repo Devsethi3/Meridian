@@ -125,7 +125,7 @@ export function Header() {
 
           {!isAuthed ? (
             <>
-              <Link href="/auth?view=signup" className="hidden sm:block">
+              <Link href="/auth?view=auth" className="hidden sm:block">
                 <Button size="sm">Create account</Button>
               </Link>
             </>
@@ -153,7 +153,7 @@ export function Header() {
             </>
           )}
 
-          <Link href="/auth?view=signup" className="sm:hidden block">
+          <Link href="/auth?view=auth" className="sm:hidden block">
             <Button size="sm">Create account</Button>
           </Link>
           {/* Mobile menu button */}
@@ -277,7 +277,7 @@ export function Header() {
                   <>
                     <div className="flex items-center gap-3">
                       <Link
-                        href="/auth?view=signup"
+                        href="/auth?view=auth"
                         onClick={close}
                         className="flex-1"
                       >
