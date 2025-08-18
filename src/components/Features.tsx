@@ -9,10 +9,25 @@ import {
 import { motion } from "motion/react";
 
 const Features = () => {
+  const fadeUp = {
+    hidden: { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.4,
+        ease: [0.25, 0.1, 0.25, 1] as const,
+      },
+    },
+  };
+
   const stagger = {
-    initial: {},
-    animate: {
-      transition: { staggerChildren: 0.08, delayChildren: 0.15 },
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.06,
+        delayChildren: 0.1,
+      },
     },
   };
 
@@ -20,19 +35,28 @@ const Features = () => {
     <div>
       <section id="features">
         <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-2xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight sm:text-3xl">
+          <motion.div
+            className="mx-auto max-w-2xl text-center"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+            variants={stagger}
+          >
+            <motion.h2
+              variants={fadeUp}
+              className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 text-3xl tracking-tight sm:text-4xl"
+            >
               Everything you need to practice
-            </h2>
-            <p className="mt-3 text-muted-foreground">
+            </motion.h2>
+            <motion.p variants={fadeUp} className="mt-3 text-muted-foreground">
               Fast, focused, and realistic. Designed for effective prep.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
           <motion.div
             variants={stagger}
-            initial="initial"
-            whileInView="animate"
+            initial="hidden"
+            whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
             className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
           >
@@ -84,25 +108,84 @@ function Feature({
   title: string;
   desc: string;
 }) {
-  const fadeUp = {
-    initial: { opacity: 0, y: 24 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6, ease: [0.21, 1, 0.21, 1] as const },
+  const cardFadeUp = {
+    hidden: { opacity: 0, y: 12 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.4,
+        ease: [0.25, 0.1, 0.25, 1] as const,
+      },
+    },
   };
+
+  const contentStagger = {
+    hidden: {},
+    visible: {
+      transition: {
+        staggerChildren: 0.05,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const elementFadeUp = {
+    hidden: { opacity: 0, y: 8 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.3,
+        ease: [0.25, 0.1, 0.25, 1] as const,
+      },
+    },
+  };
+
   return (
     <motion.div
-      variants={fadeUp}
-      transition={fadeUp.transition}
+      variants={cardFadeUp}
       className="group relative overflow-hidden rounded-2xl border border-border bg-card p-5"
+      whileHover={{
+        y: -2,
+        transition: { duration: 0.2, ease: [0.25, 0.1, 0.25, 1] },
+      }}
     >
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
+      <motion.div
+        className="mb-4 flex items-center gap-3"
+        variants={contentStagger}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.8 }}
+      >
+        <motion.div
+          variants={elementFadeUp}
+          className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20"
+        >
           <Icon className="h-5 w-5" />
-        </div>
-        <h3 className="text-base font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">{title}</h3>
-      </div>
-      <p className="text-sm text-muted-foreground">{desc}</p>
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-muted/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        </motion.div>
+        <motion.h3
+          variants={elementFadeUp}
+          className="text-base font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40"
+        >
+          {title}
+        </motion.h3>
+      </motion.div>
+      <motion.p
+        variants={elementFadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.8 }}
+        className="text-sm text-muted-foreground"
+      >
+        {desc}
+      </motion.p>
+      <motion.div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-muted/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        initial={{ opacity: 0 }}
+        whileHover={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      />
     </motion.div>
   );
 }

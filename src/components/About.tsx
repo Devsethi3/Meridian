@@ -4,11 +4,17 @@ import { Clock, TrendingUp, Users } from "lucide-react";
 import { motion } from "motion/react";
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 24, scale: 0.98 },
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.5, ease: [0.21, 1, 0.21, 1] as const },
+    scale: 1,
+    transition: {
+      duration: 0.6,
+      ease: [0.22, 1, 0.36, 1] as const,
+      opacity: { duration: 0.5 },
+      scale: { duration: 0.5 },
+    },
   },
 };
 
@@ -47,7 +53,7 @@ const About = () => {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2, margin: "-100px" }}
             variants={stagger}
           >
             <motion.h2
@@ -66,11 +72,7 @@ const About = () => {
               receive instant, actionable feedback.
             </motion.p>
 
-            <motion.ul
-              variants={stagger}
-              className="mt-8 space-y-4"
-              role="list"
-            >
+            <motion.ul variants={fadeUp} className="mt-8 space-y-4" role="list">
               <FeatureItem icon={Users}>
                 Role-specific question sets for engineering, product, data,
                 design, and more
@@ -90,7 +92,7 @@ const About = () => {
           <motion.div
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2, margin: "-50px" }}
             variants={fadeUp}
             className="group relative rounded-2xl p-[1px]"
             style={{
@@ -139,6 +141,7 @@ function FeatureItem({
   return (
     <motion.li
       variants={fadeUp}
+      whileHover="hover"
       className="flex items-start gap-4 rounded-xl border border-transparent p-2 transition-all duration-300 hover:bg-muted/30 hover:border-border/50"
     >
       <div className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px]">
@@ -156,7 +159,11 @@ function FeatureItem({
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px] transition-transform duration-300 hover:-translate-y-0.5">
+    <motion.div
+      variants={fadeUp}
+      whileHover="hover"
+      className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px] transition-transform duration-300 hover:-translate-y-0.5"
+    >
       <div className="rounded-xl bg-card/80 p-4 ring-1 ring-border/50 backdrop-blur">
         <dt className="sr-only">{label}</dt>
         <dd className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-2xl font-semibold text-transparent sm:text-3xl">
@@ -164,6 +171,6 @@ function Stat({ label, value }: { label: string; value: string }) {
         </dd>
         <p className="text-xs text-muted-foreground sm:text-sm">{label}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }

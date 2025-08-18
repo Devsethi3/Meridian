@@ -2,14 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/supabase/supabase-client";
-import { Clock, Loader2, Phone } from "lucide-react";
+import { ArrowLeft, Clock, Loader2, Phone } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useCallback } from "react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
-// Animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -34,6 +34,7 @@ const itemVariants = {
 
 const AuthPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const loginWithGoogle = useCallback(async () => {
     try {
@@ -41,7 +42,7 @@ const AuthPage = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: `${window.location.origin}/dashboard`,
+          redirectTo: `${process.env.NEXT_PUBLIC_URL}/dashboard`,
         },
       });
 
@@ -65,6 +66,17 @@ const AuthPage = () => {
           <div className="absolute -top-[40%] -right-[40%] w-[80%] h-[80%] rounded-full bg-primary/10 blur-3xl" />
           <div className="absolute -bottom-[30%] -left-[30%] w-[60%] h-[60%] rounded-full bg-secondary/10 blur-3xl" />
         </div>
+
+        <Button
+          asChild
+          variant="outline"
+          size="icon"
+          className="absolute lg:top-8 lg:left-8 top-5 left-5 z-20"
+        >
+          <Link href="/" aria-label="Go to home">
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </Button>
 
         {/* Left Panel - Form */}
         <div className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 z-10">

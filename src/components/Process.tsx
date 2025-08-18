@@ -27,6 +27,7 @@ const Process = () => {
       transition: { staggerChildren: 0.08, delayChildren: 0.15 },
     },
   };
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 16 },
     visible: {
@@ -53,12 +54,15 @@ const Process = () => {
           viewport={{ once: true, amount: 0.2 }}
           className="mx-auto max-w-2xl text-center"
         >
-          <h2 className="text-3xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 sm:text-4xl">
+          <motion.h2
+            variants={fadeInUp}
+            className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 text-3xl tracking-tight sm:text-4xl"
+          >
             How it works
-          </h2>
-          <p className="mt-3 text-muted-foreground">
+          </motion.h2>
+          <motion.p variants={fadeInUp} className="mt-3 text-muted-foreground">
             Start practicing in under a minute.
-          </p>
+          </motion.p>
         </motion.div>
 
         <motion.ol
