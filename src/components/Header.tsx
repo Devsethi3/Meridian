@@ -10,6 +10,7 @@ import { useUser } from "@/context/UserContext";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import Image from "next/image";
 import { HoverLink } from "./HoverLink";
+import UserDropdown from "./UserDropdown";
 
 const NAV_LINKS = [
   { href: "#features", label: "Features" },
@@ -25,14 +26,7 @@ export function Header() {
 
   const isAuthed = !!user;
   const initials = useMemo(
-    () =>
-      user?.name
-        ?.split(" ")
-        .map((n) => n?.[0])
-        .filter(Boolean)
-        .slice(0, 2)
-        .join("")
-        .toUpperCase(),
+    () => user?.name?.charAt(0).toUpperCase() ?? "",
     [user?.name]
   );
 
@@ -134,22 +128,19 @@ export function Header() {
               <Link href="/dashboard" className="hidden sm:block">
                 <Button size="sm">Go to app</Button>
               </Link>
-
-              {/* Avatar (links to dashboard) */}
-              <Link
-                href="/dashboard"
-                className="hidden sm:inline-flex rounded-full ring-1 ring-border hover:ring-primary/40 transition"
-                aria-label={`Open dashboard${
-                  user?.name ? ` for ${user.name}` : ""
-                }`}
-              >
-                <Avatar className="h-9 w-9">
-                  <AvatarImage src={user?.picture} />
-                  <AvatarFallback>
-                    {initials || <UserIcon className="h-4 w-4" />}
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
+              <UserDropdown
+                user={
+                  user
+                    ? {
+                        ...user,
+                        picture: user.picture ?? null,
+                        email: user.email ?? null,
+                        name: user.name ?? null,
+                      }
+                    : null
+                }
+                initials={initials ?? null}
+              />
             </>
           )}
 
