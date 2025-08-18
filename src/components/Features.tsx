@@ -34,9 +34,9 @@ const Features = () => {
   return (
     <div>
       <section id="features">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+        <div className="container py-16">
           <motion.div
-            className="mx-auto max-w-2xl text-center"
+            className="mx-auto max-w-3xl text-center"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
@@ -46,7 +46,7 @@ const Features = () => {
               variants={fadeUp}
               className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 text-3xl tracking-tight sm:text-4xl"
             >
-              Everything you need to practice
+              Interview prep, perfected{" "}
             </motion.h2>
             <motion.p variants={fadeUp} className="mt-3 text-muted-foreground">
               Fast, focused, and realistic. Designed for effective prep.
