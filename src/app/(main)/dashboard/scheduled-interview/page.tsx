@@ -7,7 +7,7 @@ import InterviewCard from "./_components/InterviewCard";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { RefreshCcw } from "lucide-react";
+import { FileIcon, RefreshCcw } from "lucide-react";
 
 interface ScheduledInterviewEntry {
   userEmail: string;
@@ -85,7 +85,7 @@ const ScheduledInterview = () => {
   return (
     <div className="my-5">
       <div className="flex flex-col gap-1">
-        <h2 className="lg:text-xl text-lg font-semibold bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+        <h2 className="lg:text-2xl text-lg font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
           Interview List with Candidate Feedback
         </h2>
         <p className="text-sm text-muted-foreground lg:text-left text-center">
@@ -125,9 +125,11 @@ const ScheduledInterview = () => {
       {isEmpty && (
         <div className="mt-6 rounded-xl border border-dashed bg-card/50 p-10 text-center">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
-            <span className="text-lg text-muted-foreground">🗂️</span>
+            <span className="text-lg text-muted-foreground">
+              <FileIcon />
+            </span>
           </div>
-          <div className="font-medium">No interviews yet</div>
+          <div className="">No interviews yet</div>
           <div className="mt-1 text-sm text-muted-foreground">
             Create an interview to get started and share it with candidates.
           </div>

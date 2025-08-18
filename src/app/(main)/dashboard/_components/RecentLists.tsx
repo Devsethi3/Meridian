@@ -174,7 +174,9 @@ function EmptyState() {
       <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
         <Files className="h-6 w-6" />
       </div>
-      <h3 className="mb-1 text-lg font-semibold">No Interviews Found</h3>
+      <h3 className="mb-1 lg:text-xl text-lg">
+        No Interviews Found
+      </h3>
       <p className="mb-6 max-w-md text-sm text-muted-foreground">
         You haven&apos;t created any interviews yet. Once you do, they&apos;ll
         show up here.

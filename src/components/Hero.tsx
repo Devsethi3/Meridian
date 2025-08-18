@@ -293,13 +293,7 @@ export default function HeroSection() {
             className="relative mx-auto mt-10 w-full max-w-5xl z-10"
           >
             {/* Video frame with clean styling */}
-            <motion.div
-              className="relative rounded-2xl border border-border bg-card/60 p-1 backdrop-blur-sm"
-              whileHover={{
-                scale: 1.01,
-                transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] },
-              }}
-            >
+            <motion.div className="relative rounded-2xl border border-border bg-card/60 p-1 backdrop-blur-sm">
               <motion.div
                 className="rounded-xl border border-border bg-card"
                 variants={subtleFadeUp}

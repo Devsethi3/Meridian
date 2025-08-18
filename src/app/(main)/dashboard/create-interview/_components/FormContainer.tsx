@@ -53,7 +53,7 @@ const FormContainer = ({
 
   return (
     <form onSubmit={onSubmit} className="space-y-5">
-      <div className="p-5 md:p-6 rounded-xl border border-border bg-card text-card-foreground shadow-sm">
+      <div className="p-0 md:p-6 border-0 md:border rounded-xl bg-card text-card-foreground shadow-sm">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {/* Job Position */}
           <div className="flex flex-col">

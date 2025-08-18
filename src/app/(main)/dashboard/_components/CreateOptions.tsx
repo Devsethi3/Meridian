@@ -119,7 +119,7 @@ function CardContent({
     <div className="relative rounded-2xl border border-border bg-card/80 p-5 shadow-sm backdrop-blur-sm transition-colors">
       {/* Coming Soon Badge */}
       {comingSoon && (
-        <div className="absolute -top-2 -right-2 z-10">
+        <div className="absolute -top-2 right-2 z-10">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-2.5 py-1 text-xs font-medium text-secondary-foreground shadow-sm border border-border">
             <Clock className="h-3 w-3" />
             Coming Soon
