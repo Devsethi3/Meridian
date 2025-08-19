@@ -23,6 +23,7 @@ import {
   LayoutDashboard,
   Sparkles,
 } from "lucide-react";
+import { useSignOut } from "@/hooks/use-sign-out";
 
 export interface User {
   id: string;
@@ -33,6 +34,7 @@ export interface User {
 
 interface UserDropdownProps {
   user: User | null;
+  onSignOut?: () => void;
   initials: string | null;
 }
 
@@ -40,6 +42,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user, initials }) => {
   const isAuthed = Boolean(user);
   const name = user?.name ?? "Guest";
   const email = user?.email ?? "Let&apos;s get you signed in";
+  const { signOut, isLoading, error } = useSignOut();
 
   return (
     <div>

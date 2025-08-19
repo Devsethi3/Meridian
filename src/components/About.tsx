@@ -27,7 +27,7 @@ const About = () => {
   return (
     <section
       id="about"
-      className="relative overflow-hidden rounded-t-4xl border-t bg-[radial-gradient(60%_100px_at_50%_0%,theme(backgroundColor.white/8%),transparent)]"
+      className="relative overflow-hidden rounded-t-4xl border-t bg-[radial-gradient(60%_140px_at_50%_0%,theme(backgroundColor.black/5%),transparent)] dark:bg-[radial-gradient(60%_140px_at_50%_0%,theme(backgroundColor.white/8%),transparent)]"
     >
       {/* Soft spotlights using theme tokens */}
       <div
