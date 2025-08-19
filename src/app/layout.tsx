@@ -3,6 +3,7 @@ import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import Provider from "./provider";
 import { Toaster } from "@/components/ui/sonner";
+import NextTopLoader from "nextjs-toploader";
 import { ThemeProvider } from "@/theme/theme-provider";
 
 const font = Space_Grotesk();
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
     siteName: "Meridian",
     images: [
       {
-        url: "", 
+        url: "",
         width: 1200,
         height: 630,
         alt: "Meridian AI Interview App Logo",
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     ],
     type: "website",
   },
-  
+
   keywords: [
     "AI interview",
     "mock interview",
@@ -53,6 +54,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${font.className} antialiased`}>
+        <NextTopLoader
+          color="var(--loader-color)"
+          height={4}
+          crawl={false}
+          showSpinner={false}
+          easing="ease"
+        />
         <Provider>
           <Toaster richColors position="top-center" />
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
