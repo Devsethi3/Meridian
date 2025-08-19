@@ -2,15 +2,23 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, ChevronRight, User as UserIcon } from "lucide-react";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import {
+  Menu,
+  X,
+  ChevronRight,
+  User as UserIcon,
+  AlertTriangle,
+} from "lucide-react";
 import { Button } from "./ui/button";
 import { ThemeToggleButton } from "./ui/theme-toggle-button";
 import { useUser } from "@/context/UserContext";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
+import { Skeleton } from "./ui/skeleton";
 import Image from "next/image";
 import { HoverLink } from "./HoverLink";
 import UserDropdown from "./UserDropdown";
+import { useSignOut } from "@/hooks/use-sign-out";
 
 const NAV_LINKS = [
   { href: "#features", label: "Features" },
@@ -19,14 +27,48 @@ const NAV_LINKS = [
   { href: "#cta", label: "Get started" },
 ];
 
+type AuthState = "loading" | "error" | "authed" | "guest";
+
 export function Header() {
-  const { user } = useUser();
+  // Extend or adapt to your UserContext shape
+  const {
+    user,
+    isLoading: ctxLoading,
+    error: ctxError,
+    status,
+    refetch,
+  } = useUser() as {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      picture?: string | null;
+    } | null;
+    isLoading?: boolean;
+    error?: unknown;
+    status?: "idle" | "loading" | "authenticated" | "unauthenticated" | "error";
+    refetch?: () => void | Promise<void>;
+  };
+
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const { signOut, isLoading, error } = useSignOut();
 
-  const isAuthed = !!user;
+  const loading = (ctxLoading ?? false) || status === "loading";
+  const hasError = Boolean(ctxError) || status === "error";
+  const isAuthed = Boolean(user) && !hasError;
+
+  const authState: AuthState = loading
+    ? "loading"
+    : hasError
+    ? "error"
+    : isAuthed
+    ? "authed"
+    : "guest";
+
   const initials = useMemo(
-    () => user?.name?.charAt(0).toUpperCase() ?? "",
+    () => user?.name?.trim()?.charAt(0)?.toUpperCase() ?? "",
     [user?.name]
   );
 
@@ -75,7 +117,7 @@ export function Header() {
   return (
     <header className={headerClass}>
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
-        {/* Meridian Logo */}
+        {/* Logo */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 font-semibold">
             <Image
@@ -88,13 +130,13 @@ export function Header() {
             />
             <Image
               src="/logo-dark.svg"
-              width={20}
-              height={20}
+              width={25}
+              height={25}
               alt="logo"
               className="hidden dark:block"
               priority
             />
-            <span className="text-base bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+            <span className="text-lg bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
               Meridian
             </span>
           </Link>
@@ -109,6 +151,7 @@ export function Header() {
 
         {/* Right actions */}
         <div className="flex items-center gap-2">
+          {/* Theme toggle (desktop only visible) */}
           <div className="sm:block hidden">
             <ThemeToggleButton
               showLabel
@@ -117,36 +160,99 @@ export function Header() {
             />
           </div>
 
-          {!isAuthed ? (
-            <>
-              <Link href="/auth?view=auth" className="hidden sm:block">
+          {/* Desktop: auth actions */}
+          <div className="hidden items-center gap-2 sm:flex">
+            {authState === "loading" && (
+              <>
+                <Skeleton className="h-8 w-[120px] rounded-md" aria-busy />
+                <Skeleton className="h-9 w-9 rounded-full" aria-busy />
+              </>
+            )}
+
+            {authState === "error" && (
+              <>
+                <Link href="/auth?view=auth">
+                  <Button size="sm">Sign in</Button>
+                </Link>
+                <span className="inline-flex items-center gap-2 rounded-md border border-destructive/30 bg-destructive/10 px-2 py-1 text-xs text-destructive">
+                  <AlertTriangle className="h-3.5 w-3.5" />
+                  Error
+                  {typeof refetch === "function" && (
+                    <button
+                      onClick={() => refetch()}
+                      className="underline underline-offset-2 hover:opacity-90"
+                    >
+                      Retry
+                    </button>
+                  )}
+                </span>
+              </>
+            )}
+
+            {authState === "guest" && (
+              <Link href="/auth?view=auth">
+                <Button>Create account</Button>
+              </Link>
+            )}
+
+            {authState === "authed" && (
+              <>
+                <Link href="/dashboard">
+                  <Button>Go to app</Button>
+                </Link>
+                <UserDropdown
+                  user={
+                    user
+                      ? {
+                          ...user,
+                          picture: user.picture ?? null,
+                          email: user.email ?? null,
+                          name: user.name ?? null,
+                        }
+                      : null
+                  }
+                  initials={initials || null}
+                />
+              </>
+            )}
+          </div>
+
+          {/* Mobile: auth actions */}
+          <div className="flex items-center gap-2 sm:hidden">
+            {authState === "loading" && (
+              <Skeleton className="h-9 w-9 rounded-full" aria-busy />
+            )}
+            {authState === "error" && (
+              <>
+                <Link href="/auth?view=auth">
+                  <Button size="sm">Sign in</Button>
+                </Link>
+              </>
+            )}
+            {authState === "guest" && (
+              <Link href="/auth?view=auth">
                 <Button size="sm">Create account</Button>
               </Link>
-            </>
-          ) : (
-            <>
-              <Link href="/dashboard" className="hidden sm:block">
-                <Button size="sm">Go to app</Button>
-              </Link>
-              <UserDropdown
-                user={
-                  user
-                    ? {
-                        ...user,
-                        picture: user.picture ?? null,
-                        email: user.email ?? null,
-                        name: user.name ?? null,
-                      }
-                    : null
-                }
-                initials={initials ?? null}
-              />
-            </>
-          )}
+            )}
+            {authState === "authed" && (
+              <div>
+                <UserDropdown
+                  user={
+                    user
+                      ? {
+                          ...user,
+                          picture: user.picture ?? null,
+                          email: user.email ?? null,
+                          name: user.name ?? null,
+                        }
+                      : null
+                  }
+                  initials={initials || null}
+                />
+              </div>
+            )}
+          </div>
 
-          <Link href="/auth?view=auth" className="sm:hidden block">
-            <Button size="sm">Create account</Button>
-          </Link>
           {/* Mobile menu button */}
           <Button
             variant="outline"
@@ -163,7 +269,7 @@ export function Header() {
       </div>
 
       {/* Mobile menu (framer-motion) */}
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {open && (
           <>
             {/* Backdrop */}
@@ -175,19 +281,24 @@ export function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
+              transition={reduceMotion ? { duration: 0 } : undefined}
             />
 
             {/* Sliding panel */}
             <motion.aside
               key="panel"
               id="mobile-menu"
-              className="fixed right-0 top-0 z-50 h-[100dvh] w-[85%] max-w-sm overflow-y-auto border-l border-border bg-background backdrop-blur-xl p-4 shadow-2xl md:hidden flex flex-col justify-between"
+              className="fixed right-0 top-0 z-50 flex h-[100dvh] w-[85%] max-w-sm flex-col justify-between overflow-y-auto border-l border-border bg-background p-4 shadow-2xl backdrop-blur-xl md:hidden"
               role="dialog"
               aria-modal="true"
               initial={{ x: 24, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: 24, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              transition={
+                reduceMotion
+                  ? { duration: 0 }
+                  : { type: "spring", stiffness: 260, damping: 30 }
+              }
             >
               <div>
                 <div className="flex items-center justify-between pb-2">
@@ -263,8 +374,64 @@ export function Header() {
               </div>
 
               {/* CTA + Theme + Avatar on mobile */}
-              <div className="mt-4 border-t border-border/60 pt-4 space-y-4">
-                {!isAuthed ? (
+              <div className="mt-4 space-y-4 border-t border-border/60 pt-4">
+                {authState === "loading" && (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <Skeleton className="h-9 w-full rounded-md" aria-busy />
+                      <ThemeToggleButton />
+                    </div>
+                    <div className="flex items-center gap-3 rounded-lg border border-border p-2">
+                      <Skeleton className="h-9 w-9 rounded-full" aria-busy />
+                      <div className="min-w-0 flex-1 space-y-2">
+                        <Skeleton className="h-4 w-24" aria-busy />
+                        <Skeleton className="h-3 w-36" aria-busy />
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {authState === "error" && (
+                  <>
+                    <div className="flex items-center gap-3">
+                      <Link
+                        href="/auth?view=auth"
+                        onClick={close}
+                        className="flex-1"
+                      >
+                        <Button className="w-full">Sign in</Button>
+                      </Link>
+                      <ThemeToggleButton />
+                    </div>
+                    <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 p-2 text-destructive">
+                      <Avatar className="h-9 w-9">
+                        <AvatarFallback>
+                          <AlertTriangle className="h-4 w-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0">
+                        <div className="truncate text-sm font-medium">
+                          Error loading user
+                        </div>
+                        <div className="truncate text-xs opacity-80">
+                          You can retry or sign in
+                        </div>
+                      </div>
+                      {typeof refetch === "function" && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          className="shrink-0"
+                          onClick={() => refetch()}
+                        >
+                          Retry
+                        </Button>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {authState === "guest" && (
                   <>
                     <div className="flex items-center gap-3">
                       <Link
@@ -292,7 +459,9 @@ export function Header() {
                       </div>
                     </div>
                   </>
-                ) : (
+                )}
+
+                {authState === "authed" && (
                   <>
                     <div className="flex items-center gap-3">
                       <Link
@@ -311,7 +480,10 @@ export function Header() {
                       className="flex items-center gap-3 rounded-lg border border-border p-2"
                     >
                       <Avatar className="h-9 w-9">
-                        <AvatarImage src={user?.picture} />
+                        <AvatarImage
+                          src={user?.picture ?? ""}
+                          alt={user?.name ?? "User"}
+                        />
                         <AvatarFallback>
                           {initials || <UserIcon className="h-4 w-4" />}
                         </AvatarFallback>

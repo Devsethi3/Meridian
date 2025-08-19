@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/supabase/supabase-client";
-import { ArrowLeft, Clock, Loader2, Phone } from "lucide-react";
+import { ArrowLeft, Clock, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useCallback } from "react";
