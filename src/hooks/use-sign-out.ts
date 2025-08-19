@@ -49,8 +49,8 @@ export const useSignOut = (): UseSignOutReturn => {
         description: "You have been logged out of your account",
       });
 
-      // Optional: Redirect to login or home page
-      router.push("/login"); // Adjust path as needed
+      router.push("/");
+      router.refresh();
     } catch (err) {
       const errorMessage =
         err instanceof Error ? err.message : "Failed to sign out";

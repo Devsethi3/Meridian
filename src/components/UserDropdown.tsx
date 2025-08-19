@@ -22,6 +22,7 @@ import {
   CreditCard,
   LayoutDashboard,
   Sparkles,
+  Loader2,
 } from "lucide-react";
 import { useSignOut } from "@/hooks/use-sign-out";
 
@@ -34,15 +35,20 @@ export interface User {
 
 interface UserDropdownProps {
   user: User | null;
-  onSignOut?: () => void;
   initials: string | null;
+  onSignOut?: () => void;
 }
 
-const UserDropdown: React.FC<UserDropdownProps> = ({ user, initials }) => {
+const UserDropdown: React.FC<UserDropdownProps> = ({
+  user,
+  initials,
+  onSignOut,
+}) => {
   const isAuthed = Boolean(user);
   const name = user?.name ?? "Guest";
-  const email = user?.email ?? "Let&apos;s get you signed in";
-  const { signOut, isLoading, error } = useSignOut();
+  const email = user?.email ?? "Let's get you signed in";
+
+  const { signOut, error, isLoading } = useSignOut();
 
   return (
     <div>
@@ -124,7 +130,7 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user, initials }) => {
                         size="sm"
                         className="bg-primary text-primary-foreground hover:bg-primary/90"
                       >
-                        <Link href="/sign-in">Sign in</Link>
+                        <Link href="/auth?view=auth">Sign in</Link>
                       </Button>
                       <Button
                         asChild
@@ -132,7 +138,9 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user, initials }) => {
                         variant="secondary"
                         className="bg-secondary text-secondary-foreground hover:bg-secondary/90"
                       >
-                        <Link href="/sign-up">Create account</Link>
+                        <Link href="/auth?view=auth&mode=signup">
+                          Create account
+                        </Link>
                       </Button>
                     </>
                   )}
@@ -185,15 +193,25 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user, initials }) => {
                 <DropdownMenuSeparator className="bg-border" />
 
                 {isAuthed ? (
-                  <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link href="/logout" className="flex items-center">
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    disabled={isLoading}
+                    onSelect={(e) => {
+                      e.preventDefault();
+                      void signOut();
+                    }}
+                    aria-busy={isLoading}
+                  >
+                    {isLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin text-muted-foreground" />
+                    ) : (
                       <LogOut className="mr-2 h-4 w-4 text-muted-foreground" />
-                      <span>Sign out</span>
-                    </Link>
+                    )}
+                    <span>{isLoading ? "Signing out…" : "Sign out"}</span>
                   </DropdownMenuItem>
                 ) : (
                   <DropdownMenuItem asChild className="cursor-pointer">
-                    <Link href="/sign-in" className="flex items-center">
+                    <Link href="/auth?view=auth" className="flex items-center">
                       <UserIcon className="mr-2 h-4 w-4 text-muted-foreground" />
                       <span>Sign in</span>
                     </Link>
@@ -201,13 +219,23 @@ const UserDropdown: React.FC<UserDropdownProps> = ({ user, initials }) => {
                 )}
               </div>
 
-              {/* Footer / subtle card action */}
-              <div className="px-3 pb-3">
-                <div className="rounded-lg border border-border bg-muted/50 p-3">
-                  <div className="text-xs text-muted-foreground">
-                    Tip: You can customize themes using your app’s settings.
+              {/* Footer / status */}
+              <div className="px-3 pb-3 space-y-2">
+                {error ? (
+                  <div
+                    className="rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-xs text-destructive"
+                    role="status"
+                    aria-live="polite"
+                  >
+                    {error || "Failed to sign out. Please try again."}
                   </div>
-                </div>
+                ) : (
+                  <div className="rounded-lg border border-border bg-muted/50 p-3">
+                    <div className="text-xs text-muted-foreground">
+                      Tip: You can customize themes using your app&apos;s settings.
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
