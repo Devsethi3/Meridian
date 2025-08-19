@@ -125,7 +125,7 @@ const Process = () => {
                     <motion.span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 text-lg text-foreground/80 shadow-sm">
                       {i + 1}
                     </motion.span>
-                    <CardTitle className="text-lg font-normal">
+                    <CardTitle className="text-lg bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 font-normal">
                       {s.title}
                     </CardTitle>
                   </div>
@@ -135,7 +135,6 @@ const Process = () => {
                     className="text-muted-foreground/80 text-sm leading-relaxed"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
-                    transition={{ delay: 0.3 + i * 0.1 }}
                     viewport={{ once: true }}
                   >
                     {s.desc}
