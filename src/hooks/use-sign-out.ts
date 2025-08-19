@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback, useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { supabase } from "@/supabase/supabase-client";
@@ -15,66 +15,66 @@ interface UseSignOutReturn {
 export const useSignOut = (): UseSignOutReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const inFlight = useRef(false);
+
   const router = useRouter();
   const { user } = useUser();
 
   const signOut = useCallback(async () => {
-    // Prevent multiple simultaneous sign out attempts
-    if (isLoading) return;
+    if (inFlight.current) return; // hard guard against double clicks
 
-    // Check if user is actually signed in
     if (!user) {
       toast.error("No user is currently signed in");
       return;
     }
 
+    inFlight.current = true;
     setIsLoading(true);
     setError(null);
 
+    const toastId = toast.loading("Signing out…");
+
     try {
-      // Show loading toast
-      const loadingToast = toast.loading("Signing out...");
+      const { error: signOutError } = await supabase.auth.signOut({
+        scope: "local",
+      });
+      if (signOutError) throw signOutError;
 
-      const { error: signOutError } = await supabase.auth.signOut();
-
-      // Dismiss loading toast
-      toast.dismiss(loadingToast);
-
-      if (signOutError) {
-        throw signOutError;
-      }
-
-      // Success toast
-      toast.success("Successfully signed out", {
-        description: "You have been logged out of your account",
+      toast.success("Signed out", {
+        id: toastId,
+        description: "You have been logged out.",
       });
 
-      router.push("/");
-      router.refresh();
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : "Failed to sign out";
+      // Non-blocking UI updates + RSC refresh on the new route
+      startTransition(() => {
+        router.replace("/");
+        router.refresh();
+      });
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Failed to sign out";
+      setError(message);
 
-      setError(errorMessage);
-
-      // Error toast
       toast.error("Sign out failed", {
-        description: errorMessage,
+        id: toastId,
+        description: message,
         action: {
           label: "Try again",
-          onClick: () => signOut(),
+          onClick: () => void signOut(),
         },
       });
 
-      console.error("Sign out error:", err);
+      // Useful for debugging
+      console.error("Sign out error:", e);
     } finally {
+      inFlight.current = false;
       setIsLoading(false);
     }
-  }, [isLoading, user, router]);
+  }, [router, user]);
 
   return {
     signOut,
-    isLoading,
+    isLoading: isLoading || isPending,
     error,
   };
 };
