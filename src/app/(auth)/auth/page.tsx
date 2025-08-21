@@ -2,7 +2,17 @@
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/supabase/supabase-client";
-import { ArrowLeft, Clock, Loader2, Rocket } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock,
+  Loader2,
+  Brain,
+  MessageSquare,
+  BarChart3,
+  Target,
+  Zap,
+  CheckCircle2,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useCallback } from "react";
@@ -202,23 +212,64 @@ const AuthPage = () => {
 
         {/* Right Panel - Visual */}
         <div className="hidden lg:flex flex-1 items-center justify-center p-12 bg-gradient-to-br from-primary/5 to-secondary/5 relative overflow-hidden">
-          <div className="max-w-md text-center space-y-8 z-10">
+          <div className="max-w-lg text-center space-y-12 z-10">
             <motion.div
-              className="space-y-4"
+              className="space-y-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.7 }}
             >
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-secondary-foreground rounded-full text-sm">
-                <Clock className="h-4 w-4" />
-                <span>Real-time feedback</span>
+                <Zap className="h-4 w-4" />
+                <span>AI-Powered Platform</span>
               </div>
               <h2 className="text-4xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent">
-                AI-Powered Interview Prep
+                Master Your Interview Skills
               </h2>
               <p className="text-muted-foreground text-lg">
-                Practice with realistic interviews and get instant feedback
+                Practice with intelligent AI that adapts to your responses and
+                provides actionable feedback
               </p>
+            </motion.div>
+
+            {/* Features Grid */}
+            <motion.div
+              className="grid grid-cols-1 gap-6 text-left"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5, duration: 0.7 }}
+            >
+              <FeatureItem
+                icon={Brain}
+                title="Smart AI Interviewer"
+                desc="Adaptive questioning based on your role and experience level"
+              />
+              <FeatureItem
+                icon={MessageSquare}
+                title="Natural Conversations"
+                desc="Practice with realistic dialogue and follow-up questions"
+              />
+              <FeatureItem
+                icon={BarChart3}
+                title="Performance Analytics"
+                desc="Detailed insights on communication skills and confidence"
+              />
+              <FeatureItem
+                icon={Target}
+                title="Industry Specific Prep"
+                desc="Tailored scenarios for your target role and company"
+              />
+            </motion.div>
+
+            {/* Call to Action */}
+            <motion.div
+              className="flex items-center justify-center gap-3 text-sm text-muted-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 1, duration: 0.5 }}
+            >
+              <CheckCircle2 className="h-4 w-4 text-primary" />
+              <span>Join thousands preparing for their dream job</span>
             </motion.div>
           </div>
         </div>
@@ -228,3 +279,32 @@ const AuthPage = () => {
 };
 
 export default AuthPage;
+
+function FeatureItem({
+  title,
+  desc,
+  icon: Icon,
+}: {
+  title: string;
+  desc: string;
+  icon: React.ElementType;
+}) {
+  return (
+    <motion.li
+      // variants={fadeUp}
+      whileHover="hover"  
+      className="flex items-start gap-4 rounded-xl border border-transparent p-2 transition-all duration-300 hover:bg-muted/30 hover:border-border/50"
+    >
+      <div className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px]">
+        <div className="rounded-xl bg-card/80 p-4 ring-1 ring-border/50 backdrop-blur">
+          <Icon className="h-4 w-4" />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <h3>{title}</h3>
+        <p className="text-sm text-muted-foreground">{desc}</p>
+      </div>
+    </motion.li>
+  );
+}
