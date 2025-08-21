@@ -41,10 +41,10 @@ const TermsOfService = () => {
 
         {/* Header */}
         <header className="relative z-10 border-b bg-background/80 backdrop-blur-sm">
-          <div className="container mx-auto px-4 py-4">
+          <div className="container py-4">
             <div className="flex items-center justify-between">
               <Link href="/" className="flex items-center gap-2.5">
-                <div className="relative w-8 h-8">
+                <div className="relative w-7 h-7">
                   <Image
                     src="/logo-light.svg"
                     fill
@@ -107,7 +107,7 @@ const TermsOfService = () => {
 
               <div className="space-y-12">
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     1. Acceptance of Terms
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -122,7 +122,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     2. Description of Service
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm space-y-4">
@@ -148,7 +148,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     3. User Accounts and Registration
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm space-y-4">
@@ -187,7 +187,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     4. Acceptable Use Policy
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm space-y-4">
@@ -219,7 +219,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     5. Content and Data
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm space-y-4">
@@ -250,7 +250,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     6. AI and Voice Processing
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -266,7 +266,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     7. Limitation of Liability
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -281,7 +281,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     8. Service Availability
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -295,7 +295,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     9. Termination
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm space-y-4">
@@ -323,7 +323,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     10. Third-Party Services
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -338,7 +338,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     11. Changes to Terms
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -353,7 +353,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     12. Governing Law
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -367,7 +367,7 @@ const TermsOfService = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                     13. Contact Information
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">

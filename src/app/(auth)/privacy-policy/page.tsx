@@ -44,7 +44,7 @@ const PrivacyPolicy = () => {
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <Link href="/" className="flex items-center gap-2.5">
-                <div className="relative w-8 h-8">
+                <div className="relative w-7 h-7">
                   <Image
                     src="/logo-light.svg"
                     fill
