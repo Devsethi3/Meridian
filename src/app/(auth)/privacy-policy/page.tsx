@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { ThemeToggleButton } from "@/components/ui/theme-toggle-button";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -62,12 +63,21 @@ const PrivacyPolicy = () => {
                 </span>
               </Link>
 
-              <Button asChild variant="outline" size="sm">
-                <Link href="/auth" className="flex items-center gap-2">
-                  <ArrowLeft className="h-4 w-4" />
-                  Back
-                </Link>
-              </Button>
+              {/* Theme Toggle and Back Button */}
+              <div className="flex items-center gap-2">
+                <ThemeToggleButton
+                  showLabel
+                  variant="circle-blur"
+                  start="top-right"
+                />
+
+                <Button asChild variant="outline">
+                  <Link href="/auth" className="flex items-center gap-2">
+                    <ArrowLeft className="h-4 w-4" />
+                    Back
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </header>
