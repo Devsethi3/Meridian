@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/supabase/supabase-client";
-import { ArrowLeft, Clock, Loader2 } from "lucide-react";
+import { ArrowLeft, Clock, Loader2, Rocket } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useCallback } from "react";
@@ -180,7 +180,22 @@ const AuthPage = () => {
               className="mt-8 text-center text-sm text-muted-foreground"
               variants={itemVariants}
             >
-              <p>By continuing, you agree to our Terms and Privacy Policy</p>
+              <p>
+                By continuing, you agree to our{" "}
+                <Link
+                  href="/terms-of-service"
+                  className="underline-offset-4 hover:underline text-foreground"
+                >
+                  Terms
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="/privacy-policy"
+                  className="underline-offset-4 hover:underline text-foreground"
+                >
+                  Privacy Policy
+                </Link>
+              </p>
             </motion.div>
           </motion.div>
         </div>
@@ -204,25 +219,6 @@ const AuthPage = () => {
               <p className="text-muted-foreground text-lg">
                 Practice with realistic interviews and get instant feedback
               </p>
-            </motion.div>
-
-            <motion.div
-              className="flex justify-center"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5, duration: 0.7 }}
-            >
-              <div className="grid grid-cols-3 gap-4 max-w-xs">
-                {[1, 2, 3].map((item) => (
-                  <motion.div
-                    key={item}
-                    className="bg-background border rounded-xl aspect-square flex items-center justify-center p-4 shadow-sm"
-                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                  >
-                    <div className="bg-muted border rounded-lg w-full h-full" />
-                  </motion.div>
-                ))}
-              </div>
             </motion.div>
           </div>
         </div>

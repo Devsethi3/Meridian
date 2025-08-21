@@ -149,7 +149,6 @@ function Feature({
   return (
     <motion.div
       variants={fadeUp}
-     
       whileTap={prefersReducedMotion ? {} : { scale: 0.995 }}
       className="group"
     >
@@ -163,12 +162,12 @@ function Feature({
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary ring-1 ring-primary/20">
               <Icon className="h-5 w-5" />
             </div>
-            <h3 className="text-base font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+            <h3 className="text-lg font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
               {title}
             </h3>
           </div>
 
-          <p className="text-sm text-muted-foreground">{desc}</p>
+          <p className="text-base text-muted-foreground">{desc}</p>
 
           {/* Bottom fade */}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-muted/30 to-transparent" />

@@ -120,11 +120,17 @@ const Process = () => {
                   <div className="absolute top-0 right-0 w-24 h-24 rotate-45 bg-gradient-to-r from-primary/10 to-transparent translate-x-8 -translate-y-8" />
                 </div>
 
-                <CardHeader className="">
+                <CardHeader>
                   <div className="flex items-center gap-4">
-                    <motion.span className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-primary/10 to-primary/5 text-lg text-foreground/80 shadow-sm">
-                      {i + 1}
-                    </motion.span>
+                    <div
+                      className="flex items-start gap-4 rounded-xl border border-transparent"
+                    >
+                      <div className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px]">
+                        <div className="rounded-xl bg-card/80 p-2 px-4 ring-1 ring-border/50 backdrop-blur">
+                          {i + 1}
+                        </div>
+                      </div>
+                    </div>
                     <CardTitle className="text-lg bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 font-normal">
                       {s.title}
                     </CardTitle>
@@ -132,7 +138,7 @@ const Process = () => {
                 </CardHeader>
                 <CardContent>
                   <motion.p
-                    className="text-muted-foreground/80 text-sm leading-relaxed"
+                    className="text-muted-foreground/80 lg:text-base leading-relaxed"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
