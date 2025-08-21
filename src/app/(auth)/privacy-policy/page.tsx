@@ -57,15 +57,15 @@ const PrivacyPolicy = () => {
                     className="dark:block hidden"
                   />
                 </div>
-                <span className="text-xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
+                <span className="text-xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight">
                   Meridian
                 </span>
               </Link>
 
               <Button asChild variant="outline" size="sm">
-                <Link href="/" className="flex items-center gap-2">
+                <Link href="/auth" className="flex items-center gap-2">
                   <ArrowLeft className="h-4 w-4" />
-                  Back to Home
+                  Back
                 </Link>
               </Button>
             </div>
@@ -82,7 +82,7 @@ const PrivacyPolicy = () => {
               className="space-y-8"
             >
               <motion.div variants={itemVariants} className="text-center mb-12">
-                <h1 className="text-4xl sm:text-5xl font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight mb-4">
+                <h1 className="text-4xl sm:text-5xl  bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 tracking-tight mb-4">
                   Privacy Policy
                 </h1>
                 <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -96,12 +96,12 @@ const PrivacyPolicy = () => {
 
               <div className="space-y-12">
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                     1. Information We Collect
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm space-y-4">
                     <div>
-                      <h3 className="text-lg font-medium text-foreground mb-2">
+                      <h3 className="text-lg  text-foreground mb-2">
                         Personal Information
                       </h3>
                       <p className="text-muted-foreground">
@@ -112,7 +112,7 @@ const PrivacyPolicy = () => {
                       </p>
                     </div>
                     <div>
-                      <h3 className="text-lg font-medium text-foreground mb-2">
+                      <h3 className="text-lg  text-foreground mb-2">
                         Interview Data
                       </h3>
                       <p className="text-muted-foreground">
@@ -123,7 +123,7 @@ const PrivacyPolicy = () => {
                       </p>
                     </div>
                     <div>
-                      <h3 className="text-lg font-medium text-foreground mb-2">
+                      <h3 className="text-lg  text-foreground mb-2">
                         Usage Information
                       </h3>
                       <p className="text-muted-foreground">
@@ -136,7 +136,7 @@ const PrivacyPolicy = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                     2. How We Use Your Information
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -176,7 +176,7 @@ const PrivacyPolicy = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                     3. Information Sharing and Disclosure
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm space-y-4">
@@ -206,7 +206,7 @@ const PrivacyPolicy = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                     4. Data Security
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -222,7 +222,7 @@ const PrivacyPolicy = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                     5. Data Retention
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -238,7 +238,7 @@ const PrivacyPolicy = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                     6. Your Rights
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -257,7 +257,7 @@ const PrivacyPolicy = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                     7. Third-Party Services
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -272,7 +272,7 @@ const PrivacyPolicy = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                     8. Changes to This Policy
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
@@ -287,7 +287,7 @@ const PrivacyPolicy = () => {
                 </motion.section>
 
                 <motion.section variants={itemVariants} className="space-y-4">
-                  <h2 className="text-2xl font-semibold text-foreground">
+                  <h2 className="text-2xl bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
                     9. Contact Us
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">

@@ -186,7 +186,7 @@ const AuthPage = () => {
                   href="/terms-of-service"
                   className="underline-offset-4 hover:underline text-foreground"
                 >
-                  Terms
+                  Terms of Service
                 </Link>{" "}
                 and{" "}
                 <Link

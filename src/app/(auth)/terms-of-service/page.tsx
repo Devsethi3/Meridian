@@ -63,9 +63,9 @@ const TermsOfService = () => {
               </Link>
 
               <Button asChild variant="outline" size="sm">
-                <Link href="/" className="flex items-center gap-2">
+                <Link href="/auth" className="flex items-center gap-2">
                   <ArrowLeft className="h-4 w-4" />
-                  Back to Home
+                  Back
                 </Link>
               </Button>
             </div>
