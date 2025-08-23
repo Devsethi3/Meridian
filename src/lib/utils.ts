@@ -22,7 +22,6 @@ export const formatDate = (dateString: string) => {
   });
 };
 
-
 export function formatDuration(d: string | null | undefined): string {
   if (!d) return "—";
   // ISO 8601 format

@@ -53,9 +53,9 @@ const UserDropdown: React.FC<UserDropdownProps> = ({
   return (
     <div>
       <DropdownMenu>
-        <DropdownMenuTrigger className="outline-none">
+        <DropdownMenuTrigger className="outline-none mt-1">
           <span className="relative inline-flex rounded-full p-[2px] bg-gradient-to-br from-primary/60 via-secondary/60 to-muted/60">
-            <Avatar className="h-9 w-9 cursor-pointer ring-1 ring-primary/30 bg-background text-foreground">
+            <Avatar className="h-8 w-8 cursor-pointer rounded-lg ring-1 ring-primary/30 bg-background text-foreground">
               <AvatarImage
                 src={user?.picture || ""}
                 alt={user?.name || "User"}

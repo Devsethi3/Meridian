@@ -19,6 +19,7 @@ import Image from "next/image";
 import { HoverLink } from "./HoverLink";
 import UserDropdown from "./UserDropdown";
 import { useSignOut } from "@/hooks/use-sign-out";
+import Logo from "./Logo";
 
 const NAV_LINKS = [
   { href: "#features", label: "Features" },
@@ -118,29 +119,7 @@ export function Header() {
     <header className={headerClass}>
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         {/* Logo */}
-        <div className="flex items-center gap-3">
-          <Link href="/" className="flex items-center gap-2 font-semibold">
-            <Image
-              src="/logo-light.svg"
-              width={20}
-              height={20}
-              alt="logo"
-              className="block dark:hidden"
-              priority
-            />
-            <Image
-              src="/logo-dark.svg"
-              width={25}
-              height={25}
-              alt="logo"
-              className="hidden dark:block"
-              priority
-            />
-            <span className="text-lg bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
-              Meridian
-            </span>
-          </Link>
-        </div>
+        <Logo size="lg" />
 
         {/* Desktop nav links */}
         <nav className="hidden items-center gap-6 md:flex">
