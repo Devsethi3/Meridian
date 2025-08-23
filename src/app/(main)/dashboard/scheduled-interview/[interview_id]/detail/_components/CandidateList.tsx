@@ -99,7 +99,7 @@ const CandidateList: React.FC<CandidateListProps> = ({
   if (error) {
     return (
       <Alert variant="destructive" className="border-destructive/30">
-        <AlertTitle>Couldn’t load candidates</AlertTitle>
+        <AlertTitle>Couldn&apos;t load candidates</AlertTitle>
         <AlertDescription>
           {error}
           {onRetry && (

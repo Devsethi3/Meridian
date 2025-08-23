@@ -175,7 +175,7 @@ const DetailsContainer: React.FC<DetailsContainerProps> = ({
   if (error) {
     return (
       <Alert variant="destructive" className="border border-destructive/30">
-        <AlertTitle>Couldn’t load interview details</AlertTitle>
+        <AlertTitle>Couldn&apos;t load interview details</AlertTitle>
         <AlertDescription className="mt-1">
           {error}
           {onRetry && (
