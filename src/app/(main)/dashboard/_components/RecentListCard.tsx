@@ -21,7 +21,7 @@ interface RecentListCardProps {
 }
 
 const RecentListCard: React.FC<RecentListCardProps> = ({ interview }) => {
-  const href = `/interviews/${encodeURIComponent(interview.interview_id)}`;
+  const href = `/dashboard/scheduled-interview/${interview.interview_id || ""}/detail`;
   const host =
     process.env.NEXT_PUBLIC_HOST_URL ||
     (typeof window !== "undefined" ? window.location.origin : "");

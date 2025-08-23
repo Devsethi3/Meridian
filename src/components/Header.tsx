@@ -117,7 +117,7 @@ export function Header() {
 
   return (
     <header className={headerClass}>
-      <div className="container flex h-16 items-center justify-between px-4 md:px-6">
+      <div className="container flex lg:h-16 h-14 items-center justify-between">
         {/* Logo */}
         <Logo size="lg" />
 
