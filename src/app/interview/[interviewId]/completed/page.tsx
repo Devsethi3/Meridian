@@ -2,16 +2,7 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import {
-  ArrowRight,
-  Check,
-  Home,
-  Star,
-  Timer,
-  User,
-  CalendarDays,
-  ClipboardList,
-} from "lucide-react";
+import { ArrowRight, Home, ClipboardList } from "lucide-react";
 
 const CompletedInterviewPage = () => {
   const router = useRouter();
@@ -141,7 +132,7 @@ const CompletedInterviewPage = () => {
             <Button
               onClick={() => router.push("/dashboard")}
               variant="outline"
-              className="flex-1 py-6"
+              className="flex-1 lg:py-6 py-4"
             >
               <Home className="mr-2 h-4 w-4" />
               Dashboard
@@ -149,7 +140,7 @@ const CompletedInterviewPage = () => {
 
             <Button
               onClick={() => router.push("/dashboard")}
-              className="flex-1 py-6"
+              className="flex-1 lg:py-6 py-4"
             >
               View Full Report
               <ArrowRight className="ml-2 h-4 w-4" />
