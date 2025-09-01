@@ -51,31 +51,35 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
           <div className="rounded-full bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 p-[1px]">
-            <Avatar className="h-8 w-8 ring-1 ring-border/50">
-              <AvatarImage src={user?.picture || ""} alt={user?.name || "User"} />
+            <Avatar className="h-9 w-9 ring-1 ring-border/50">
+              <AvatarImage
+                src={user?.picture || ""}
+                alt={user?.name || "User"}
+              />
               <AvatarFallback className="bg-muted text-muted-foreground">
                 {initials || <UserIcon className="h-4 w-4" />}
               </AvatarFallback>
             </Avatar>
           </div>
-        </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent 
-        className="w-72 p-0 bg-transparent border-0" 
-        align="end" 
+      <DropdownMenuContent
+        className="w-72 p-0 bg-transparent border-0"
+        align="end"
         sideOffset={8}
         forceMount
       >
-        <div className="rounded-xl bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 p-[1px]">
-          <div className="rounded-xl bg-card/95 backdrop-blur-sm border border-border/50">
+        <div className="rounded-lg bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 p-[1px]">
+          <div className="rounded-lg bg-card/95 backdrop-blur-sm border border-border/50">
             {/* Header */}
             <div className="flex items-center gap-3 p-4 border-b border-border/50">
               <div className="rounded-full bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px]">
                 <Avatar className="h-11 w-11 ring-1 ring-border/50">
-                  <AvatarImage src={user?.picture || ""} alt={user?.name || "User"} />
+                  <AvatarImage
+                    src={user?.picture || ""}
+                    alt={user?.name || "User"}
+                  />
                   <AvatarFallback className="bg-muted text-muted-foreground">
                     {initials || <UserIcon className="h-5 w-5" />}
                   </AvatarFallback>
@@ -112,8 +116,8 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
             {isAuthed && (
               <div className="py-1">
                 <DropdownMenuGroup>
-                  <DropdownMenuItem 
-                    asChild 
+                  <DropdownMenuItem
+                    asChild
                     className="mx-1 rounded-lg transition-all duration-200 hover:bg-muted/50"
                   >
                     <Link href="/dashboard" className="cursor-pointer">
@@ -121,44 +125,6 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
                       <span>Dashboard</span>
                     </Link>
                   </DropdownMenuItem>
-
-                  <DropdownMenuItem 
-                    asChild 
-                    className="mx-1 rounded-lg transition-all duration-200 hover:bg-muted/50"
-                  >
-                    <Link href="/settings" className="cursor-pointer">
-                      <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
-                      <span>Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem 
-                    asChild 
-                    className="mx-1 rounded-lg transition-all duration-200 hover:bg-muted/50"
-                  >
-                    <Link href="/billing" className="cursor-pointer">
-                      <CreditCard className="mr-3 h-4 w-4 text-muted-foreground" />
-                      <span>Billing</span>
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSub>
-                    <DropdownMenuSubTrigger className="mx-1 rounded-lg transition-all duration-200 hover:bg-muted/50">
-                      <HelpCircle className="mr-3 h-4 w-4 text-muted-foreground" />
-                      <span>Help & Support</span>
-                    </DropdownMenuSubTrigger>
-                    <DropdownMenuSubContent className="ml-1">
-                      <DropdownMenuItem asChild>
-                        <Link href="/help" className="cursor-pointer">Help Center</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/changelog" className="cursor-pointer">Changelog</Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link href="/status" className="cursor-pointer">Status</Link>
-                      </DropdownMenuItem>
-                    </DropdownMenuSubContent>
-                  </DropdownMenuSub>
                 </DropdownMenuGroup>
 
                 <DropdownMenuSeparator className="mx-2" />
