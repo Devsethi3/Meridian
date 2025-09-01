@@ -1,44 +1,200 @@
 "use client";
 
+import Link from "next/link";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
   DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuGroup,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
 } from "./ui/dropdown-menu";
-import { LogOut, User as UserIcon } from "lucide-react";
+import { Button } from "./ui/button";
+import {
+  User as UserIcon,
+  LogOut,
+  Settings,
+  HelpCircle,
+  CreditCard,
+  LayoutDashboard,
+  Loader2,
+  CheckCircle2,
+} from "lucide-react";
 import { useSignOut } from "@/hooks/use-sign-out";
 
+export interface User {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  picture?: string | null;
+}
+
 interface UserDropdownProps {
-  user: { name?: string | null; picture?: string | null } | null;
+  user: User | null;
   initials: string | null;
 }
 
-const UserDropdown: React.FC<UserDropdownProps> = ({ user, initials }) => {
-  const { signOut, isLoading } = useSignOut();
+export const UserDropdown: React.FC<UserDropdownProps> = ({
+  user,
+  initials,
+}) => {
+  const isAuthed = Boolean(user);
+  const name = user?.name ?? "Guest";
+  const email = user?.email ?? "Not signed in";
+
+  const { signOut, error, isLoading } = useSignOut();
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none">
-        <Avatar className="h-8 w-8 cursor-pointer rounded-lg ring-1 ring-primary/30 bg-background text-foreground">
-          <AvatarImage src={user?.picture || ""} alt={user?.name || "User"} />
-          <AvatarFallback className="bg-muted text-muted-foreground">
-            {initials || <UserIcon className="h-4 w-4" />}
-          </AvatarFallback>
-        </Avatar>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0">
+          <div className="rounded-full bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 p-[1px]">
+            <Avatar className="h-8 w-8 ring-1 ring-border/50">
+              <AvatarImage src={user?.picture || ""} alt={user?.name || "User"} />
+              <AvatarFallback className="bg-muted text-muted-foreground">
+                {initials || <UserIcon className="h-4 w-4" />}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+        </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" sideOffset={8} className="w-48 p-2 bg-popover rounded-lg shadow-md">
-        <div className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px]">
-          <div className="rounded-xl bg-card/80 p-4 ring-1 ring-border/50 backdrop-blur">
-            <DropdownMenuItem
-              className="cursor-pointer flex items-center gap-2 text-sm leading-relaxed text-muted-foreground hover:bg-muted/30 hover:border-border/50"
-              disabled={isLoading}
-              onSelect={() => void signOut()}
-            >
-              {isLoading ? "Signing out…" : "Sign out"}
-            </DropdownMenuItem>
+      <DropdownMenuContent 
+        className="w-72 p-0 bg-transparent border-0" 
+        align="end" 
+        sideOffset={8}
+        forceMount
+      >
+        <div className="rounded-xl bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 p-[1px]">
+          <div className="rounded-xl bg-card/95 backdrop-blur-sm border border-border/50">
+            {/* Header */}
+            <div className="flex items-center gap-3 p-4 border-b border-border/50">
+              <div className="rounded-full bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px]">
+                <Avatar className="h-11 w-11 ring-1 ring-border/50">
+                  <AvatarImage src={user?.picture || ""} alt={user?.name || "User"} />
+                  <AvatarFallback className="bg-muted text-muted-foreground">
+                    {initials || <UserIcon className="h-5 w-5" />}
+                  </AvatarFallback>
+                </Avatar>
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-foreground">
+                  {name}
+                </p>
+                <p className="truncate text-xs text-muted-foreground">
+                  {email}
+                </p>
+              </div>
+            </div>
+
+            {/* Auth Actions for Non-authenticated Users */}
+            {!isAuthed && (
+              <div className="p-3 space-y-2">
+                <Button asChild size="sm" className="w-full">
+                  <Link href="/auth?view=auth">Sign In</Link>
+                </Button>
+                <Button
+                  asChild
+                  size="sm"
+                  variant="secondary"
+                  className="w-full"
+                >
+                  <Link href="/auth?view=auth&mode=signup">Create Account</Link>
+                </Button>
+              </div>
+            )}
+
+            {/* Menu Items for Authenticated Users */}
+            {isAuthed && (
+              <div className="py-1">
+                <DropdownMenuGroup>
+                  <DropdownMenuItem 
+                    asChild 
+                    className="mx-1 rounded-lg transition-all duration-200 hover:bg-muted/50"
+                  >
+                    <Link href="/dashboard" className="cursor-pointer">
+                      <LayoutDashboard className="mr-3 h-4 w-4 text-muted-foreground" />
+                      <span>Dashboard</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem 
+                    asChild 
+                    className="mx-1 rounded-lg transition-all duration-200 hover:bg-muted/50"
+                  >
+                    <Link href="/settings" className="cursor-pointer">
+                      <Settings className="mr-3 h-4 w-4 text-muted-foreground" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem 
+                    asChild 
+                    className="mx-1 rounded-lg transition-all duration-200 hover:bg-muted/50"
+                  >
+                    <Link href="/billing" className="cursor-pointer">
+                      <CreditCard className="mr-3 h-4 w-4 text-muted-foreground" />
+                      <span>Billing</span>
+                    </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSub>
+                    <DropdownMenuSubTrigger className="mx-1 rounded-lg transition-all duration-200 hover:bg-muted/50">
+                      <HelpCircle className="mr-3 h-4 w-4 text-muted-foreground" />
+                      <span>Help & Support</span>
+                    </DropdownMenuSubTrigger>
+                    <DropdownMenuSubContent className="ml-1">
+                      <DropdownMenuItem asChild>
+                        <Link href="/help" className="cursor-pointer">Help Center</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/changelog" className="cursor-pointer">Changelog</Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link href="/status" className="cursor-pointer">Status</Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuSubContent>
+                  </DropdownMenuSub>
+                </DropdownMenuGroup>
+
+                <DropdownMenuSeparator className="mx-2" />
+
+                <DropdownMenuItem
+                  className="mx-1 rounded-lg transition-all duration-200 hover:bg-destructive/10 cursor-pointer"
+                  disabled={isLoading}
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    void signOut();
+                  }}
+                >
+                  {isLoading ? (
+                    <Loader2 className="mr-3 h-4 w-4 animate-spin text-muted-foreground" />
+                  ) : (
+                    <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />
+                  )}
+                  <span>{isLoading ? "Signing out..." : "Sign out"}</span>
+                </DropdownMenuItem>
+
+                {/* Status Indicator */}
+                <div className="mx-3 my-2 rounded-lg bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 p-3 ring-1 ring-primary/20">
+                  <div className="flex items-center gap-2 text-xs text-primary">
+                    <CheckCircle2 className="h-3 w-3 flex-shrink-0" />
+                    <span>You're signed in and ready to go!</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Error Message */}
+            {error && (
+              <div className="mx-3 mb-3 rounded-lg bg-destructive/10 border border-destructive/20 p-2">
+                <p className="text-xs text-destructive">{error}</p>
+              </div>
+            )}
           </div>
         </div>
       </DropdownMenuContent>
