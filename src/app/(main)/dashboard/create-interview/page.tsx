@@ -189,7 +189,7 @@ const CreateInterviewPage = () => {
   return (
     <div className="min-h-screen">
       {/* Header */}
-      <header className="container px-2 sm:px-4 lg:px-6 py-4 md:py-6">
+      <header className="container py-4 md:py-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <Button
