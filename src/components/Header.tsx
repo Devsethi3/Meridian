@@ -281,29 +281,8 @@ export function Header() {
             >
               <div>
                 <div className="flex items-center justify-between pb-2">
-                  <Link
-                    href="/"
-                    onClick={close}
-                    className="flex items-center gap-2 font-semibold"
-                  >
-                    <Image
-                      src="/logo-light.svg"
-                      width={20}
-                      height={20}
-                      alt="logo"
-                      className="block dark:hidden"
-                    />
-                    <Image
-                      src="/logo-dark.svg"
-                      width={20}
-                      height={20}
-                      alt="logo"
-                      className="hidden dark:block"
-                    />
-                    <span className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
-                      Meridian
-                    </span>
-                  </Link>
+                  <Logo size="lg" />
+
                   <Button
                     variant="ghost"
                     size="icon"
