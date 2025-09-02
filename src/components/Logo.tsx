@@ -56,7 +56,7 @@ const Logo: React.FC<LogoProps> = ({
 
   return (
     <div className={cn("flex items-center gap-3", className)}>
-      <div className={cn("flex items-center font-semibold", config.gap)}>
+      <div className={cn("flex items-center font-medium", config.gap)}>
         {/* Light mode logo */}
         <Image
           src="/logo-light.svg"
