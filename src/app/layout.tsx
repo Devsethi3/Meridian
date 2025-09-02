@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Space_Grotesk } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
-import Provider from "./provider";
+import Provider from "./provider";        
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/theme/theme-provider";
 
-const font = Space_Grotesk();
+const font = DM_Sans({ weight: "400" });
 
 export const metadata: Metadata = {
   title: "Meridian | AI Interview Prep & Mock Interview App",

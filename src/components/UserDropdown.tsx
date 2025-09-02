@@ -50,18 +50,15 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-          <div className="rounded-full bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 p-[1px]">
-            <Avatar className="h-9 w-9 ring-1 ring-border/50">
-              <AvatarImage
-                src={user?.picture || ""}
-                alt={user?.name || "User"}
-              />
-              <AvatarFallback className="bg-muted text-muted-foreground">
-                {initials || <UserIcon className="h-4 w-4" />}
-              </AvatarFallback>
-            </Avatar>
-          </div>
+      <DropdownMenuTrigger asChild className="cursor-pointer">
+        <div className="rounded-full bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 p-[1px]">
+          <Avatar className="h-9 w-9 ring-1 ring-border/50">
+            <AvatarImage src={user?.picture || ""} alt={user?.name || "User"} />
+            <AvatarFallback className="bg-muted text-muted-foreground">
+              {initials || <UserIcon className="h-4 w-4" />}
+            </AvatarFallback>
+          </Avatar>
+        </div>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent

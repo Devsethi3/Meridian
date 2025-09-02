@@ -252,7 +252,7 @@ export default function HeroSection() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="relative z-10"
+                className="relative z-10 w-full"
               >
                 <Link href="#demo">
                   <motion.div variants={subtleFadeUp}>

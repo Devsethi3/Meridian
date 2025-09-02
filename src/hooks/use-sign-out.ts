@@ -46,11 +46,8 @@ export const useSignOut = (): UseSignOutReturn => {
         description: "You have been logged out.",
       });
 
-      // Non-blocking UI updates + RSC refresh on the new route
-      startTransition(() => {
-        router.replace("/");
-        router.refresh();
-      });
+      // Hard reload the window to clear all client-side state
+      window.location.href = "/";
     } catch (e) {
       const message = e instanceof Error ? e.message : "Failed to sign out";
       setError(message);

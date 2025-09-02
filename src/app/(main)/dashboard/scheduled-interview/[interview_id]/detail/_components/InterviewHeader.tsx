@@ -4,13 +4,13 @@ import { CalendarDays, Clock, FileText, Mail, Copy, Check } from "lucide-react";
 import moment from "moment";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import ErrorState from "./ErrorState";
 import { Card } from "@/components/ui/card";
-import * as React from "react";
 import { InterviewDetail } from "@/lib/types";
 import InterviewHeaderSkeleton from "@/components/skeletons/InterviewHeaderSkeleton";
 import StatChip from "./StatChip";
+import { motion } from "framer-motion";
+import { useCallback, useState } from "react";
 
 interface InterviewHeaderProps {
   interview: InterviewDetail | null;
@@ -25,9 +25,9 @@ const InterviewHeader: React.FC<InterviewHeaderProps> = ({
   error = null,
   onRetry,
 }) => {
-  const [copied, setCopied] = React.useState(false);
+  const [copied, setCopied] = useState(false);
 
-  const handleCopy = React.useCallback(async () => {
+  const handleCopy = useCallback(async () => {
     if (!interview?.userEmail) return;
     try {
       await navigator.clipboard.writeText(interview.userEmail);
@@ -59,70 +59,80 @@ const InterviewHeader: React.FC<InterviewHeaderProps> = ({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-border bg-card">
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-primary/15 via-secondary/5 to-muted/5" />
-      <div className="relative p-6 sm:p-8">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="space-y-1">
-            <h1 className="text-2xl font-semibold text-foreground">
-              {interview.jobPosition}
-            </h1>
-            <div className="text-sm text-muted-foreground">
-              Interview overview and metadata
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: "easeOut" }}
+      className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px] transition-colors duration-300 hover:from-primary/40 hover:via-secondary/40 hover:to-primary/40"
+    >
+      <div className="relative overflow-hidden rounded-xl bg-card/80 ring-1 ring-border/50 backdrop-blur">
+        <div className="relative p-6 sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div className="space-y-1">
+              <h1 className="bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40 text-2xl font-semibold sm:text-3xl">
+                {interview.jobPosition}
+              </h1>
+              <div className="text-sm text-muted-foreground">
+                Interview overview and metadata
+              </div>
             </div>
+
+            <motion.div
+              whileHover={{ y: -1 }}
+              transition={{ type: "spring", stiffness: 350, damping: 22, mass: 0.4 }}
+              className="rounded-lg bg-gradient-to-br from-primary/20 via-secondary/20 to-primary/20 p-[1px]"
+            >
+              <div className="flex items-center gap-2 rounded-lg bg-background/60 px-3 py-2 ring-1 ring-border/50">
+                <Mail className="h-4 w-4 text-muted-foreground" />
+                <span className="max-w-[220px] truncate text-foreground">
+                  {interview.userEmail}
+                </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-7 w-7"
+                  onClick={handleCopy}
+                  aria-label="Copy email"
+                  aria-live="polite"
+                >
+                  {copied ? (
+                    <Check className="h-4 w-4 text-primary" />
+                  ) : (
+                    <Copy className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </motion.div>
           </div>
 
-          <div className="rounded-lg border border-border bg-background/60 px-3 py-2">
-            <div className="flex items-center gap-2 text-sm">
-              <Mail className="h-4 w-4 text-muted-foreground" />
-              <span className="text-foreground truncate max-w-[220px]">
-                {interview.userEmail}
-              </span>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-7 w-7"
-                onClick={handleCopy}
-                aria-label="Copy email"
-              >
-                {copied ? (
-                  <Check className="h-4 w-4 text-primary" />
-                ) : (
-                  <Copy className="h-4 w-4" />
-                )}
-              </Button>
-              {copied && <Badge variant="outline">Copied</Badge>}
-            </div>
-          </div>
-        </div>
+          <Separator className="my-6" />
 
-        <Separator className="my-6" />
-
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <StatChip
-            icon={<CalendarDays className="h-4 w-4" />}
-            label="Created"
-            value={moment(interview.created_at).format("MMM DD, YYYY")}
-          />
-          <StatChip
-            icon={<Clock className="h-4 w-4" />}
-            label="Duration"
-            value={interview.duration || "—"}
-          />
-          <StatChip
-            icon={<Mail className="h-4 w-4" />}
-            label="Email"
-            value={interview.userEmail}
-            truncate
-          />
-          <StatChip
-            icon={<FileText className="h-4 w-4" />}
-            label="Interview Type"
-            value={interview.type || "—"}
-          />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+      <StatChip
+        icon={<CalendarDays className="h-4 w-4" />}
+        label="Created"
+        value={moment(interview.created_at).format("MMM DD, YYYY")}
+      />
+      <StatChip
+        icon={<Clock className="h-4 w-4" />}
+        label="Duration"
+        value={interview.duration || "—"}
+      />
+      <StatChip
+        icon={<Mail className="h-4 w-4" />}
+        label="Email"
+        value={interview.userEmail}
+        truncate
+      />
+      <StatChip
+        icon={<FileText className="h-4 w-4" />}
+        label="Interview Type"
+        value={interview.type || "—"}
+      />
+    </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
