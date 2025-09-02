@@ -214,7 +214,7 @@ const CreateInterviewPage = () => {
       </header>
 
       {/* Main content */}
-      <main className="container px-0 sm:px-4 lg:px-6 pb-10">
+      <main className="container pb-10">
         <section
           key={step}
           className="rounded-xl border border-border bg-card p-4 sm:p-6 md:p-8 shadow-sm motion-safe:animate-in motion-safe:fade-in-50 motion-safe:slide-in-from-bottom-2"

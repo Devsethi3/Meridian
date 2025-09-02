@@ -7,6 +7,7 @@
   margin-inline: auto;
   padding-inline: 0.75rem;
 }
+
 .bg-grid-pattern {
   background-image: linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
