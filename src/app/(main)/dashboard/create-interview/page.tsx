@@ -194,6 +194,7 @@ const CreateInterviewPage = () => {
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
+              size={"icon"}
               onClick={() => router.back()}
               className="shrink-0"
               aria-label="Go back"
