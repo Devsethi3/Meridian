@@ -200,7 +200,7 @@ const CreateInterviewPage = () => {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-lg md:text-xl font-semibold tracking-tight">
+            <h1 className="text-lg md:text-xl font-medium tracking-tight">
               Create New Interview
             </h1>
             {/* <SummaryRow /> */}
