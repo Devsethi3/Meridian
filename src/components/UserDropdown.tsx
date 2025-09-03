@@ -14,9 +14,6 @@ import { Button } from "./ui/button";
 import {
   User as UserIcon,
   LogOut,
-  Settings,
-  HelpCircle,
-  CreditCard,
   LayoutDashboard,
   Loader2,
   CheckCircle2,
