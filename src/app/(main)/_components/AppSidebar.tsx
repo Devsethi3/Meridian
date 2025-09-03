@@ -38,6 +38,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/supabase/supabase-client";
 import { toast } from "sonner";
 import Image from "next/image";
+import { useSignOut } from "@/hooks/use-sign-out";
 
 const AppSidebar = () => {
   const pathname = usePathname();
@@ -67,14 +68,7 @@ const AppSidebar = () => {
     }
   };
 
-  const handleSignOut = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      toast.error("Failed to sign out");
-    } else {
-      window.location.href = "/";
-    }
-  };
+  const { signOut, error, isLoading } = useSignOut();
 
   return (
     <Sidebar className="bg-card text-card-foreground border-border">
@@ -241,7 +235,11 @@ const AppSidebar = () => {
                   Copy email
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  onClick={handleSignOut}
+                  disabled={isLoading}
+                  onSelect={(e) => {
+                    e.preventDefault();
+                    void signOut();
+                  }}
                   className="flex items-center text-destructive focus:text-destructive"
                 >
                   <LogOut className="mr-2 h-4 w-4" />
