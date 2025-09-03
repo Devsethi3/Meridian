@@ -25,7 +25,6 @@ import {
   Settings,
   User as UserIcon,
 } from "lucide-react";
-import { FaAccusoft } from "react-icons/fa";
 import { useUser } from "@/context/UserContext";
 import {
   DropdownMenu,
