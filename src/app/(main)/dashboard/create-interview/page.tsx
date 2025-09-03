@@ -201,7 +201,7 @@ const CreateInterviewPage = () => {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <h1 className="text-lg md:text-xl font-medium tracking-tight">
+            <h1 className="text-xl lg:text-2xl font-medium tracking-tight bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
               Create New Interview
             </h1>
             {/* <SummaryRow /> */}
@@ -225,7 +225,7 @@ const CreateInterviewPage = () => {
             <div className="space-y-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="text-lg font-semibold">Interview details</h2>
+                  <h2 className="text-lg font-medium">Interview details</h2>
                   <p className="text-sm text-muted-foreground">
                     Fill in the role, description, duration, and interview type.
                   </p>

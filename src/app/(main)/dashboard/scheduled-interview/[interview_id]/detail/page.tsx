@@ -74,7 +74,7 @@ const InterviewDetailsPage: React.FC = () => {
     <div className="">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-xl font-semibold">Interview Details</h1>
+          <h1 className="text-xl font-medium">Interview Details</h1>
           <p className="text-sm text-muted-foreground">
             {lastUpdated ? `Last updated ${new Date(lastUpdated).toLocaleTimeString()}` : "—"}
           </p>
