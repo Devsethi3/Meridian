@@ -105,7 +105,7 @@ const AppSidebar = () => {
         </div>
       </SidebarHeader>
 
-      {/* Nav */}
+      {/* Navigation */}
       <SidebarContent className="bg-card">
         <SidebarGroup>
           <SidebarGroupLabel className="text-xs text-muted-foreground">
