@@ -59,12 +59,13 @@ const AuthPage = () => {
       if (error) {
         console.error("Error signing in with Google:", error.message);
         alert("Failed to sign in with Google. Please try again.");
+        setIsLoading(false); // Only reset loading on error
       }
+      // Don't reset loading on success - user will be redirected
     } catch (error) {
       console.error("Unexpected error during Google sign-in:", error);
       alert("An unexpected error occurred. Please try again.");
-    } finally {
-      setIsLoading(false);
+      setIsLoading(false); // Only reset loading on error
     }
   }, []);
 
@@ -139,12 +140,15 @@ const AuthPage = () => {
               <motion.div variants={itemVariants}>
                 <Button
                   size="lg"
-                  className="w-full h-12 sm:h-14 rounded-xl group hover:shadow-md transition-shadow"
+                  className="w-full h-12 sm:h-14 rounded-xl group hover:shadow-md transition-shadow disabled:opacity-50 disabled:cursor-not-allowed"
                   onClick={loginWithGoogle}
                   disabled={isLoading}
                 >
                   {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <div className="flex items-center justify-center">
+                      <Loader2 className="w-5 h-5 animate-spin mr-3" />
+                      <span className="font-medium">Signing in...</span>
+                    </div>
                   ) : (
                     <div className="flex items-center justify-center">
                       <FaGoogle className="w-5 h-5" />
