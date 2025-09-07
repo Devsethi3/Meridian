@@ -71,7 +71,7 @@ const AppSidebar = () => {
 
   return (
     <Sidebar className="bg-card text-card-foreground border-border">
-      {/* Brand */}
+      {/* Logo */}
       <SidebarHeader className="border-b border-border">
         <div className="mt-3 flex items-center justify-center gap-3 px-3">
           <Image
