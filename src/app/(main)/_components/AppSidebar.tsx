@@ -35,7 +35,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { supabase } from "@/supabase/supabase-client";
 import { toast } from "sonner";
 import Image from "next/image";
 import { useSignOut } from "@/hooks/use-sign-out";
