@@ -123,7 +123,7 @@ const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
         </header>
 
         {/* Page content */}
-        <main className="px-2 py-4 md:px-4 lg:px-8">
+        <main className="py-4 container">
           <WelcomeInterface />
           <div className="mt-4">{children}</div>
         </main>

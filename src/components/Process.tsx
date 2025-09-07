@@ -122,9 +122,7 @@ const Process = () => {
 
                 <CardHeader>
                   <div className="flex items-center gap-4">
-                    <div
-                      className="flex items-start gap-4 rounded-xl border border-transparent"
-                    >
+                    <div className="flex items-start gap-4 rounded-xl border border-transparent">
                       <div className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px]">
                         <div className="rounded-xl bg-card/80 p-2 px-4 ring-1 ring-border/50 backdrop-blur">
                           {i + 1}
