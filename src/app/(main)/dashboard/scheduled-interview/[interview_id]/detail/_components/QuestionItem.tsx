@@ -28,7 +28,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({
 
   return (
     <div className="group relative overflow-hidden rounded-xl border border-border bg-card/60 p-4 transition-colors hover:bg-card hover:shadow-md sm:p-5">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary/60 via-secondary/60 to-primary/60 opacity-70 group-hover:opacity-100" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-secondary" />
 
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
