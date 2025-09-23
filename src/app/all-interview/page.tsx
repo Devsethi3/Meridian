@@ -335,12 +335,13 @@ function InterviewCard({ interview }: { interview: Interview }) {
 
   const href = `${process.env.NEXT_PUBLIC_URL}/dashboard/scheduled-interview/${interview_id}/detail`;
 
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(interview_id);
-    } catch {
-      // ignore
-    }
+  // Get interview status based on duration
+  const getInterviewStatus = () => {
+    return duration ? "Completed" : "Scheduled";
+  };
+
+  const getStatusColor = () => {
+    return duration ? "text-emerald-600" : "text-blue-600";
   };
 
   return (
@@ -357,7 +358,7 @@ function InterviewCard({ interview }: { interview: Interview }) {
         {/* Header */}
         <div className="mb-3 flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h3 className="truncate text-base font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
+            <h3 className="truncate lg:text-xl text-lg font-medium bg-gradient-to-b from-foreground to-foreground/70 bg-clip-text text-transparent dark:from-foreground dark:to-foreground/40">
               {jobPosition || "Untitled"}
             </h3>
             <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
@@ -394,19 +395,15 @@ function InterviewCard({ interview }: { interview: Interview }) {
             </div>
           </div>
 
-          <button
-            onClick={handleCopy}
-            className="rounded-md border border-border bg-muted px-2.5 py-2 text-left transition hover:ring-2 hover:ring-primary"
-            title="Copy Interview ID"
-          >
+          <div className="rounded-md border border-border bg-muted px-2.5 py-2">
             <div className="flex items-center gap-1.5 text-muted-foreground">
-              <HashIcon className="size-3.5" />
-              <span>ID</span>
+              <StatusIcon className="size-3.5" />
+              <span>Status</span>
             </div>
-            <div className="mt-1 truncate font-medium text-foreground">
-              {interview_id}
+            <div className={`mt-1 font-medium ${getStatusColor()}`}>
+              {getInterviewStatus()}
             </div>
-          </button>
+          </div>
         </div>
 
         {/* Actions */}
@@ -497,7 +494,7 @@ function EmptyState({
       <p className="mb-6 max-w-md text-sm text-muted-foreground">
         {hasFilters
           ? "No results match your current filters. Try adjusting the search or filter settings."
-          : "You haven’t created any interviews yet. Start by creating a new one."}
+          : "You haven't created any interviews yet. Start by creating a new one."}
       </p>
 
       <div className="flex items-center gap-3">
@@ -718,14 +715,22 @@ function ListIcon(props: React.SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
-function HashIcon(props: React.SVGProps<SVGSVGElement>) {
+function StatusIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" fill="none" className={props.className}>
       <path
-        d="M5 9h14M5 15h14M10 4L8 20M16 4l-2 16"
+        d="M22 11.08V12a10 10 0 1 1-5.93-9.14"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="m9 11 3 3L22 4"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
