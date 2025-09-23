@@ -412,7 +412,7 @@ function InterviewCard({ interview }: { interview: Interview }) {
         {/* Actions */}
         <div className="mt-auto flex items-center justify-between gap-2">
           <Link
-            href={href}
+            href={`${process.env.NEXT_PUBLIC_URL}/interview/${interview_id}`}
             className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Open
