@@ -346,7 +346,7 @@ function InterviewCard({ interview }: { interview: Interview }) {
 
   return (
     <motion.div
-      whileHover={{ y: -4 }}
+      whileHover={{ y: -2 }}
       transition={{ type: "spring", stiffness: 300, damping: 25 }}
       className="group relative h-full overflow-hidden rounded-xl border border-border bg-card text-card-foreground shadow-sm"
     >
