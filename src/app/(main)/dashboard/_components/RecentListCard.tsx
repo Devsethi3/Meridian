@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import type { Interview } from "@/lib/types";
 import {
   Copy,
   Send,

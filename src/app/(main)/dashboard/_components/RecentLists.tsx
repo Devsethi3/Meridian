@@ -9,7 +9,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/context/UserContext";
 import { supabase } from "@/supabase/supabase-client";
 import RecentListCard from "./RecentListCard";
-import type { Interview } from "@/lib/types";
 
 const RecentLists = () => {
   const [recentList, setRecentList] = useState<Interview[]>([]);
