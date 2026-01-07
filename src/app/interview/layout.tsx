@@ -1,22 +1,17 @@
-
 "use client";
 
-import { useState } from "react";
-import type { InterviewInfo } from "@/lib/types";
-import { InterviewContext } from "@/context/InterviewContext";
-import InterviewHeader from "./_components/InterviewHeader";
+import { InterviewProvider } from "@/context/InterviewContext";
 
-const InterviewIdLayout = ({ children }: { children: React.ReactNode }) => {
-  const [interviewInfo, setInterviewInfo] = useState<InterviewInfo | null>(
-    null
-  );
+interface InterviewLayoutProps {
+  children: React.ReactNode;
+}
 
+const InterviewLayout = ({ children }: InterviewLayoutProps) => {
   return (
-    <InterviewContext.Provider value={{ interviewInfo, setInterviewInfo }}>
-      {/* <InterviewHeader /> */}
-      <div>{children}</div>
-    </InterviewContext.Provider>
+    <InterviewProvider>
+      <div className="min-h-screen">{children}</div>
+    </InterviewProvider>
   );
 };
 
-export default InterviewIdLayout;
+export default InterviewLayout;

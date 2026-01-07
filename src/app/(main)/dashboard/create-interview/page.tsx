@@ -267,7 +267,7 @@ const CreateInterviewPage = () => {
             <div className="space-y-4">
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
-                  <h2 className="text-lg font-semibold">Review questions</h2>
+                  <h2 className="text-lg font-medium">Review questions</h2>
                   <p className="text-sm text-muted-foreground">
                     Tweak, reorder, or remove questions before generating the
                     link.

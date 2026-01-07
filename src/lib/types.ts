@@ -1,85 +1,189 @@
-export type InterviewFormData = {
+// types/interview.ts
+
+export type InterviewType =
+  | "Technical"
+  | "Behavioral"
+  | "Experience"
+  | "Problem Solving"
+  | "Mixed";
+
+export type CallStatus =
+  | "idle"
+  | "connecting"
+  | "connected"
+  | "in-call"
+  | "ending"
+  | "ended"
+  | "error";
+
+export type ConnectionStatus = "disconnected" | "connecting" | "connected";
+
+export interface Question {
+  id?: string;
+  question: string;
+  category?: string;
+}
+
+export interface InterviewFormData {
   jobPosition?: string;
   jobDescription?: string;
   duration?: string;
-  type?: "Technical" | "Behavior" | "Experience" | "Problem Solving";
-};
+  type?: InterviewType;
+  questionList?: Question[];
+}
 
-export type InterviewInfo = {
+export interface InterviewInfo {
+  id?: number;
+  interview_id: string;
   jobPosition: string;
   jobDescription: string;
   duration: string;
   type: string;
-  interview_id: string;
   userName?: string;
   userEmail?: string;
-  questionList?: Array<{ question: string }>;
-};
+  questionList?: Question[];
+  created_at?: string;
+}
+
+export interface TranscriptMessage {
+  id: string;
+  role: "assistant" | "user";
+  text: string;
+  timestamp: number;
+}
+
+// Vapi Event Types
+export interface VapiEvent {
+  type?: string;
+  transcript?: string;
+  role?: "assistant" | "user";
+  status?: string;
+  timestamp?: number;
+}
 
 export interface VapiMessage {
   type: string;
   transcript?: string;
+  transcriptType?: "partial" | "final";
   role?: "assistant" | "user";
-  conversation?: string;
+  conversation?: VapiConversationMessage[];
+  status?: string;
+  endedReason?: string;
 }
 
-export interface VapiEvent {
+export interface VapiConversationMessage {
+  id?: string;
+  role: "assistant" | "user" | "system";
+  content?: string;
+  text?: string;
+  timestamp?: string;
+}
+
+export interface VapiSpeechEvent {
   transcript?: string;
-  role?: "assistant" | "user";
+  isFinal?: boolean;
 }
 
-export type ConnectionStatus = "connecting" | "connected" | "disconnected";
-
-export interface Interview {
-  id: number;
-  created_at: string;
-  duration: string;
-  interview_id: string;
-  jobDescription: string;
-  jobPosition: string;
-  questionList: Question[];
-  type: string;
-  userEmail: string;
-}
-
-export interface InterviewFeedback {
-  userEmail: string;
-  userName: string;
-  created_at: string;
-  feedback: {
-    feedback: {
-      rating: {
-        experience: number;
-        communication: number;
-        problemSolving: number;
-        technicalSkills: number;
-      };
-      summary: string;
-      recommendation: string;
-      recommendationMsg: string;
-    };
+export interface VapiErrorEvent {
+  message?: string;
+  error?: {
+    message?: string;
+    code?: string;
   };
 }
 
-export interface Question {
-  question: string;
+// Vapi Assistant Configuration
+export interface VapiTranscriberConfig {
+  provider: "deepgram" | "gladia" | "assembly";
+  model?: string;
+  language?: string;
+  keywords?: string[];
 }
 
-export interface QuestionList {
-  length: number;
-  [key: number]: Question;
+export interface VapiVoiceConfig {
+  provider:
+    | "11labs"
+    | "openai"
+    | "deepgram"
+    | "playht"
+    | "azure"
+    | "cartesia"
+    | "rime-ai";
+  voiceId: string;
+  stability?: number;
+  similarityBoost?: number;
+  speed?: number;
+}
+
+export interface VapiModelMessage {
+  role: "system" | "user" | "assistant";
+  content: string;
+}
+
+export interface VapiModelConfig {
+  provider: "openai" | "anthropic" | "google" | "groq";
+  model: string;
+  messages: VapiModelMessage[];
+  temperature?: number;
+  maxTokens?: number;
+}
+
+export interface VapiAssistantConfig {
+  name: string;
+  firstMessage: string;
+  transcriber: VapiTranscriberConfig;
+  voice: VapiVoiceConfig;
+  model: VapiModelConfig;
+  endCallPhrases?: string[];
+  silenceTimeoutSeconds?: number;
+  maxDurationSeconds?: number;
+}
+
+// Feedback Types
+export interface FeedbackRating {
+  technicalSkills: number;
+  communication: number;
+  problemSolving: number;
+  experience: number;
+  overall: number;
+}
+
+export interface DetailedFeedbackItem {
+  category: string;
+  score: number;
+  comments: string;
+}
+
+export interface FeedbackContent {
+  rating: FeedbackRating;
+  summary: string;
+  strengths: string[];
+  improvements: string[];
+  recommendation: "Strong Hire" | "Hire" | "Maybe" | "No Hire";
+  recommendationMsg: string;
+  detailedFeedback: DetailedFeedbackItem[];
+}
+
+export interface InterviewFeedback {
+  id?: number;
+  interview_id: string;
+  userEmail: string;
+  userName: string;
+  created_at: string;
+  feedback: FeedbackContent;
+  recommended: boolean;
 }
 
 export interface InterviewDetail {
-  created_at: string;
-  duration: string;
   id: number;
-  "interview-feedback": InterviewFeedback[];
   interview_id: string;
-  jobDescription: string;
   jobPosition: string;
-  questionList: QuestionList;
+  jobDescription: string;
+  duration: string;
   type: string;
-  userEmail: string;
-  userName: string;
+  questionList: Question[];
+  created_at: string;
+  userEmail?: string;
+  userName?: string;
+  "interview-feedback"?: InterviewFeedback[];
 }

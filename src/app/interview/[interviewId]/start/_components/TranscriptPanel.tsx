@@ -1,9 +1,26 @@
+// app/interview/[interviewId]/start/_components/TranscriptPanel.tsx
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Bot, Check, Clipboard, Download, User2 } from "lucide-react";
-import type { TranscriptMessage, CallStatus } from "@/types/interview";
 import { useRef, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Bot,
+  Check,
+  Clipboard,
+  Download,
+  User2,
+  ArrowDown,
+  MessageSquare,
+} from "lucide-react";
+import type { TranscriptMessage, CallStatus } from "@/types/interview";
+import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface TranscriptPanelProps {
   messages: TranscriptMessage[];
@@ -17,6 +34,68 @@ interface TranscriptPanelProps {
   partialUser?: string;
 }
 
+interface MessageBubbleProps {
+  message: TranscriptMessage;
+  isPartial?: boolean;
+}
+
+const MessageBubble = ({ message, isPartial = false }: MessageBubbleProps) => {
+  const isAssistant = message.role === "assistant";
+
+  return (
+    <div
+      className={cn(
+        "flex gap-3 max-w-[90%]",
+        isAssistant ? "self-start" : "self-end flex-row-reverse"
+      )}
+    >
+      {/* Avatar */}
+      <div
+        className={cn(
+          "h-8 w-8 rounded-full flex items-center justify-center shrink-0",
+          isAssistant ? "bg-primary/10" : "bg-secondary/10"
+        )}
+      >
+        {isAssistant ? (
+          <Bot className="h-4 w-4 text-primary" />
+        ) : (
+          <User2 className="h-4 w-4 text-secondary-foreground" />
+        )}
+      </div>
+
+      {/* Message */}
+      <div
+        className={cn(
+          "rounded-2xl px-4 py-2.5 text-sm",
+          isAssistant
+            ? "bg-muted rounded-tl-sm"
+            : "bg-primary text-primary-foreground rounded-tr-sm",
+          isPartial && "opacity-70"
+        )}
+      >
+        <p className={cn("leading-relaxed", isPartial && "italic")}>
+          {message.text}
+        </p>
+        {message.timestamp && !isPartial && (
+          <p
+            className={cn(
+              "text-[10px] mt-1",
+              isAssistant
+                ? "text-muted-foreground"
+                : "text-primary-foreground/70"
+            )}
+          >
+            {new Date(message.timestamp).toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            })}
+          </p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export const TranscriptPanel = ({
   messages,
   callStatus,
@@ -29,124 +108,140 @@ export const TranscriptPanel = ({
   partialUser,
 }: TranscriptPanelProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!autoScroll || !containerRef.current) return;
-    const el = containerRef.current;
-    el.scrollTop = el.scrollHeight;
+    if (autoScroll && bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [autoScroll, messages, partialAssistant, partialUser]);
 
+  const hasContent = messages.length > 0 || partialAssistant || partialUser;
+
   return (
-    <div className="rounded-xl border bg-background overflow-hidden">
-      <div className="px-6 py-4 border-b flex items-center justify-between">
-        <div>
-          <div className="font-semibold">Transcript</div>
-          <div className="text-xs text-muted-foreground">
-            Live conversation updates
+    <Card className="flex flex-col overflow-hidden">
+      <CardHeader className="border-b py-3 px-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+            <div>
+              <h3 className="font-semibold text-sm">Live Transcript</h3>
+              <p className="text-xs text-muted-foreground">
+                {messages.length} message{messages.length !== 1 ? "s" : ""}
+              </p>
+            </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={onToggleAutoScroll}
-            title={`Auto-scroll ${autoScroll ? "On" : "Off"}`}
-          >
-            {autoScroll ? (
-              <span className="text-xs font-medium">AS</span>
-            ) : (
-              <span className="text-xs font-medium opacity-60">AS</span>
-            )}
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => onDownload("txt")}
-            title="Download .txt"
-          >
-            <Download className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={onCopy}
-            title="Copy transcript"
-          >
-            {justCopied ? (
-              <Check className="h-4 w-4 text-primary" />
-            ) : (
-              <Clipboard className="h-4 w-4" />
-            )}
-          </Button>
-        </div>
-      </div>
 
-      <div
-        ref={containerRef}
-        className="p-4 sm:p-6 max-h-[calc(100dvh-16rem)] lg:max-h-[calc(100dvh-10rem)] overflow-y-auto"
-        aria-live="polite"
-      >
-        {messages?.length ? (
-          <div className="flex flex-col gap-3">
-            {messages.map((m) => {
-              const isAssistant = m.role === "assistant";
-              return (
-                <div
-                  key={m.id}
-                  className={`max-w-[85%] rounded-lg px-3 py-2 border shadow-sm ${
-                    isAssistant
-                      ? "self-start bg-primary/10 border-primary/20"
-                      : "self-end bg-secondary/20 border-secondary/30"
-                  }`}
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={onToggleAutoScroll}
+              title={
+                autoScroll ? "Auto-scroll enabled" : "Auto-scroll disabled"
+              }
+            >
+              <ArrowDown
+                className={cn(
+                  "h-4 w-4 transition-colors",
+                  autoScroll ? "text-primary" : "text-muted-foreground"
+                )}
+              />
+            </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  disabled={!hasContent}
                 >
-                  <div className="mb-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                    {isAssistant ? (
-                      <>
-                        <Bot className="h-3.5 w-3.5" /> AI
-                      </>
-                    ) : (
-                      <>
-                        <User2 className="h-3.5 w-3.5" /> You
-                      </>
-                    )}
-                  </div>
-                  <div className="text-sm leading-relaxed whitespace-pre-wrap break-words">
-                    {m.text}
-                  </div>
-                </div>
-              );
-            })}
+                  <Download className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => onDownload("txt")}>
+                  Download as TXT
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onDownload("json")}>
+                  Download as JSON
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-            {/* Live partial bubbles */}
-            {partialAssistant && (
-              <div className="max-w-[85%] self-start rounded-lg px-3 py-2 border bg-primary/5 border-primary/20">
-                <div className="mb-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <Bot className="h-3.5 w-3.5" /> AI
-                </div>
-                <div className="text-sm italic text-muted-foreground">
-                  {partialAssistant}
-                </div>
-              </div>
-            )}
-            {partialUser && (
-              <div className="max-w-[85%] self-end rounded-lg px-3 py-2 border bg-secondary/10 border-secondary/30">
-                <div className="mb-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
-                  <User2 className="h-3.5 w-3.5" /> You
-                </div>
-                <div className="text-sm italic text-muted-foreground">
-                  {partialUser}
-                </div>
-              </div>
-            )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={onCopy}
+              disabled={!hasContent}
+            >
+              {justCopied ? (
+                <Check className="h-4 w-4 text-green-500" />
+              ) : (
+                <Clipboard className="h-4 w-4" />
+              )}
+            </Button>
           </div>
-        ) : (
-          <div className="h-[280px] grid place-items-center text-sm text-muted-foreground">
-            {callStatus === "in-call"
-              ? "Say hello to begin..."
-              : "Transcript will appear here during the call."}
-          </div>
-        )}
-      </div>
-    </div>
+        </div>
+      </CardHeader>
+
+      <CardContent className="p-0 flex-1">
+        <div
+          ref={containerRef}
+          className="h-[400px] lg:h-[calc(100vh-28rem)] overflow-y-auto p-4"
+        >
+          {hasContent ? (
+            <div className="flex flex-col gap-4">
+              {messages.map((m) => (
+                <MessageBubble key={m.id} message={m} />
+              ))}
+
+              {/* Partial messages */}
+              {partialAssistant && (
+                <MessageBubble
+                  message={{
+                    id: "partial-assistant",
+                    role: "assistant",
+                    text: partialAssistant,
+                  }}
+                  isPartial
+                />
+              )}
+              {partialUser && (
+                <MessageBubble
+                  message={{
+                    id: "partial-user",
+                    role: "user",
+                    text: partialUser,
+                  }}
+                  isPartial
+                />
+              )}
+
+              <div ref={bottomRef} />
+            </div>
+          ) : (
+            <div className="h-full flex flex-col items-center justify-center text-center p-6">
+              <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center mb-4">
+                <MessageSquare className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h4 className="font-medium text-muted-foreground">
+                {callStatus === "in-call"
+                  ? "Waiting for conversation..."
+                  : "Transcript will appear here"}
+              </h4>
+              <p className="text-xs text-muted-foreground mt-1">
+                {callStatus === "in-call"
+                  ? "Start speaking to see your conversation"
+                  : "Join the interview to begin"}
+              </p>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
