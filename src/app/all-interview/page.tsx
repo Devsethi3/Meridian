@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "motion/react";
 import Link from "next/link";
 import { supabase } from "@/supabase/supabase-client";
 import { useUser } from "@/context/UserContext";
-import type { Interview } from "@/lib/types";
 import {
   Select,
   SelectContent,
