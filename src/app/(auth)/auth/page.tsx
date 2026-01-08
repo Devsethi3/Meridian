@@ -18,7 +18,6 @@ import Link from "next/link";
 import { useState, useCallback } from "react";
 import { FaGithub, FaGoogle } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -44,7 +43,6 @@ const itemVariants = {
 
 const AuthPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const router = useRouter();
 
   const loginWithGoogle = useCallback(async () => {
     try {
