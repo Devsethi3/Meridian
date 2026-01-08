@@ -271,7 +271,7 @@ const TermsOfService = () => {
                   </h2>
                   <div className="bg-card/50 rounded-xl p-6 border backdrop-blur-sm">
                     <p className="text-muted-foreground">
-                      Meridian is provided "as is" without warranties of any
+                      Meridian is provided &quot;as is&quot; without warranties of any
                       kind. We do not guarantee that the service will be
                       uninterrupted, error-free, or completely secure. To the
                       maximum extent permitted by law, we disclaim all liability
@@ -345,7 +345,7 @@ const TermsOfService = () => {
                     <p className="text-muted-foreground">
                       We reserve the right to modify these terms at any time. We
                       will notify users of material changes by posting the
-                      updated terms on this page and updating the "Last updated"
+                      updated terms on this page and updating the &quot;Last updated&quot;
                       date. Your continued use of the service after changes
                       constitutes acceptance of the new terms.
                     </p>
