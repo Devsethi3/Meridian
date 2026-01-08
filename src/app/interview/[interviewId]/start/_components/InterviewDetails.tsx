@@ -2,8 +2,8 @@
 "use client";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { InterviewInfo } from "@/lib/types";
 import { Briefcase, User, Mail, Clock, FileText } from "lucide-react";
-import type { InterviewInfo } from "@/types/interview";
 
 interface InterviewDetailsProps {
   interviewInfo?: InterviewInfo | null;

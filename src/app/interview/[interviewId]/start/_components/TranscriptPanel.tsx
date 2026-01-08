@@ -13,7 +13,6 @@ import {
   ArrowDown,
   MessageSquare,
 } from "lucide-react";
-import type { TranscriptMessage, CallStatus } from "@/types/interview";
 import { cn } from "@/lib/utils";
 import {
   DropdownMenu,
@@ -21,6 +20,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { CallStatus } from "@/hooks/useVapiInterview";
+import { TranscriptMessage } from "@/lib/types";
 
 interface TranscriptPanelProps {
   messages: TranscriptMessage[];

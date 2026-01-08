@@ -33,6 +33,8 @@ const TYPE_OPTIONS = [
   "problem solving",
 ] as const;
 
+type Interview = /*unresolved*/ any
+
 const AllInterviewPage = () => {
   type TypeFilter = (typeof TYPE_OPTIONS)[number];
 

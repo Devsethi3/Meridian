@@ -20,7 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
 import { useInterviewContext } from "@/hooks/useInterviewContext";
 import { supabase } from "@/supabase/supabase-client";
-import type { InterviewInfo } from "@/types/interview";
+import { InterviewInfo } from "@/lib/types";
 
 const InterviewJoinPage = () => {
   const params = useParams();

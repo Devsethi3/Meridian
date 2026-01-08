@@ -14,6 +14,7 @@ interface ScheduledInterviewEntry {
 }
 
 export interface Interview {
+  id: string;
   duration: string;
   "interview-feedback": ScheduledInterviewEntry[];
   interview_id: string;

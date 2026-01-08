@@ -11,7 +11,7 @@ import type {
   VapiErrorEvent,
   VapiAssistantConfig,
   TranscriptMessage,
-} from "@/types/interview";
+} from "@/lib/types";
 
 // ============================================
 // Types for this hook
@@ -47,6 +47,8 @@ interface UseVapiServiceReturn {
 const generateMessageId = (): string => {
   return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 };
+
+type VapiConversationMessage = /*unresolved*/ any;
 
 // ============================================
 // Main Hook
@@ -309,11 +311,14 @@ Remember: You're having a natural conversation, not reading a script. Be warm an
     setErrorMessage(null);
 
     try {
-      vapiRef.current.start(assistantConfig);
-    } catch (error: any) {
+      // Cast to any to bypass TypeScript strict checking for Vapi SDK
+      vapiRef.current.start(assistantConfig as any);
+    } catch (error: unknown) {
+      const errorMsg =
+        error instanceof Error ? error.message : "Failed to start interview";
       console.error("[VapiService] Error starting call:", error);
       setConnectionStatus("disconnected");
-      setErrorMessage(error?.message || "Failed to start interview");
+      setErrorMessage(errorMsg);
       toast.error("Failed to start interview");
     }
   }, [
@@ -349,7 +354,7 @@ Remember: You're having a natural conversation, not reading a script. Be warm an
         toast.info("Generating feedback...");
         generateFeedback();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("[VapiService] Error stopping interview:", error);
       toast.error("Failed to end interview properly");
     }
@@ -370,6 +375,76 @@ Remember: You're having a natural conversation, not reading a script. Be warm an
       console.error("[VapiService] Error toggling mute:", error);
     }
   }, [isMuted, isCallActive]);
+
+  // ============================================
+  // Message Handlers (defined outside useEffect to avoid recreation)
+  // ============================================
+  const handleTranscript = useCallback(
+    (message: VapiMessage) => {
+      const role = message.role;
+      const text = message.transcript || "";
+      const type = message.transcriptType;
+
+      if (!role || !text) return;
+
+      if (type === "partial") {
+        setCurrentTranscript(text);
+        if (role === "user") {
+          setIsUserSpeaking(true);
+        }
+      } else {
+        // Final transcript
+        addMessage(role as "assistant" | "user", text);
+        setCurrentTranscript("");
+        if (role === "user") {
+          setIsUserSpeaking(false);
+        }
+      }
+    },
+    [addMessage]
+  );
+
+  const handleConversationUpdate = useCallback(
+    (message: VapiMessage) => {
+      if (!message.conversation || !Array.isArray(message.conversation)) return;
+
+      console.log(
+        "[VapiService] Conversation update:",
+        message.conversation.length,
+        "messages"
+      );
+
+      message.conversation.forEach((msg: VapiConversationMessage) => {
+        if (msg.role === "system") return;
+
+        const role = msg.role as "assistant" | "user";
+        const text = msg.content || msg.text || "";
+
+        if (role && text) {
+          addMessage(role, text);
+        }
+      });
+    },
+    [addMessage]
+  );
+
+  const handleStatusUpdate = useCallback((message: VapiMessage) => {
+    console.log("[VapiService] Status update:", message.status);
+
+    if (message.status === "ended" && message.endedReason) {
+      console.log("[VapiService] End reason:", message.endedReason);
+
+      // Check for voice provider errors
+      if (
+        message.endedReason.includes("playht") ||
+        message.endedReason.includes("timeout") ||
+        message.endedReason.includes("error")
+      ) {
+        setErrorMessage(`Call ended: ${message.endedReason}`);
+        toast.error("Voice service error. Please try again.");
+      }
+    }
+  }, []);
 
   // ============================================
   // Initialize Vapi
@@ -524,84 +599,27 @@ Remember: You're having a natural conversation, not reading a script. Be warm an
         toast.error(`Error: ${message}`);
       });
 
-      // ============================================
-      // Message Type Handlers
-      // ============================================
-
-      function handleTranscript(message: VapiMessage) {
-        const role = message.role;
-        const text = message.transcript || "";
-        const type = message.transcriptType;
-
-        if (!role || !text) return;
-
-        if (type === "partial") {
-          setCurrentTranscript(text);
-          if (role === "user") {
-            setIsUserSpeaking(true);
-          }
-        } else {
-          // Final transcript
-          addMessage(role as "assistant" | "user", text);
-          setCurrentTranscript("");
-          if (role === "user") {
-            setIsUserSpeaking(false);
-          }
-        }
-      }
-
-      function handleConversationUpdate(message: VapiMessage) {
-        if (!message.conversation || !Array.isArray(message.conversation))
-          return;
-
-        console.log(
-          "[VapiService] Conversation update:",
-          message.conversation.length,
-          "messages"
-        );
-
-        message.conversation.forEach((msg) => {
-          if (msg.role === "system") return;
-
-          const role = msg.role as "assistant" | "user";
-          const text = msg.content || msg.text || "";
-
-          if (role && text) {
-            addMessage(role, text);
-          }
-        });
-      }
-
-      function handleStatusUpdate(message: VapiMessage) {
-        console.log("[VapiService] Status update:", message.status);
-
-        if (message.status === "ended" && message.endedReason) {
-          console.log("[VapiService] End reason:", message.endedReason);
-
-          // Check for voice provider errors
-          if (
-            message.endedReason.includes("playht") ||
-            message.endedReason.includes("timeout") ||
-            message.endedReason.includes("error")
-          ) {
-            setErrorMessage(`Call ended: ${message.endedReason}`);
-            toast.error("Voice service error. Please try again.");
-          }
-        }
-      }
-
       console.log("[VapiService] ✅ Initialized successfully");
 
       // Auto-start the call
-      setTimeout(() => {
+      const autoStartTimeout = setTimeout(() => {
         if (vapiRef.current && !isCallActive && !hasCallEnded) {
           console.log("[VapiService] Auto-starting call...");
           startInterview();
         }
       }, 500);
-    } catch (error: any) {
+
+      // Return cleanup for the timeout
+      return () => {
+        clearTimeout(autoStartTimeout);
+      };
+    } catch (error: unknown) {
+      const errorMsg =
+        error instanceof Error
+          ? error.message
+          : "Failed to initialize voice service";
       console.error("[VapiService] Initialization error:", error);
-      setErrorMessage(error?.message || "Failed to initialize voice service");
+      setErrorMessage(errorMsg);
       isInitializedRef.current = false;
     }
 
@@ -611,7 +629,20 @@ Remember: You're having a natural conversation, not reading a script. Be warm an
       cleanupVapi();
       isInitializedRef.current = false;
     };
-  }, [interviewInfo]); // Only depend on interviewInfo
+  }, [
+    interviewInfo,
+    cleanupVapi,
+    startTimer,
+    stopTimer,
+    handleTranscript,
+    handleConversationUpdate,
+    handleStatusUpdate,
+    addMessage,
+    generateFeedback,
+    hasCallEnded,
+    isCallActive,
+    startInterview,
+  ]);
 
   // ============================================
   // Return Values

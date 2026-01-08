@@ -65,21 +65,28 @@ const CandidateList: React.FC<CandidateListProps> = ({
   }, [candidates]);
 
   const getAverage = (c: InterviewFeedback) => {
-    const r = c.feedback?.feedback?.rating;
+    const r = c.feedback?.rating;
     if (!r) return 0;
+
     const vals = Object.values(r).map((v) => Number(v) || 0);
     if (!vals.length) return 0;
+
     const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
     return Math.round(avg * 10) / 10;
   };
 
   const getRecommendationState = (c: InterviewFeedback) => {
-    const raw = (c.feedback?.feedback?.recommendation || "")
+    const raw = (c.feedback?.recommendation || "")
       .toString()
       .trim()
       .toLowerCase();
-    if (raw === "yes") return { state: "yes" as const, label: "Recommended" };
-    if (raw === "no") return { state: "no" as const, label: "Not Recommended" };
+
+    if (raw === "strong hire" || raw === "hire")
+      return { state: "yes" as const, label: "Recommended" };
+
+    if (raw === "no hire")
+      return { state: "no" as const, label: "Not Recommended" };
+
     return { state: "neutral" as const, label: "Needs Review" };
   };
 

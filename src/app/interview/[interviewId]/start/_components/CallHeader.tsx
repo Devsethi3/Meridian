@@ -3,8 +3,8 @@
 
 import { Timer as TimerIcon, Radio, Briefcase } from "lucide-react";
 import { formatDuration } from "@/lib/format-duration";
-import type { CallStatus } from "@/types/interview";
 import { cn } from "@/lib/utils";
+import { CallStatus } from "@/hooks/useVapiInterview";
 
 interface CallHeaderProps {
   callStatus: CallStatus;

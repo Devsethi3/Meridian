@@ -15,6 +15,7 @@ import moment from "moment";
 import { toast } from "sonner";
 import { motion } from "motion/react";
 
+type Interview = /*unresolved*/ any
 interface RecentListCardProps {
   interview: Interview;
 }
@@ -63,7 +64,7 @@ const RecentListCard: React.FC<RecentListCardProps> = ({ interview }) => {
   const initials =
     (interview.jobPosition || "I")
       .split(" ")
-      .map((s) => s[0])
+      .map((s:any) => s[0])
       .join("")
       .slice(0, 2)
       .toUpperCase() || "I";

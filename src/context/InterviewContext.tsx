@@ -1,7 +1,7 @@
 "use client";
 
+import { InterviewInfo } from "@/lib/types";
 import { createContext, useState, useCallback, ReactNode } from "react";
-import type { InterviewInfo } from "@/types/interview";
 
 interface InterviewContextType {
   interviewInfo: InterviewInfo | null;

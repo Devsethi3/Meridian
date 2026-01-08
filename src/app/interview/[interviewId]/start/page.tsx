@@ -7,14 +7,13 @@ import { toast } from "sonner";
 import { supabase } from "@/supabase/supabase-client";
 import { useInterviewContext } from "@/hooks/useInterviewContext";
 import { useVapiService } from "@/hooks/useVapiService";
-import type { TranscriptMessage } from "@/types/interview";
 
-// Import your components
 import { CallHeader } from "./_components/CallHeader";
 import { CallPanel } from "./_components/CallPanel";
 import { TranscriptPanel } from "./_components/TranscriptPanel";
 import { InterviewDetails } from "./_components/InterviewDetails";
 import { OverlayLoader } from "./_components/OverlayLoader";
+import { TranscriptMessage } from "@/lib/types";
 
 export default function StartInterviewPage() {
   const params = useParams();

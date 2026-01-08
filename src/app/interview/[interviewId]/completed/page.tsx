@@ -25,11 +25,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { downloadInterviewPDF } from "@/lib/pdf-generator";
-import type {
-  FeedbackContent,
-  InterviewInfo,
-  InterviewFeedback,
-} from "@/types/interview";
+import { FeedbackContent, InterviewFeedback, InterviewInfo } from "@/lib/types";
 
 interface FeedbackData {
   feedback: FeedbackContent;
@@ -154,7 +150,7 @@ const CompletedInterviewPage = () => {
           console.error("Interview fetch error:", interviewError);
         }
 
-        const feedback = feedbackResult as InterviewFeedback;
+        const feedback = feedbackResult as unknown as InterviewFeedback;
 
         setFeedbackData({
           feedback: feedback.feedback,
@@ -394,7 +390,7 @@ const CompletedInterviewPage = () => {
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                {feedback.strengths?.map((strength, index) => (
+                {feedback.strengths?.map((strength: string, index: number) => (
                   <li key={index} className="flex items-start gap-2">
                     <ChevronRight className="h-4 w-4 text-green-500 mt-0.5 shrink-0" />
                     <span className="text-sm">{strength}</span>
@@ -414,12 +410,14 @@ const CompletedInterviewPage = () => {
             </CardHeader>
             <CardContent>
               <ul className="space-y-3">
-                {feedback.improvements?.map((improvement, index) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <ChevronRight className="h-4 w-4 text-yellow-500 mt-0.5 shrink-0" />
-                    <span className="text-sm">{improvement}</span>
-                  </li>
-                ))}
+                {feedback.improvements?.map(
+                  (improvement: string, index: number) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <ChevronRight className="h-4 w-4 text-yellow-500 mt-0.5 shrink-0" />
+                      <span className="text-sm">{improvement}</span>
+                    </li>
+                  )
+                )}
               </ul>
             </CardContent>
           </Card>
@@ -432,27 +430,36 @@ const CompletedInterviewPage = () => {
               <CardTitle>Detailed Feedback</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {feedback.detailedFeedback.map((item, index) => (
-                <div key={index}>
-                  {index > 0 && <Separator className="my-4" />}
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <h4 className="font-medium">{item.category}</h4>
-                        <Badge
-                          variant="outline"
-                          className={cn("text-xs", getScoreColor(item.score))}
-                        >
-                          {item.score}/10
-                        </Badge>
+              {feedback.detailedFeedback.map(
+                (
+                  item: {
+                    category: string;
+                    score: number;
+                    comments: string;
+                  },
+                  index: number
+                ) => (
+                  <div key={index}>
+                    {index > 0 && <Separator className="my-4" />}
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <h4 className="font-medium">{item.category}</h4>
+                          <Badge
+                            variant="outline"
+                            className={cn("text-xs", getScoreColor(item.score))}
+                          >
+                            {item.score}/10
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {item.comments}
+                        </p>
                       </div>
-                      <p className="text-sm text-muted-foreground">
-                        {item.comments}
-                      </p>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </CardContent>
           </Card>
         )}

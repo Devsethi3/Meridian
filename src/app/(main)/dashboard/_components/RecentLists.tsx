@@ -9,7 +9,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useUser } from "@/context/UserContext";
 import { supabase } from "@/supabase/supabase-client";
 import RecentListCard from "./RecentListCard";
-
+import { Interview } from "../scheduled-interview/page";
+ 
 const RecentLists = () => {
   const [recentList, setRecentList] = useState<Interview[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);

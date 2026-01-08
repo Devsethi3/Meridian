@@ -90,20 +90,25 @@ const RatingBar: React.FC<{ label: string; value?: number }> = ({
 const FeedbackBody: React.FC<{ candidate: InterviewFeedback }> = ({
   candidate,
 }) => {
-  const fb = candidate.feedback?.feedback;
+  const fb = candidate.feedback;
   const ratings = fb?.rating;
 
-  const ratingValues = ratings ? Object.values(ratings) : [];
+  const ratingValues = ratings
+    ? Object.values(ratings).map((v) => Number(v) || 0)
+    : [];
+
   const avg =
     ratingValues.length > 0
       ? Math.round(
           (ratingValues.reduce((a, b) => a + b, 0) / ratingValues.length) * 10
         ) / 10
       : 0;
+
   const avgPct = clampPercent((avg / MAX_RATING) * 100);
 
   const recommendation = (fb?.recommendation || "").toLowerCase();
-  const recommended = recommendation === "yes";
+  const recommended =
+    recommendation === "strong hire" || recommendation === "hire";
 
   return (
     <div className="space-y-4">

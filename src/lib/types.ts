@@ -1,5 +1,9 @@
 // types/interview.ts
 
+// ============================================
+// Core Types
+// ============================================
+
 export type InterviewType =
   | "Technical"
   | "Behavioral"
@@ -17,6 +21,10 @@ export type CallStatus =
   | "error";
 
 export type ConnectionStatus = "disconnected" | "connecting" | "connected";
+
+// ============================================
+// Interview Types
+// ============================================
 
 export interface Question {
   id?: string;
@@ -49,10 +57,13 @@ export interface TranscriptMessage {
   id: string;
   role: "assistant" | "user";
   text: string;
-  timestamp: number;
+  timestamp?: number;
 }
 
+// ============================================
 // Vapi Event Types
+// ============================================
+
 export interface VapiEvent {
   type?: string;
   transcript?: string;
@@ -61,22 +72,45 @@ export interface VapiEvent {
   timestamp?: number;
 }
 
+export interface ContentItem {
+  text?: string;
+  content?: string;
+  transcript?: string;
+}
+
+export interface ConversationMessage {
+  id?: string;
+  role: "assistant" | "user" | "system";
+  content?: string | ContentItem[];
+  text?: string;
+  message?: string;
+  transcript?: string;
+  timestamp?: string;
+}
+
+export interface ConversationData {
+  messages?: ConversationMessage[];
+}
+
 export interface VapiMessage {
   type: string;
   transcript?: string;
   transcriptType?: "partial" | "final";
   role?: "assistant" | "user";
-  conversation?: VapiConversationMessage[];
+  conversation?: ConversationMessage[] | ConversationData;
   status?: string;
   endedReason?: string;
-}
-
-export interface VapiConversationMessage {
-  id?: string;
-  role: "assistant" | "user" | "system";
-  content?: string;
+  // Additional fields that may come from Vapi
+  data?: {
+    conversation?: ConversationData;
+  };
+  content?: string | ContentItem[];
   text?: string;
-  timestamp?: string;
+  message?: string;
+  speaker?: string;
+  from?: string;
+  id?: string;
+  isFinal?: boolean;
 }
 
 export interface VapiSpeechEvent {
@@ -90,29 +124,40 @@ export interface VapiErrorEvent {
     message?: string;
     code?: string;
   };
+  code?: string;
+  statusCode?: number;
 }
 
-// Vapi Assistant Configuration
+// ============================================
+// Vapi Assistant Configuration Types
+// ============================================
+
+export type VapiTranscriberProvider = "deepgram" | "gladia" | "assembly";
+
 export interface VapiTranscriberConfig {
-  provider: "deepgram" | "gladia" | "assembly";
+  provider: VapiTranscriberProvider;
   model?: string;
   language?: string;
   keywords?: string[];
 }
 
+export type VapiVoiceProvider =
+  | "11labs"
+  | "openai"
+  | "deepgram"
+  | "playht"
+  | "azure"
+  | "cartesia"
+  | "rime-ai";
+
 export interface VapiVoiceConfig {
-  provider:
-    | "11labs"
-    | "openai"
-    | "deepgram"
-    | "playht"
-    | "azure"
-    | "cartesia"
-    | "rime-ai";
+  provider: VapiVoiceProvider;
   voiceId: string;
   stability?: number;
   similarityBoost?: number;
   speed?: number;
+  style?: number;
+  useSpeakerBoost?: boolean;
 }
 
 export interface VapiModelMessage {
@@ -120,8 +165,10 @@ export interface VapiModelMessage {
   content: string;
 }
 
+export type VapiModelProvider = "openai" | "anthropic" | "google" | "groq";
+
 export interface VapiModelConfig {
-  provider: "openai" | "anthropic" | "google" | "groq";
+  provider: VapiModelProvider;
   model: string;
   messages: VapiModelMessage[];
   temperature?: number;
@@ -137,9 +184,17 @@ export interface VapiAssistantConfig {
   endCallPhrases?: string[];
   silenceTimeoutSeconds?: number;
   maxDurationSeconds?: number;
+  responseDelaySeconds?: number;
+  llmRequestDelaySeconds?: number;
+  numWordsToInterruptAssistant?: number;
+  dialKeypadFunctionEnabled?: boolean;
+  hipaaEnabled?: boolean;
 }
 
+// ============================================
 // Feedback Types
+// ============================================
+
 export interface FeedbackRating {
   technicalSkills: number;
   communication: number;
@@ -150,16 +205,20 @@ export interface FeedbackRating {
 
 export interface DetailedFeedbackItem {
   category: string;
+  question?: string;
+  answer?: string;
   score: number;
   comments: string;
 }
+
+export type RecommendationType = "Strong Hire" | "Hire" | "Maybe" | "No Hire";
 
 export interface FeedbackContent {
   rating: FeedbackRating;
   summary: string;
   strengths: string[];
   improvements: string[];
-  recommendation: "Strong Hire" | "Hire" | "Maybe" | "No Hire";
+  recommendation: RecommendationType;
   recommendationMsg: string;
   detailedFeedback: DetailedFeedbackItem[];
 }
@@ -186,4 +245,92 @@ export interface InterviewDetail {
   userEmail?: string;
   userName?: string;
   "interview-feedback"?: InterviewFeedback[];
+}
+
+// ============================================
+// API Response Types
+// ============================================
+
+export interface ApiResponse<T> {
+  data?: T;
+  error?: string;
+  message?: string;
+  success: boolean;
+}
+
+export interface FeedbackApiResponse {
+  content: string;
+  error?: string;
+}
+
+// ============================================
+// PDF Report Types
+// ============================================
+
+export interface PdfReportData {
+  feedback: FeedbackContent;
+  candidateName: string;
+  candidateEmail: string;
+  jobPosition: string;
+  interviewDate: string;
+  duration: string;
+  interviewType?: string;
+}
+
+// ============================================
+// Utility Types
+// ============================================
+
+export type MessageRole = "assistant" | "user" | "system";
+
+export interface BaseMessage {
+  id?: string;
+  role: MessageRole;
+  content: string;
+  timestamp?: number;
+}
+
+// Type guards for runtime type checking
+export function isConversationData(obj: unknown): obj is ConversationData {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "messages" in obj &&
+    Array.isArray((obj as ConversationData).messages)
+  );
+}
+
+export function isConversationMessageArray(
+  obj: unknown
+): obj is ConversationMessage[] {
+  return (
+    Array.isArray(obj) &&
+    obj.every(
+      (item) => typeof item === "object" && item !== null && "role" in item
+    )
+  );
+}
+
+export function getConversationMessages(
+  conversation: ConversationMessage[] | ConversationData | undefined
+): ConversationMessage[] {
+  if (!conversation) return [];
+
+  if (Array.isArray(conversation)) {
+    return conversation;
+  }
+
+  if (isConversationData(conversation)) {
+    return conversation.messages || [];
+  }
+
+  return [];
+}
+
+export interface VapiConversationMessage {
+  id?: string;
+  role: "assistant" | "user" | "system";
+  content?: string;
+  text?: string;
+  timestamp?: string;
 }

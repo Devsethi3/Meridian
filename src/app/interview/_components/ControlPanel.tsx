@@ -1,6 +1,6 @@
-// components/interview/ControlPanel.tsx
+import { AlertConfirmation } from "@/components/AlertConfirmation";
 import { Mic, MicOff, Phone, Settings } from "lucide-react";
-import AlertConfirmation from "../[interviewId]/start/_components/AlertConfirmation";
+
 
 interface ControlPanelProps {
   isCallActive: boolean;
