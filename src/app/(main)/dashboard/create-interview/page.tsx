@@ -93,28 +93,28 @@ const CreateInterviewPage = () => {
     return () => window.removeEventListener("keydown", onKey);
   }, [onGoToNext]);
 
-  const onClickStep = useCallback(
-    (idx: number) => {
-      if (idx < step) return setStep(idx);
-      if (idx === 2) {
-        if (!isStepOneComplete) {
-          toast.error("Please complete the details first");
-          return;
-        }
-        return setStep(2);
-      }
-      if (idx === 3) {
-        if (!interviewId) {
-          toast.message("Save your questions first", {
-            description: "Generate and save questions to create a share link.",
-          });
-          return;
-        }
-        return setStep(3);
-      }
-    },
-    [step, isStepOneComplete, interviewId]
-  );
+  // const onClickStep = useCallback(
+  //   (idx: number) => {
+  //     if (idx < step) return setStep(idx);
+  //     if (idx === 2) {
+  //       if (!isStepOneComplete) {
+  //         toast.error("Please complete the details first");
+  //         return;
+  //       }
+  //       return setStep(2);
+  //     }
+  //     if (idx === 3) {
+  //       if (!interviewId) {
+  //         toast.message("Save your questions first", {
+  //           description: "Generate and save questions to create a share link.",
+  //         });
+  //         return;
+  //       }
+  //       return setStep(3);
+  //     }
+  //   },
+  //   [step, isStepOneComplete, interviewId]
+  // );
 
   const SegmentedProgress = ({
     total,
@@ -156,35 +156,6 @@ const CreateInterviewPage = () => {
     return match?.title ?? formData.type;
   }, [formData?.type]);
 
-  const SummaryRow = () => {
-    const hasAny =
-      !!formData?.jobPosition || !!formData?.duration || !!formData?.type;
-    if (!hasAny) return null;
-    return (
-      <div className="mt-3 flex flex-wrap items-center gap-2 text-xs sm:text-sm">
-        {formData?.jobPosition && (
-          <span className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/50 px-2 py-1">
-            <FileText className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="truncate max-w-[14rem] sm:max-w-[18rem]">
-              {formData.jobPosition}
-            </span>
-          </span>
-        )}
-        {formData?.duration && (
-          <span className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/50 px-2 py-1">
-            <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-            {formData.duration}
-          </span>
-        )}
-        {formData?.type && (
-          <span className="inline-flex items-center gap-1 rounded-md border border-border bg-muted/50 px-2 py-1">
-            <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-            {typeLabel}
-          </span>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="min-h-screen">
