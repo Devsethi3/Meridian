@@ -4,6 +4,16 @@ import OpenAI from "openai";
 import { NextRequest, NextResponse } from "next/server";
 import { QUESTIONS_PROMPT } from "@/lib/constants";
 
+// --- Type Definitions ---
+// Define the expected structure of the request body
+interface RequestBody {
+  jobPosition: string;
+  jobDescription: string;
+  duration: "5 min" | "15 min" | "30 min" | "45 min" | "60 min";
+  type: "Technical" | "Behavior" | "Experience" | "Problem Solving";
+  suggestedCount?: number; // Optional property
+}
+
 // Rate limiting map (in production, use Redis or similar)
 const rateLimitMap = new Map<string, { count: number; lastReset: number }>();
 const RATE_LIMIT_MAX = 10; // 10 requests per hour
@@ -35,7 +45,7 @@ function checkRateLimit(key: string): { allowed: boolean; remaining: number } {
   return { allowed: true, remaining: RATE_LIMIT_MAX - userLimit.count };
 }
 
-function validateInput(data: any): { valid: boolean; error?: string } {
+function validateInput(data: RequestBody): { valid: boolean; error?: string } {
   const { jobPosition, jobDescription, duration, type } = data;
 
   if (
@@ -60,17 +70,32 @@ function validateInput(data: any): { valid: boolean; error?: string } {
     };
   }
 
-  if (
-    !duration ||
-    !["5 min", "15 min", "30 min", "45 min", "60 min"].includes(duration)
-  ) {
+  // Ensure duration is one of the allowed string literals from RequestBody
+  const validDurations: RequestBody["duration"][] = [
+    "5 min",
+    "15 min",
+    "30 min",
+    "45 min",
+    "60 min",
+  ];
+  if (!duration || !validDurations.includes(duration)) {
     return { valid: false, error: "Invalid duration selected" };
   }
 
-  // Updated to match the types defined in type.ts
-  const validTypes = ["Technical", "Behavior", "Experience", "Problem Solving"];
+  // Ensure type is one of the allowed string literals from RequestBody
+  const validTypes: RequestBody["type"][] = [
+    "Technical",
+    "Behavior",
+    "Experience",
+    "Problem Solving",
+  ];
   if (!type || !validTypes.includes(type)) {
-    console.log("Invalid type received:", type, "Valid types:", validTypes);
+    console.log(
+      "Validation failed: Invalid type received:",
+      type,
+      "Valid types:",
+      validTypes
+    );
     return { valid: false, error: "Invalid interview type selected" };
   }
 
@@ -102,10 +127,11 @@ function sanitizeInput(text: string): string {
 export async function POST(req: NextRequest) {
   try {
     // Parse request body
-    let body;
+    let body: RequestBody; // Declare body with the specific type
     try {
-      body = await req.json();
-    } catch (error) {
+      body = (await req.json()) as RequestBody; // Cast to RequestBody to ensure type safety
+    } catch {
+      // Removed 'error' parameter as it was unused and ESLint flagged it
       return NextResponse.json(
         { error: "Invalid JSON in request body" },
         { status: 400 }
@@ -183,13 +209,13 @@ export async function POST(req: NextRequest) {
     });
 
     // Make API call with timeout and retries
-    let completion;
+    let completion: OpenAI.Chat.Completions.ChatCompletion | undefined; // Explicitly type completion
     let attempts = 0;
     const maxAttempts = 3;
 
     while (attempts < maxAttempts) {
       try {
-        completion = (await Promise.race([
+        const result = await Promise.race([
           openai.chat.completions.create({
             model: "deepseek/deepseek-r1-0528:free",
             messages: [
@@ -202,16 +228,20 @@ export async function POST(req: NextRequest) {
             temperature: 0.7,
             max_tokens: 2000,
           }),
-          // Timeout after 45 seconds
-          new Promise((_, reject) =>
+          // Timeout after 45 seconds, typed to match OpenAI's ChatCompletion
+          new Promise<OpenAI.Chat.Completions.ChatCompletion>((_, reject) =>
             setTimeout(() => reject(new Error("Request timeout")), 45000)
           ),
-        ])) as any;
-
+        ]);
+        completion = result; // Assign the result
         break; // Success, exit retry loop
-      } catch (error: any) {
+      } catch (error: unknown) {
+        // Changed to 'unknown' and handled safely
         attempts++;
-        console.warn(`Attempt ${attempts} failed:`, error.message);
+        console.warn(
+          `Attempt ${attempts} failed:`,
+          error instanceof Error ? error.message : String(error)
+        );
 
         if (attempts >= maxAttempts) {
           throw error;
@@ -240,7 +270,8 @@ export async function POST(req: NextRequest) {
     let parsedContent;
     try {
       parsedContent = JSON.parse(responseMessage.content);
-    } catch (error) {
+    } catch {
+      // Removed 'error' parameter as it was unused and ESLint flagged it
       console.error("Invalid JSON from AI:", responseMessage.content);
       return NextResponse.json(
         { error: "AI service returned invalid JSON format" },
@@ -267,38 +298,42 @@ export async function POST(req: NextRequest) {
         "Cache-Control": "no-cache, no-store, must-revalidate",
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    // Changed to 'unknown' and handled safely
     console.error("AI API Error:", error);
 
-    // Handle specific error types
-    if (error.message === "Request timeout") {
-      return NextResponse.json(
-        { error: "Request timed out. Please try again." },
-        { status: 408 }
-      );
+    let clientErrorMessage = "Failed to generate questions. Please try again.";
+    let statusCode = 500;
+
+    if (error instanceof Error) {
+      // Check for specific error messages or known properties from Error objects
+      if (error.message === "Request timeout") {
+        clientErrorMessage = "Request timed out. Please try again.";
+        statusCode = 408;
+      }
+      // For OpenAI/OpenRouter errors, they often attach a `status` property to the error object
+      const errorWithStatus = error as { status?: number };
+      if (errorWithStatus.status) {
+        if (errorWithStatus.status === 429) {
+          clientErrorMessage =
+            "AI service rate limit exceeded. Please try again later.";
+          statusCode = 429;
+        } else if (errorWithStatus.status >= 500) {
+          // General server errors from the AI service
+          clientErrorMessage =
+            "AI service is temporarily unavailable. Please try again later.";
+          statusCode = 503;
+        }
+      }
+    } else {
+      // Fallback for non-Error objects (e.g., plain strings or objects thrown)
+      clientErrorMessage = `An unexpected error occurred: ${String(error)}`;
+      statusCode = 500;
     }
 
-    if (error.status === 429) {
-      return NextResponse.json(
-        { error: "AI service rate limit exceeded. Please try again later." },
-        { status: 429 }
-      );
-    }
-
-    if (error.status >= 500) {
-      return NextResponse.json(
-        {
-          error:
-            "AI service is temporarily unavailable. Please try again later.",
-        },
-        { status: 503 }
-      );
-    }
-
-    // Generic error response
     return NextResponse.json(
-      { error: "Failed to generate questions. Please try again." },
-      { status: 500 }
+      { error: clientErrorMessage },
+      { status: statusCode }
     );
   }
 }

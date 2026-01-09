@@ -12,12 +12,14 @@ import { RefreshCw } from "lucide-react";
 
 const InterviewDetailsPage: React.FC = () => {
   const { interview_id } = useParams();
-  const interviewId =
-    Array.isArray(interview_id) ? interview_id[0] : (interview_id as string | undefined);
+  const interviewId = Array.isArray(interview_id)
+    ? interview_id[0]
+    : (interview_id as string | undefined);
 
   const { user } = useUser();
 
-  const [interviewDetail, setInterviewDetail] = React.useState<InterviewDetail | null>(null);
+  const [interviewDetail, setInterviewDetail] =
+    React.useState<InterviewDetail | null>(null);
   const [loading, setLoading] = React.useState<boolean>(true);
   const [error, setError] = React.useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = React.useState<number | null>(null);
@@ -33,7 +35,9 @@ const InterviewDetailsPage: React.FC = () => {
     try {
       const { data, error: qError } = await supabase
         .from("Interviews")
-        .select(`*, "interview-feedback"(userEmail, userName, feedback, created_at)`)
+        .select(
+          `*, "interview-feedback"(userEmail, userName, feedback, created_at)`
+        )
         .eq("userEmail", user.email)
         .eq("interview_id", interviewId)
         .limit(1);
@@ -50,9 +54,16 @@ const InterviewDetailsPage: React.FC = () => {
       const row = data && data.length > 0 ? (data[0] as InterviewDetail) : null;
       setInterviewDetail(row);
       setLastUpdated(Date.now());
-    } catch (e: any) {
+    } catch (e: unknown) {
       if (!isActive) return;
-      setError(e?.message || "Unexpected error");
+
+      let errorMessage = "Unexpected error";
+
+      if (e instanceof Error) {
+        errorMessage = e.message;
+      }
+
+      setError(errorMessage);
       setInterviewDetail(null);
     } finally {
       if (isActive) setLoading(false);
@@ -76,7 +87,9 @@ const InterviewDetailsPage: React.FC = () => {
         <div>
           <h1 className="text-xl font-medium">Interview Details</h1>
           <p className="text-sm text-muted-foreground">
-            {lastUpdated ? `Last updated ${new Date(lastUpdated).toLocaleTimeString()}` : "—"}
+            {lastUpdated
+              ? `Last updated ${new Date(lastUpdated).toLocaleTimeString()}`
+              : "—"}
           </p>
         </div>
         <Button

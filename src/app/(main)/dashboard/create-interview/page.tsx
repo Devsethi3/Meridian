@@ -18,7 +18,6 @@ import FormContainer from "./_components/FormContainer";
 import QuestionList from "./_components/QuestionList";
 import InterviewLink from "./_components/InterviewLink";
 import type { InterviewFormData } from "@/lib/types";
-import { InterviewType } from "@/lib/constants";
 
 type StepMeta = {
   title: string;

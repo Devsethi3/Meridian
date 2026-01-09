@@ -85,9 +85,10 @@ const InterviewLink = ({ formData, interview_id }: InterviewLinkProps) => {
   }\nLink: ${interviewUrl}`;
 
   const onShareNative = async () => {
-    if (!canNativeShare) return;
+    if (!("share" in navigator)) return;
+
     try {
-      await (navigator as any).share({
+      await navigator.share({
         title: "AI Interview",
         text: shareMessage,
         url: interviewUrl,

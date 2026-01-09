@@ -40,14 +40,12 @@ function useIsMobile(query = "(max-width: 640px)") {
       mql.addEventListener("change", onChange);
     } else {
       // Safari
-      // @ts-ignore
       mql.addListener(onChange);
     }
     return () => {
       if (mql.removeEventListener) {
         mql.removeEventListener("change", onChange);
       } else {
-        // @ts-ignore
         mql.removeListener(onChange);
       }
     };
@@ -256,11 +254,11 @@ const FeedbackDialog: React.FC<FeedbackDialogProps> = ({
     </DrawerHeader>
   );
 
-  const Body = (
-    <div className="px-6 pb-6">
-      <FeedbackBody candidate={candidate} />
-    </div>
-  );
+  // const Body = (
+  //   <div className="px-6 pb-6">
+  //     <FeedbackBody candidate={candidate} />
+  //   </div>
+  // );
 
   // Mobile: Drawer
   if (isMobile) {

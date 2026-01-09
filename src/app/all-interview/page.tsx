@@ -95,16 +95,6 @@ const AllInterviewPage = () => {
     }
   }, [user?.email, getInterviewList]);
 
-  const uniqueTypes = useMemo(() => {
-    return Array.from(
-      new Set(
-        (interviewList || [])
-          .map((i) => i.type?.trim())
-          .filter(Boolean) as string[]
-      )
-    ).sort((a, b) => a.localeCompare(b));
-  }, [interviewList]);
-
   function normalizeType(s?: string | null) {
     const t = (s || "")
       .toLowerCase()
@@ -538,29 +528,6 @@ function EmptyState({
   );
 }
 
-function FilterPill({
-  active,
-  onClick,
-  children,
-}: {
-  active?: boolean;
-  onClick?: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className={[
-        "inline-flex items-center rounded-full border px-3 py-1 text-xs font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-        active
-          ? "border-transparent bg-primary text-primary-foreground"
-          : "border-border bg-muted text-foreground hover:opacity-90",
-      ].join(" ")}
-    >
-      {children}
-    </button>
-  );
-}
 
 /* ------------------------------ Helpers ------------------------------ */
 
