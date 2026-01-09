@@ -53,18 +53,6 @@ const Process = () => {
     },
   };
 
-
-  // Number badge hover animation
-  const numberHover = {
-    scale: 1.1,
-    rotate: 5,
-    transition: {
-      type: "spring",
-      stiffness: 400,
-      damping: 10,
-    },
-  };
-
   return (
     <section
       id="how"

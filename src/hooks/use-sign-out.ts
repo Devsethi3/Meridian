@@ -15,7 +15,7 @@ interface UseSignOutReturn {
 export const useSignOut = (): UseSignOutReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [isPending] = useTransition();
   const inFlight = useRef(false);
 
   const router = useRouter();

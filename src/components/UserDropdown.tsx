@@ -140,7 +140,7 @@ export const UserDropdown: React.FC<UserDropdownProps> = ({
                 <div className="mx-3 my-2 rounded-lg bg-gradient-to-r from-primary/10 via-secondary/10 to-primary/10 p-3 ring-1 ring-primary/20">
                   <div className="flex items-center gap-2 text-xs text-primary">
                     <CheckCircle2 className="h-3 w-3 flex-shrink-0" />
-                    <span>You're signed in and ready to go!</span>
+                    <span>You&apos;re signed in and ready to go!</span>
                   </div>
                 </div>
               </div>

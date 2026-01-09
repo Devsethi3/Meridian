@@ -24,6 +24,66 @@ export interface TranscriptMessage {
 
 type Role = "assistant" | "user";
 
+// Vapi message types
+interface VapiMessageContent {
+  text?: string;
+  content?: string;
+  transcript?: string;
+}
+
+interface VapiConversationMessage {
+  id?: string;
+  role?: string;
+  text?: string;
+  content?: string | VapiMessageContent[];
+  transcript?: string;
+  message?: VapiConversationMessage;
+}
+
+interface VapiTranscriptMessage {
+  type: "transcript";
+  role?: string;
+  transcript?: string;
+  text?: string;
+  transcriptType?: "partial" | "final";
+}
+
+interface VapiConversationUpdateMessage {
+  type: "conversation-update";
+  conversation?: VapiConversationMessage[];
+}
+
+interface VapiSpeechUpdateMessage {
+  type: "speech-update";
+  status?: "started" | "stopped";
+}
+
+interface VapiGenericMessage {
+  type?: string;
+  id?: string;
+  role?: string;
+  speaker?: string;
+  from?: string;
+  text?: string;
+  content?: string;
+  transcript?: string;
+  message?: VapiConversationMessage;
+  conversation?: VapiConversationMessage[];
+}
+
+type VapiMessage =
+  | VapiTranscriptMessage
+  | VapiConversationUpdateMessage
+  | VapiSpeechUpdateMessage
+  | VapiGenericMessage;
+
+interface VapiError {
+  message?: string;
+  error?: {
+    message?: string;
+  };
+}
+
 interface UseVapiInterviewReturn {
   callStatus: CallStatus;
   durationSec: number;
@@ -58,19 +118,22 @@ const normalizeRole = (role?: string): Role | undefined => {
 };
 
 // Helper to extract text from message
-const extractMessageText = (msg: any): string => {
+const extractMessageText = (
+  msg: VapiConversationMessage | undefined
+): string => {
   if (!msg) return "";
 
   // Direct text properties
   if (typeof msg.transcript === "string") return msg.transcript;
   if (typeof msg.text === "string") return msg.text;
   if (typeof msg.content === "string") return msg.content;
-  if (typeof msg.message === "string") return msg.message;
 
   // Nested content array
   if (Array.isArray(msg.content)) {
     return msg.content
-      .map((c: any) => c?.text || c?.content || c?.transcript || "")
+      .map(
+        (c: VapiMessageContent) => c?.text || c?.content || c?.transcript || ""
+      )
       .filter(Boolean)
       .join(" ");
   }
@@ -250,7 +313,7 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
       });
 
       // Error
-      vapi.on("error", (error: any) => {
+      vapi.on("error", (error: VapiError) => {
         if (isCleanedUpRef.current) return;
         console.error("[Vapi] ❌ Error:", error);
         const message =
@@ -262,7 +325,7 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
       });
 
       // Main Message Handler
-      vapi.on("message", (message: any) => {
+      vapi.on("message", (message: VapiMessage) => {
         if (isCleanedUpRef.current) return;
 
         console.log(
@@ -275,11 +338,11 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
         // Handle different message types
         switch (messageType) {
           case "transcript":
-            handleTranscriptMessage(message);
+            handleTranscriptMessage(message as VapiTranscriptMessage);
             break;
 
           case "conversation-update":
-            handleConversationUpdate(message);
+            handleConversationUpdate(message as VapiConversationUpdateMessage);
             break;
 
           case "function-call":
@@ -292,18 +355,18 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
             break;
 
           case "speech-update":
-            handleSpeechUpdate(message);
+            handleSpeechUpdate(message as VapiSpeechUpdateMessage);
             break;
 
           default:
             // Try to extract transcript from unknown message types
-            handleGenericMessage(message);
+            handleGenericMessage(message as VapiGenericMessage);
             break;
         }
       });
 
       // Helper: Handle transcript messages
-      const handleTranscriptMessage = (message: any) => {
+      const handleTranscriptMessage = (message: VapiTranscriptMessage) => {
         const role = normalizeRole(message.role);
         const text = message.transcript || message.text || "";
         const transcriptType = message.transcriptType || "";
@@ -339,7 +402,9 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
       };
 
       // Helper: Handle conversation updates
-      const handleConversationUpdate = (message: any) => {
+      const handleConversationUpdate = (
+        message: VapiConversationUpdateMessage
+      ) => {
         const conversation = message.conversation;
         if (!conversation || !Array.isArray(conversation)) return;
 
@@ -349,7 +414,7 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
           "messages"
         );
 
-        conversation.forEach((msg: any) => {
+        conversation.forEach((msg: VapiConversationMessage) => {
           const role = normalizeRole(msg.role);
           const text = extractMessageText(msg);
 
@@ -360,7 +425,7 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
       };
 
       // Helper: Handle speech updates
-      const handleSpeechUpdate = (message: any) => {
+      const handleSpeechUpdate = (message: VapiSpeechUpdateMessage) => {
         const status = message.status;
         if (status === "started") {
           setAssistantSpeaking(true);
@@ -370,12 +435,12 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
       };
 
       // Helper: Handle generic/unknown messages
-      const handleGenericMessage = (message: any) => {
+      const handleGenericMessage = (message: VapiGenericMessage) => {
         // Try to find role and text
         const role = normalizeRole(
           message.role || message.speaker || message.from
         );
-        const text = extractMessageText(message);
+        const text = extractMessageText(message as VapiConversationMessage);
 
         if (role && text && text.length > 1) {
           console.log(`[Vapi] Generic message: ${role} - "${text}"`);
@@ -384,7 +449,10 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
 
         // Check for nested conversation
         if (message.conversation) {
-          handleConversationUpdate(message);
+          handleConversationUpdate({
+            type: "conversation-update",
+            conversation: message.conversation,
+          });
         }
       };
 
@@ -461,22 +529,24 @@ export const useVapiInterview = (vapiKey?: string): UseVapiInterviewReturn => {
         console.log("[Vapi] Calling vapi.start()...");
         await vapiRef.current.start(assistantOptions);
         console.log("[Vapi] ✅ vapi.start() completed");
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("[Vapi] Start call error:", err);
 
         let message = "Failed to start the interview";
 
+        const error = err as { name?: string; message?: string };
+
         if (
-          err?.name === "NotAllowedError" ||
-          err?.message?.includes("permission")
+          error?.name === "NotAllowedError" ||
+          error?.message?.includes("permission")
         ) {
           message =
             "Microphone permission denied. Please allow microphone access and try again.";
-        } else if (err?.name === "NotFoundError") {
+        } else if (error?.name === "NotFoundError") {
           message =
             "No microphone found. Please connect a microphone and try again.";
-        } else if (err?.message) {
-          message = err.message;
+        } else if (error?.message) {
+          message = error.message;
         }
 
         setCallStatus("error");
