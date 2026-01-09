@@ -562,7 +562,7 @@ export const generateInterviewPDF = async ({
       pdf.text("Key Strengths", margin + 10, yPos + 13);
       yPos += 25;
 
-      feedback.strengths!.forEach((strength, idx) => {
+      feedback.strengths!.forEach((strength) => {
         const lines = pdf.splitTextToSize(strength, contentWidth - 25);
         addNewPageIfNeeded(lines.length * 5 + 8);
 
@@ -620,7 +620,7 @@ export const generateInterviewPDF = async ({
     pdf.text("Detailed Assessment", margin + 10, yPos + 13);
     yPos += 28;
 
-    feedback.detailedFeedback.forEach((item, index) => {
+    feedback.detailedFeedback.forEach((item) => {
       const commentLines = pdf.splitTextToSize(
         item.comments,
         contentWidth - 30
