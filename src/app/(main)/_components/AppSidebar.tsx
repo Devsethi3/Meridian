@@ -67,7 +67,7 @@ const AppSidebar = () => {
     }
   };
 
-  const { signOut, error, isLoading } = useSignOut();
+  const { signOut, isLoading } = useSignOut();
 
   return (
     <Sidebar className="bg-card text-card-foreground border-border">

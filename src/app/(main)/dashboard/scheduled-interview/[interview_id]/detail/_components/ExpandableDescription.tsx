@@ -37,15 +37,15 @@ const ExpandableDescription: React.FC<ExpandableDescriptionProps> = ({
   }, [collapsedHeight, text]);
 
   React.useEffect(() => {
-    // Initial measure + after fonts load to avoid FOUC from variable font metrics
     measure();
-    let raf = requestAnimationFrame(measure);
-    let t = setTimeout(measure, 100);
-    // @ts-ignore
+
+    const raf = requestAnimationFrame(measure);
+    const t = setTimeout(measure, 100);
+
     if (document?.fonts?.ready) {
-      // @ts-ignore
       document.fonts.ready.then(measure).catch(() => {});
     }
+
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(t);

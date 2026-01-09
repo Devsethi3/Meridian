@@ -33,7 +33,23 @@ const TYPE_OPTIONS = [
   "problem solving",
 ] as const;
 
-type Interview = /*unresolved*/ any
+type Interview = {
+  id: number;
+  interview_id: string;
+
+  jobPosition?: string | null;
+  jobDescription?: string | null;
+
+  created_at: string;
+
+  duration?: string | null;
+
+  type?: string | null;
+
+  questionList?: unknown[] | null;
+
+  userEmail?: string | null;
+};
 
 const AllInterviewPage = () => {
   type TypeFilter = (typeof TYPE_OPTIONS)[number];
@@ -89,18 +105,20 @@ const AllInterviewPage = () => {
     ).sort((a, b) => a.localeCompare(b));
   }, [interviewList]);
 
-  function normalizeType(s?: string) {
+  function normalizeType(s?: string | null) {
     const t = (s || "")
       .toLowerCase()
       .replace(/[-_]/g, " ")
       .replace(/\s+/g, " ")
       .trim();
+
     if (["behavioral", "behavioural", "behavior", "behaviour"].includes(t))
       return "behaviour";
     if (["problem solving", "problem-solving", "problem_solving"].includes(t))
       return "problem solving";
     if (["tech", "technical"].includes(t)) return "technical";
     if (["experienced", "experience"].includes(t)) return "experienced";
+
     return t;
   }
 

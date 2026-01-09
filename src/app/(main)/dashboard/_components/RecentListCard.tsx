@@ -8,14 +8,20 @@ import {
   CalendarDays,
   Timer,
   ListChecks,
-  Hash,
   ArrowRight,
 } from "lucide-react";
 import moment from "moment";
 import { toast } from "sonner";
 import { motion } from "motion/react";
 
-type Interview = /*unresolved*/ any
+ interface Interview {
+  interview_id: string;
+  jobPosition?: string | null;
+  created_at?: string | null;
+  duration?: string | null;
+  questionList?: unknown[] | null;
+}
+
 interface RecentListCardProps {
   interview: Interview;
 }

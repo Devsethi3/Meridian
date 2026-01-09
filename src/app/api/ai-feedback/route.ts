@@ -3,6 +3,26 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { checkRateLimit } from "@/lib/rate-limiter";
 
+interface FeedbackResponse {
+  rating: {
+    technicalSkills: number;
+    communication: number;
+    problemSolving: number;
+    experience: number;
+    overall: number;
+  };
+  summary: string;
+  strengths: string[];
+  improvements: string[];
+  recommendation: string;
+  recommendationMsg: string;
+  detailedFeedback: {
+    category: string;
+    score: number;
+    comments: string;
+  }[];
+}
+
 const RATE_LIMIT_CONFIG = {
   windowMs: 60000,
   maxRequests: 10,
@@ -109,18 +129,20 @@ function cleanJsonResponse(content: string): string {
   return cleaned.trim();
 }
 
-function validateFeedbackStructure(feedback: any): boolean {
+function validateFeedbackStructure(
+  feedback: unknown
+): feedback is FeedbackResponse {
   return (
-    feedback &&
     typeof feedback === "object" &&
-    feedback.rating &&
-    typeof feedback.rating.overall === "number" &&
-    typeof feedback.summary === "string" &&
-    Array.isArray(feedback.strengths) &&
-    Array.isArray(feedback.improvements) &&
-    typeof feedback.recommendation === "string" &&
-    typeof feedback.recommendationMsg === "string" &&
-    Array.isArray(feedback.detailedFeedback)
+    feedback !== null &&
+    "rating" in feedback &&
+    typeof (feedback as FeedbackResponse).rating.overall === "number" &&
+    typeof (feedback as FeedbackResponse).summary === "string" &&
+    Array.isArray((feedback as FeedbackResponse).strengths) &&
+    Array.isArray((feedback as FeedbackResponse).improvements) &&
+    typeof (feedback as FeedbackResponse).recommendation === "string" &&
+    typeof (feedback as FeedbackResponse).recommendationMsg === "string" &&
+    Array.isArray((feedback as FeedbackResponse).detailedFeedback)
   );
 }
 
@@ -161,7 +183,7 @@ export async function POST(req: NextRequest) {
     let body;
     try {
       body = await req.json();
-    } catch (e) {
+    } catch {
       console.error("[API] Invalid JSON in request");
       return NextResponse.json(
         { error: "Invalid JSON in request body" },
@@ -285,14 +307,18 @@ export async function POST(req: NextRequest) {
 
       parsedContent = JSON.parse(cleanedContent);
       console.log("[API] Successfully parsed feedback");
-    } catch (parseError: any) {
-      console.error("[API] Failed to parse AI response:", parseError.message);
-      console.error("[API] Content preview:", content.substring(0, 500));
+    } catch (parseError: unknown) {
+      const err =
+        parseError instanceof Error
+          ? parseError.message
+          : "Unknown parse error";
+
+      console.error("[API] Failed to parse AI response:", err);
 
       return NextResponse.json(
         {
           error: "AI returned invalid JSON response",
-          details: parseError.message,
+          details: err,
           preview: content.substring(0, 200),
         },
         { status: 500 }
@@ -329,19 +355,26 @@ export async function POST(req: NextRequest) {
         },
       }
     );
-  } catch (error: any) {
-    console.error("[API] Error:", error);
-    console.error("[API] Error stack:", error.stack);
+  } catch (error: unknown) {
+    const err = error as {
+      status?: number;
+      code?: string;
+      message?: string;
+      stack?: string;
+      error?: { message?: string };
+    };
+    console.error("[API] Error:", err);
+    console.error("[API] Error stack:", err.stack);
 
     // Handle specific error types
-    if (error?.status === 429) {
+    if (err?.status === 429) {
       return NextResponse.json(
         { error: "AI service rate limit exceeded. Please try again later." },
         { status: 429 }
       );
     }
 
-    if (error?.code === "ECONNREFUSED" || error?.code === "ENOTFOUND") {
+    if (err?.code === "ECONNREFUSED" || err?.code === "ENOTFOUND") {
       return NextResponse.json(
         { error: "Unable to connect to AI service. Please try again." },
         { status: 503 }
@@ -349,17 +382,17 @@ export async function POST(req: NextRequest) {
     }
 
     // OpenRouter specific errors
-    if (error?.error?.message) {
-      console.error("[API] OpenRouter error:", error.error.message);
+    if (err?.error?.message) {
+      console.error("[API] OpenRouter error:", err.error.message);
       return NextResponse.json(
-        { error: `AI service error: ${error.error.message}` },
+        { error: `AI service error: ${err.error.message}` },
         { status: 500 }
       );
     }
 
     return NextResponse.json(
       {
-        error: error?.message || "Failed to generate feedback",
+        error: err?.message || "Failed to generate feedback",
         type: error?.constructor?.name,
       },
       { status: 500 }

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
-import type { FC, ReactNode } from "react";
+import type { FC } from "react";
 
 interface Question {
   question: string;

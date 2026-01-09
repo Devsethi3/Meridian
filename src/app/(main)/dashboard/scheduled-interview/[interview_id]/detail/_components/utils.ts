@@ -5,13 +5,23 @@ export type NormalizedQuestion = {
   type?: string;
 };
 
-export function normalizeQuestions(raw: any): NormalizedQuestion[] {
+export function normalizeQuestions(raw: unknown): NormalizedQuestion[] {
   if (!raw) return [];
-  if (Array.isArray(raw)) return raw.filter(Boolean);
-  return Object.keys(raw || {})
-    .filter((key) => key !== "length" && !isNaN(Number(key)))
-    .map((key) => raw[Number(key)])
-    .filter(Boolean);
+
+  if (Array.isArray(raw)) {
+    return raw.filter(Boolean) as NormalizedQuestion[];
+  }
+
+  if (typeof raw === "object") {
+    const obj = raw as Record<string, unknown>;
+
+    return Object.keys(obj)
+      .filter((key) => key !== "length" && !isNaN(Number(key)))
+      .map((key) => obj[Number(key)])
+      .filter(Boolean) as NormalizedQuestion[];
+  }
+
+  return [];
 }
 
 // Use only shadcn-ui tokens: primary, secondary, accent, destructive, muted, foreground, border, card, etc.

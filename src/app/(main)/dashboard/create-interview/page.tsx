@@ -12,8 +12,6 @@ import {
   Share2,
   ChevronLeft,
   ChevronRight,
-  Clock,
-  Calendar,
 } from "lucide-react";
 
 import FormContainer from "./_components/FormContainer";
@@ -146,15 +144,6 @@ const CreateInterviewPage = () => {
       </div>
     </div>
   );
-
-  // Resolve user-friendly label for the selected type value
-  const typeLabel = useMemo(() => {
-    if (!formData?.type) return undefined;
-    const match = (InterviewType as any[]).find(
-      (t) => t?.value === formData.type || t?.title === formData.type
-    );
-    return match?.title ?? formData.type;
-  }, [formData?.type]);
 
 
   return (

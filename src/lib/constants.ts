@@ -41,21 +41,26 @@ export const SidebarOptions = [
 export const InterviewType = [
   {
     title: "Technical",
+    value: "Technical",
     icon: Code2Icon,
   },
   {
     title: "Behavior",
+    value: "Behavior",
     icon: User2Icon,
   },
   {
     title: "Experience",
+    value: "Experience",
     icon: BriefcaseBusinessIcon,
   },
   {
     title: "Problem Solving",
+    value: "Problem Solving",
     icon: Puzzle,
   },
-];
+] as const;
+
 export const QUESTIONS_PROMPT = `You are an expert technical interviewer.  
 Based on the following inputs, generate a well-structured list of high-quality interview questions:
 

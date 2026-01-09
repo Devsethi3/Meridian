@@ -64,11 +64,11 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
     });
   }, [formData]);
 
-  const normalizeQuestions = useCallback((arr: any[]): Question[] => {
+  const normalizeQuestions = useCallback((arr: unknown[]): Question[] => {
     const out: Question[] = [];
     const seen = new Set<string>();
 
-    for (const item of arr) {
+    for (const item of arr as Record<string, unknown>[]) {
       const q = (
         typeof item === "string"
           ? item
@@ -96,16 +96,17 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
     (content: unknown): Question[] => {
       if (!content) return [];
 
-      const tryArrays = (obj: any): Question[] => {
-        if (!obj) return [];
-        if (Array.isArray(obj)) return normalizeQuestions(obj);
+      const tryArrays = (obj: unknown): Question[] => {
+        if (!obj || typeof obj !== "object") return [];
+
+        const typed = obj as Record<string, unknown>;
 
         const possibleArrays = [
-          obj.interviewQuestions,
-          obj.questions,
-          obj.items,
-          obj.data,
-          obj.questionList,
+          typed.interviewQuestions,
+          typed.questions,
+          typed.items,
+          typed.data,
+          typed.questionList,
         ];
 
         for (const arr of possibleArrays) {
@@ -119,7 +120,7 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
       };
 
       if (typeof content === "object") {
-        const arr = tryArrays(content as any);
+        const arr = tryArrays(content as unknown);
         if (arr.length) return arr;
       }
 
@@ -242,23 +243,35 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
           generationCacheRef.current.set(promptKey, questions);
           toast.success(`Generated ${questions.length} interview questions`);
         }
-      } catch (err: any) {
-        if (axios.isCancel(err)) {
-          return;
-        }
+      } catch (err: unknown) {
+        if (axios.isCancel(err)) return;
+
+        const error = err as {
+          code?: string;
+          response?: {
+            status?: number;
+            data?: { error?: string };
+          };
+        };
 
         console.error("AI generation error:", err);
 
         let errorMsg = "Failed to generate questions. Please try again.";
 
-        if (err.code === "ECONNABORTED") {
+        if (error.code === "ECONNABORTED") {
           errorMsg = "Request timed out. Please try again.";
-        } else if (err.response?.status === 429) {
+        } else if (
+          typeof error.response?.status === "number" &&
+          error.response.status === 429
+        ) {
           errorMsg = "Too many requests. Please wait and try again.";
-        } else if (err.response?.status >= 500) {
+        } else if (
+          typeof error.response?.status === "number" &&
+          error.response.status >= 500
+        ) {
           errorMsg = "Server error. Please try again in a moment.";
-        } else if (err.response?.data?.error) {
-          errorMsg = err.response.data.error;
+        } else if (typeof error.response?.data?.error === "string") {
+          errorMsg = error.response.data.error;
         }
 
         setErrorMessage(errorMsg);

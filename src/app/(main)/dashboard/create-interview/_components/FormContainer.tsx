@@ -22,6 +22,7 @@ interface FormContainerProps {
 }
 
 const MAX_DESC = 2000;
+type InterviewTypeItem = (typeof InterviewType)[number];
 
 const FormContainer = ({
   formData,
@@ -146,9 +147,10 @@ const FormContainer = ({
             </span>
 
             <div className="mt-2 grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {InterviewType.map((type: any, index: number) => {
-                const value = type?.value ?? type?.title ?? String(type);
+              {InterviewType.map((type: InterviewTypeItem, index: number) => {
+                const value = type.value;
                 const selected = formData.type === value;
+
 
                 return (
                   <button
