@@ -12,6 +12,7 @@ import type {
   VapiAssistantConfig,
   TranscriptMessage,
 } from "@/lib/types";
+import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 
 // ============================================
 // Types for this hook
@@ -48,7 +49,23 @@ const generateMessageId = (): string => {
   return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
 };
 
-type VapiConversationMessage = /*unresolved*/ any;
+type ContentItem = {
+  type: string;
+  text: string;
+  [key: string]: any;
+};
+
+type ConversationMessage = {
+  role: "assistant" | "user" | "system";
+  content?: string | ContentItem[];
+  text?: string;
+};
+
+type VapiConversationMessage = {
+  role: "assistant" | "user" | "system";
+  content?: string | ContentItem[];
+  text?: string;
+};
 
 // ============================================
 // Main Hook
@@ -97,11 +114,12 @@ export const useVapiService = ({
       .filter(Boolean)
       .join(", ");
   }, [interviewInfo?.questionList]);
+  interface ExtendedVapiAssistantConfig extends VapiAssistantConfig {}
 
   // ============================================
   // Assistant Configuration
   // ============================================
-  const assistantConfig: VapiAssistantConfig = useMemo(
+  const assistantConfig: CreateAssistantDTO = useMemo(
     () => ({
       name: "AI Recruiter",
       firstMessage: `Hi ${userName}, how are you doing today? I'm excited to chat with you about the ${jobPosition} position. Are you ready to get started?`,
@@ -312,7 +330,7 @@ Remember: You're having a natural conversation, not reading a script. Be warm an
 
     try {
       // Cast to any to bypass TypeScript strict checking for Vapi SDK
-      vapiRef.current.start(assistantConfig as any);
+      vapiRef.current.start(assistantConfig);
     } catch (error: unknown) {
       const errorMsg =
         error instanceof Error ? error.message : "Failed to start interview";
@@ -414,15 +432,24 @@ Remember: You're having a natural conversation, not reading a script. Be warm an
         "messages"
       );
 
-      message.conversation.forEach((msg: VapiConversationMessage) => {
+      message.conversation.forEach((msg) => {
         if (msg.role === "system") return;
 
         const role = msg.role as "assistant" | "user";
-        const text = msg.content || msg.text || "";
 
-        if (role && text) {
-          addMessage(role, text);
+        let text = "";
+
+        // Normalize content safely
+        if (typeof msg.content === "string") {
+          text = msg.content;
+        } else if (Array.isArray(msg.content)) {
+          // msg.content is ContentItem[] from '@/lib/types'
+          text = msg.content.map((item) => item.text).join(" ");
+        } else if (msg.text) {
+          text = msg.text;
         }
+
+        if (role && text) addMessage(role, text);
       });
     },
     [addMessage]
