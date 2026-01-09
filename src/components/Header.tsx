@@ -15,7 +15,6 @@ import { ThemeToggleButton } from "./ui/theme-toggle-button";
 import { useUser } from "@/context/UserContext";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { Skeleton } from "./ui/skeleton";
-import Image from "next/image";
 import { HoverLink } from "./HoverLink";
 import UserDropdown from "./UserDropdown";
 import { useSignOut } from "@/hooks/use-sign-out";
@@ -54,7 +53,6 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const reduceMotion = useReducedMotion();
-  const { signOut, isLoading, error } = useSignOut();
 
   const loading = (ctxLoading ?? false) || status === "loading";
   const hasError = Boolean(ctxError) || status === "error";

@@ -27,13 +27,13 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (!userInfo) return;
 
-    const { data: Users, error } = await supabase
+    const { data: Users } = await supabase
       .from("Users")
       .select("*")
       .eq("email", userInfo.email);
 
     if (!Users || Users.length === 0) {
-      const { data, error } = await supabase.from("Users").insert([
+      const { data } = await supabase.from("Users").insert([
         {
           name: userInfo.user_metadata.name,
           email: userInfo.email,

@@ -137,7 +137,6 @@ function Feature({
   desc,
   fadeUp,
   prefersReducedMotion,
-  ease,
 }: {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   title: string;

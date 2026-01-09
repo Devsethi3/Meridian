@@ -53,16 +53,6 @@ const Process = () => {
     },
   };
 
-  // Card hover animation
-  const cardHover = {
-    scale: 1.02,
-    y: -5,
-    transition: {
-      type: "spring",
-      stiffness: 300,
-      damping: 15,
-    },
-  };
 
   // Number badge hover animation
   const numberHover = {

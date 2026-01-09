@@ -72,7 +72,8 @@ export default function StartInterviewPage() {
 
         toast.success("Feedback generated!");
         router.replace(`/interview/${interviewId}/completed`);
-      } catch (error: any) {
+      } catch (err: unknown) {
+        const error = err instanceof Error ? err : new Error("Unknown error");
         console.error("[Page] Feedback error:", error);
         toast.error("Failed to generate feedback");
         router.replace(
@@ -85,7 +86,6 @@ export default function StartInterviewPage() {
 
   // Use the Vapi service
   const {
-    isCallActive,
     transcript,
     currentTranscript,
     callDuration,
@@ -96,8 +96,6 @@ export default function StartInterviewPage() {
     errorMessage,
     startInterview,
     stopInterview,
-    toggleMute,
-    isMuted,
   } = useVapiService({
     interviewInfo,
     onCallEnd: handleCallEnd,
