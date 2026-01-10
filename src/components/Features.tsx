@@ -8,7 +8,7 @@ import {
   Shield,
   Sparkles,
 } from "lucide-react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion, Variants } from "motion/react";
 
 const Features = () => {
   const prefersReducedMotion = useReducedMotion() ?? false;
@@ -141,7 +141,7 @@ function Feature({
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   title: string;
   desc: string;
-  fadeUp: any;
+  fadeUp: Variants;
   prefersReducedMotion: boolean;
   ease: readonly [number, number, number, number];
 }) {

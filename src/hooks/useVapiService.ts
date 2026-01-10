@@ -9,7 +9,6 @@ import type {
   ConnectionStatus,
   VapiMessage,
   VapiErrorEvent,
-  VapiAssistantConfig,
   TranscriptMessage,
 } from "@/lib/types";
 import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
@@ -47,24 +46,6 @@ interface UseVapiServiceReturn {
 
 const generateMessageId = (): string => {
   return `msg-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`;
-};
-
-type ContentItem = {
-  type: string;
-  text: string;
-  [key: string]: any;
-};
-
-type ConversationMessage = {
-  role: "assistant" | "user" | "system";
-  content?: string | ContentItem[];
-  text?: string;
-};
-
-type VapiConversationMessage = {
-  role: "assistant" | "user" | "system";
-  content?: string | ContentItem[];
-  text?: string;
 };
 
 // ============================================
@@ -114,7 +95,6 @@ export const useVapiService = ({
       .filter(Boolean)
       .join(", ");
   }, [interviewInfo?.questionList]);
-  interface ExtendedVapiAssistantConfig extends VapiAssistantConfig {}
 
   // ============================================
   // Assistant Configuration

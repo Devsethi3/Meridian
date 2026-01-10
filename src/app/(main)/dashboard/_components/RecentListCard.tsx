@@ -70,7 +70,7 @@ const RecentListCard: React.FC<RecentListCardProps> = ({ interview }) => {
   const initials =
     (interview.jobPosition || "I")
       .split(" ")
-      .map((s:any) => s[0])
+      .map((s:string) => s[0])
       .join("")
       .slice(0, 2)
       .toUpperCase() || "I";

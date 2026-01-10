@@ -17,7 +17,6 @@ import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import { Skeleton } from "./ui/skeleton";
 import { HoverLink } from "./HoverLink";
 import UserDropdown from "./UserDropdown";
-import { useSignOut } from "@/hooks/use-sign-out";
 import Logo from "./Logo";
 
 const NAV_LINKS = [
