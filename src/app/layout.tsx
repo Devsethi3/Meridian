@@ -11,27 +11,40 @@ const font = DM_Sans({
   preload: false,
 });
 
+import type { Metadata } from "next";
+
 export const metadata: Metadata = {
   title: "Meridian | AI Interview Prep & Mock Interview App",
 
   description:
-    "Ace your next job interview with Meridian. Practice mock interviews with our AI, get instant feedback, and master your answers for technical and behavioral questions.",
+    "Ace your next job interview with Meridian. Practice mock interviews with our AI, get instant feedback, and master your answers.",
+
+  // Setting metadataBase is recommended so relative image paths work in production
+  // metadataBase: new URL("https://meridian.com"),
 
   openGraph: {
     title: "Meridian | Your AI Interview Coach",
     description:
       "Get ready for your job interview with personalized AI feedback. Meridian helps you practice for success.",
-    // url: "",
+    url: "https://meridian-dev.vercel.app",
     siteName: "Meridian",
     images: [
       {
-        url: "",
+        url: "/og-image.png", 
         width: 1200,
         height: 630,
-        alt: "Meridian AI Interview App Logo",
+        alt: "Meridian AI Interview App Preview",
       },
     ],
     type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Meridian | AI Interview Coach",
+    description:
+      "Get ready for your job interview with personalized AI feedback.",
+    images: ["/og-image.png"],
   },
 
   keywords: [
