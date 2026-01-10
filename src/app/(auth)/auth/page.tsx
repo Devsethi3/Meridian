@@ -46,7 +46,7 @@ const AuthPage = () => {
 
   const loginWithGoogle = useCallback(async () => {
     try {
-      setIsLoading(true);
+      setIsLoading(true); 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -294,7 +294,7 @@ function FeatureItem({
   return (
     <motion.li
       // variants={fadeUp}
-      whileHover="hover"  
+      whileHover="hover"
       className="flex items-start gap-4 rounded-xl border border-transparent p-2 transition-all duration-300 hover:bg-muted/30 hover:border-border/50"
     >
       <div className="group rounded-xl bg-gradient-to-br from-primary/30 via-secondary/30 to-primary/30 p-[1px]">

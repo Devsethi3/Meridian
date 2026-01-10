@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { ArrowRight, BadgeCheck, PlayCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { HeroVideoDialog } from "./ui/hero-video-dialog";
+import Image from "next/image";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 10 },
@@ -286,13 +286,13 @@ export default function HeroSection() {
             </motion.div>
           </motion.div>
 
-          {/* Video section */}
+          {/* Static Image section */}
           <motion.div
             id="demo"
             variants={fadeUp}
             className="relative mx-auto mt-10 w-full max-w-5xl z-10"
           >
-            {/* Video frame with clean styling */}
+            {/* Image frame with clean styling */}
             <motion.div className="relative rounded-2xl border border-border bg-card/60 p-1 backdrop-blur-sm">
               <motion.div
                 className="rounded-xl border border-border bg-card"
@@ -302,20 +302,28 @@ export default function HeroSection() {
                   className="relative overflow-hidden rounded-xl"
                   variants={subtleFadeUp}
                 >
-                  <HeroVideoDialog
-                    className="block dark:hidden"
-                    animationStyle="from-center"
-                    videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
-                    thumbnailSrc="https://startup-template-sage.vercel.app/hero-light.png"
-                    thumbnailAlt="Product demo video"
+                  {/* Light Theme Image */}
+                  <Image
+                    src="/hero-light.png"
+                    alt="App Dashboard Preview"
+                    width={1200}
+                    height={675}
+                    className="block dark:hidden w-full h-auto object-cover"
+                    priority
                   />
-                  <HeroVideoDialog
-                    className="hidden dark:block"
-                    animationStyle="from-center"
-                    videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
-                    thumbnailSrc="https://startup-template-sage.vercel.app/hero-dark.png"
-                    thumbnailAlt="Product demo video"
+
+                  {/* Dark Theme Image */}
+                  <Image
+                    src="/hero-dark.png"
+                    alt="App Dashboard Preview"
+                    width={1200}
+                    height={675}
+                    className="hidden dark:block w-full h-auto object-cover"
+                    priority
                   />
+
+                  {/* Fade Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent pointer-events-none" />
                 </motion.div>
               </motion.div>
             </motion.div>
