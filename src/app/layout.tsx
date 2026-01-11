@@ -11,16 +11,11 @@ const font = DM_Sans({
   preload: false,
 });
 
-import type { Metadata } from "next";
-
 export const metadata: Metadata = {
   title: "Meridian | AI Interview Prep & Mock Interview App",
 
   description:
     "Ace your next job interview with Meridian. Practice mock interviews with our AI, get instant feedback, and master your answers.",
-
-  // Setting metadataBase is recommended so relative image paths work in production
-  // metadataBase: new URL("https://meridian.com"),
 
   openGraph: {
     title: "Meridian | Your AI Interview Coach",
